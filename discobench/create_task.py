@@ -1,4 +1,4 @@
-"""A function so you can just import create_task and it will return make_files_public, make_files_private and task_description."""
+"""A function to create a task given a task_domain, and whether to implement the meta-train or meta-test task. You can choose to generate an example task, feed in a config path or a config dict. You can specify the type of evaluation. It also supports creating a task without data, to allow you to observe the structure of a task."""
 
 from pathlib import Path
 from typing import Any

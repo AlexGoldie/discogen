@@ -1,4 +1,4 @@
-# Using DiscoBench
+# Using DiscoGen
 
 This guide covers how to use DiscoBench for algorithm discovery tasks.
 
@@ -45,7 +45,7 @@ Create task files for a specific domain:
 discobench create-task --task-domain OnPolicyRL
 ```
 
-This creates a training task with default configuration. The generated files will appear in the `task_src/` directory.
+This creates a training task with default configuration. The generated files will appear in the `task_src/` directory. Note: the default task will not include any editable modules, so this will just show the domain's codebase structures.
 
 ## CLI Reference
 
@@ -116,6 +116,20 @@ discobench get-modules
 
 **Output:**
 Shows which modular components are available in each domain (e.g., loss, networks, optim, train).
+
+### `sample-task-config`
+
+Randomly sample a new config. This will uniformly sample from domains, and use weighted sampling according to command args to select editable modules, and meta-train and meta-test datasets.
+
+**Optional Flags**
+- `--p-edit FLOAT`: The probability each module is marked as editable
+- `--p-data LIST`: A list of probabilities or weights for how each dataset is allocated. Can be a list of 2 values (`[p_meta_train, p_meta_test]`, which must be a set of probabilities with total <= 1), or a list of 3 values (`[w_meta_train, w_meta_test, w_exclude]`), which will be normalised into probabilities before sampling.
+- `--eval-type`: Which type of evaluation to use. Can be one of `["random", "performance", "time", "energy]`. `"random"` will randomly sample an `eval_type` dueing the config sampling process.
+- `--no-backends`: If passed, will only sample tasks from the `default` backend.
+- `--source-path PATH`: After creating the task (using the `create-task` command), where the task should be created.
+- `--max-attempts INT`: How many attempts to take to try to sample a config, before raising an error. Due to rejection sampling, certain probabilities can sometimes be overly restrictive, such that tasks are hard to come by.
+- `--seed INT`: A random seed for deterministic sampling of tasks.
+- `--config-dest PATH`: Where to save the sampled config file. This will default to `task_config.yaml`.
 
 ## Python API
 
@@ -221,7 +235,7 @@ cd task_src/OnPolicyRL
 python run_main.py
 ```
 
-### Workflow 2: Using the example config
+### Workflow 2: Using an example config
 
 ```bash
 # 1. Create the task
@@ -258,6 +272,8 @@ python run_main.py
    from discobench import create_task
    create_task("OnPolicyRL", test=False, config_dict=config)
    ```
+
+
 
 ## Running DiscoBench
 
