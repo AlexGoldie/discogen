@@ -1,5 +1,5 @@
 name: Bug Report
-description: Report a bug or unexpected behavior in DiscoBench
+description: Report a bug or unexpected behavior in DiscoGen
 title: "[Bug]: "
 labels: ["bug", "needs-triage"]
 body:
@@ -52,9 +52,9 @@ body:
     attributes:
       value: |
         **Component Guide:**
-        - **Core**: Root package files in `discobench/` (e.g., `discobench/__init__.py`, `discobench/cli.py`)
-        - **Tasks**: Task domain implementations in `discobench/tasks/` (e.g., `discobench/tasks/OnPolicyRL/`, `discobench/tasks/ModelUnlearning/`)
-        - **Utils**: Utility modules in `discobench/utils/` (e.g., `discobench/utils/make_files.py`)
+        - **Core**: Root package files in `discogen/` (e.g., `discogen/__init__.py`, `discogen/cli.py`)
+        - **Tasks**: Task domain implementations in `discogen/domains/` (e.g., `discogen/domains/OnPolicyRL/`, `discogen/domains/ModelUnlearning/`)
+        - **Utils**: Utility modules in `discogen/utils/` (e.g., `discogen/utils/make_files.py`)
         - **Documentation**: Documentation files (e.g., `docs/`, `mkdocs.yml`, `README.md`)
         - **Testing Infrastructure**: Testing and CI/CD (e.g., `tests/`, `.github/workflows/`, `.pre-commit-config.yaml`, `pytest.ini`)
         - **Other**: Project configuration and other files (e.g., `pyproject.toml`, `Makefile`, `.gitignore`)
@@ -82,7 +82,7 @@ body:
       value: |
         - OS: [e.g., macOS 14.0, Ubuntu 22.04]
         - Python version: [e.g., 3.12.1]
-        - DiscoBench version/commit: [e.g., v0.1.0 or commit hash]
+        - DiscoGen version/commit: [e.g., v0.1.0 or commit hash]
         - Installed via: [e.g., pip, uv, git clone]
       render: markdown
     validations:
@@ -95,7 +95,7 @@ body:
       description: If possible, provide a minimal code example that reproduces the issue
       placeholder: |
         ```python
-        import discobench
+        import discogen
         # Minimal code that reproduces the bug...
         ```
       render: python

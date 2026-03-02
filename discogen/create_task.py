@@ -5,7 +5,7 @@ from typing import Any
 
 import yaml
 
-from discobench.utils.make_files import MakeFiles
+from discogen.utils.make_files import MakeFiles
 
 
 def create_task(
@@ -28,8 +28,8 @@ def create_task(
         example: Whether to use the pre-built example task_config for the task_domain.
         use_base: Whether to use the baseline implementations for each editable module. Defaults to False, meaning a default task will use an `edit` implementation (i.e., only the interface for a module is defined).
         no_data: Whether to create the codebase without loading any of the data files. If the code loads a pretrained model, this will also be skipped.
-        config_path: The path to the task configuration file. If not provided, the default task configuration file will be used. Check `discobench/tasks/{task_domain}/task_config.yaml` for expected structure for a given task.
-        config_dict: A pre-built config dictionary, following the expected structure from `discobench/tasks/{task_domain}/task_config.yaml`.
+        config_path: The path to the task configuration file. If not provided, the default task configuration file will be used. Check `discogen/domains/{task_domain}/task_config.yaml` for expected structure for a given task.
+        config_dict: A pre-built config dictionary, following the expected structure from `discogen/domains/{task_domain}/task_config.yaml`.
         eval_type: What type of evaluation to use. One of ['performance', 'time', 'energy']. In 'performance', the goal is to discover algorithms which maximise performance. In 'time', the goal is to discover algorithms that match the baseline performance in the shortest length of time. In 'energy', the objective is to discover algorithms which match the baseline performance using the least amount of estimate emissions.
         baseline_scale: What relative scale to allow compared to the baseline when using either the 'time' or 'energy' eval_type. If not provided, this will default to 1.0. Must be greater than 0.
         cache_root: A directory which data can be cached in.
@@ -54,7 +54,7 @@ def create_task(
         if example is True:
             config_path = str(Path(__file__).parent / f"example_configs/{task_domain}.yaml")
         else:
-            config_path = str(Path(__file__).parent / f"tasks/{task_domain}/task_config.yaml")
+            config_path = str(Path(__file__).parent / f"domains/{task_domain}/task_config.yaml")
     if config_dict is not None:
         task_config = config_dict
     else:
@@ -62,7 +62,7 @@ def create_task(
             if example is True:
                 config_path = str(Path(__file__).parent / f"example_configs/{task_domain}.yaml")
             else:
-                config_path = str(Path(__file__).parent / f"tasks/{task_domain}/task_config.yaml")
+                config_path = str(Path(__file__).parent / f"domains/{task_domain}/task_config.yaml")
         with open(config_path) as f:
             task_config = yaml.safe_load(f)
 

@@ -1,4 +1,4 @@
-We provide relevant references for all work in `discobench/tasks/<task_domain>/utils/_reference.txt`. Unless otherwise specified, all referenced work ahs been used under the MIT license.
+We provide relevant references for all work in `discogen/domains/<task_domain>/utils/_reference.txt`. Unless otherwise specified, all referenced work ahs been used under the MIT license.
 
 ## BrainSpeechDetection
 

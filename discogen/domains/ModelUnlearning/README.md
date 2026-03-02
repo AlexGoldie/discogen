@@ -7,7 +7,7 @@ This guide provides instructions for setting up and running the Unlearning task 
 After setting up the discobench environment (ie make install), install task-specific requirements:
 
 ```bash
-pip install -r discobench/tasks/Unlearning/utils/requirements.txt
+pip install -r discobench/domains/Unlearning/utils/requirements.txt
 pip install flash-attn==2.6.3 --no-build-isolation
 ```
 
@@ -27,7 +27,7 @@ export HF_TOKEN="your_token"
 
 ### Select datasets
 
-Specify train/test datasets in discobench/tasks/Unlearn/task_config.yaml. The list of available datasets is given by the folder names in discobench/tasks/Unlearn/datasets. Default: train = wmdp_cyber_qwen, test = tofu_qwen.
+Specify train/test datasets in discobench/domains/ModelUnlearning/task_config.yaml. The list of available datasets is given by the folder names in discobench/domains/ModelUnlearning/datasets. Default: train = wmdp_cyber_qwen, test = tofu_qwen.
 
 ### Create Task
 
@@ -47,6 +47,6 @@ python run_main.py
 
 The Unlearning task uses `flash-attention-2` by default. If running on Mac, where flash-attention is not available, run
 ```bash
-python discobench/tasks/Unlearning/utils/toggle_attn.py --platform mac
+python discobench/domains/ModelUnlearning/utils/toggle_attn.py --platform mac
 ```
 to use `sdpa` instead. This will simply add a few lines (model_args: attn_implementation: sdpa) to the main_config.yaml files across all datasets. Run again with --platform server to remove the lines if need be.

@@ -20,7 +20,7 @@ class MakeFiles:
             task_domain: The task domain to create the task for.
             cache_root: A cache directory to store data in.
         """
-        self.base_path = Path(__file__).parent.parent / "tasks" / task_domain
+        self.base_path = Path(__file__).parent.parent / "domains" / task_domain
         task_spec_path = self.base_path / "utils" / "task_spec.yaml"
         with open(task_spec_path) as f:
             self.task_spec = yaml.safe_load(f)
@@ -99,7 +99,7 @@ class MakeFiles:
         raise ValueError(f"{model_ids_key} must be a string or list")
 
     def _build_base_description(self, template_backend: str) -> str:
-        """Build the base description from discobench and domain descriptions.
+        """Build the base description from discogen and domain descriptions.
 
         Args:
             template_backend: The template backend to use.
@@ -107,9 +107,9 @@ class MakeFiles:
         Returns:
             Combined base description string.
         """
-        discobench_description = self._load_discobench_description()
+        discogen_description = self._load_discogen_description()
         domain_description = self._load_domain_description(template_backend)
-        return f"{discobench_description}\n\n{domain_description}"
+        return f"{discogen_description}\n\n{domain_description}"
 
     def _get_eval_description(self, eval_type: str) -> str:
         """Get the pre-written evaluation type description. This explains what the objective is for optimising the algorithm.
@@ -259,7 +259,7 @@ class MakeFiles:
         """Build the complete description including task information and data descriptions.
 
         Args:
-            base_description: The base discobench + domain description.
+            base_description: The base discogen + domain description.
             eval_description: A description of what the algorithm should be optimising for.
             all_discovered_files: List of all discovered files across tasks.
             data_descriptions: List of data descriptions from each task.
@@ -388,10 +388,10 @@ class MakeFiles:
             relative_target = os.path.relpath(master_file, start=dest_file.parent)
             dest_file.symlink_to(relative_target)
 
-    def _load_discobench_description(self) -> str:
+    def _load_discogen_description(self) -> str:
         """Load the base description once during initialization."""
-        discobench_path = Path(__file__).parent / "description.md"
-        return discobench_path.read_text(encoding="utf-8")
+        discogen_path = Path(__file__).parent / "description.md"
+        return discogen_path.read_text(encoding="utf-8")
 
     def _load_domain_description(self, template_backend: str) -> str:
         """Load the base description once during initialization."""

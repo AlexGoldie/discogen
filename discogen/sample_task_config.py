@@ -41,9 +41,9 @@ def sample_task_config(
 
     rng = np.random.default_rng(seed) if seed is not None else np.random.default_rng(None)
 
-    discobench_path = Path(__file__).parent / "tasks"
+    discogen_path = Path(__file__).parent / "domains"
 
-    task_domains = [x.name for x in discobench_path.iterdir() if x.is_dir()]
+    task_domains = [x.name for x in discogen_path.iterdir() if x.is_dir()]
 
     total_edit = 0
     total_train = 0
@@ -51,7 +51,7 @@ def sample_task_config(
     attempts = 0
 
     for _ in range(max_attempts):
-        result = _generate_config(discobench_path, p_edit, p_data, use_backends, source_path, rng)
+        result = _generate_config(discogen_path, p_edit, p_data, use_backends, source_path, rng)
         if result:
             return result
 

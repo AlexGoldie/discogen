@@ -7,8 +7,8 @@ import pytest
 import yaml
 from click.testing import CliRunner
 
-import discobench
-from discobench.cli import cli
+import discogen
+from discogen.cli import cli
 
 
 @pytest.fixture
@@ -41,7 +41,7 @@ def test_create_task_cli(
     cache_root: str,
 ) -> None:
     """Test that create_task is called correctly. We already test create_task separately, so we just want to check echoes."""
-    with patch("discobench.cli.create_task") as mock_create:
+    with patch("discogen.cli.create_task") as mock_create:
         args = [
             "create-task",
             "--task-domain",
@@ -98,7 +98,7 @@ def test_create_task_cli(
 
 def test_get_domains(runner: CliRunner) -> None:
     """Test that get_domains echoes in the expected way."""
-    expected_domains = discobench.get_domains()
+    expected_domains = discogen.get_domains()
 
     results = runner.invoke(cli, "get-domains")
 
@@ -109,7 +109,7 @@ def test_get_domains(runner: CliRunner) -> None:
 
 def test_get_modules(runner: CliRunner) -> None:
     """Test that get_modules echoes in the expected way."""
-    expected_modules = discobench.get_modules()
+    expected_modules = discogen.get_modules()
 
     results = runner.invoke(cli, "get-modules")
 
@@ -128,7 +128,7 @@ def test_create_config_cmd(runner: CliRunner, tmp_path: Path) -> None:
 
     dummy_config = {"mocked_key": "mocked_value"}
 
-    with patch("discobench.cli.create_config") as mock_create_config:
+    with patch("discogen.cli.create_config") as mock_create_config:
         mock_create_config.return_value = dummy_config
 
         results = runner.invoke(cli, ["create-config", "--task-domain", task_domain, "--save-dir", save_dir])
@@ -170,7 +170,7 @@ def test_create_discobench_cli(
     cache_root: str,
 ) -> None:
     """Test that create_discobench is called correctly."""
-    with patch("discobench.cli.create_discobench") as mock_create:
+    with patch("discogen.cli.create_discobench") as mock_create:
         args = ["create-discobench", "--task-name", task_name, "--eval-type", eval_type, "--cache-root", cache_root]
         if test:
             args.append("--test")
@@ -243,7 +243,7 @@ class TestSampleTaskConfigCli:
         return args
 
     @patch("builtins.open", new_callable=mock_open)
-    @patch("discobench.cli.sample_task_config")
+    @patch("discogen.cli.sample_task_config")
     def test_happy_path(self, mock_sample: MagicMock, mock_file: MagicMock, runner: CliRunner) -> None:
         """Test basic successful invocation."""
         mock_sample.return_value = ("fake_domain", {"fake_key": "fake_value"})
@@ -263,7 +263,7 @@ class TestSampleTaskConfigCli:
         assert "Successfully saved new task_config for the fake_domain domain at config.yaml" in result.output
 
     @patch("builtins.open", new_callable=mock_open)
-    @patch("discobench.cli.sample_task_config")
+    @patch("discogen.cli.sample_task_config")
     def test_no_backends_flag(self, mock_sample: MagicMock, mock_file: MagicMock, runner: CliRunner) -> None:
         """Test that --no-backends sets use_backends to False."""
         mock_sample.return_value = ("fake_domain", {"fake_key": "fake_value"})
@@ -275,7 +275,7 @@ class TestSampleTaskConfigCli:
 
     @pytest.mark.parametrize("eval_type", ["random", "performance", "time", "energy"])
     @patch("builtins.open", new_callable=mock_open)
-    @patch("discobench.cli.sample_task_config")
+    @patch("discogen.cli.sample_task_config")
     def test_valid_eval_types(
         self, mock_sample: MagicMock, mock_file: MagicMock, runner: CliRunner, eval_type: str
     ) -> None:
@@ -303,7 +303,7 @@ class TestSampleTaskConfigCli:
         ],
     )
     @patch("builtins.open", new_callable=mock_open)
-    @patch("discobench.cli.sample_task_config")
+    @patch("discogen.cli.sample_task_config")
     def test_valid_p_data(
         self, mock_sample: MagicMock, mock_file: MagicMock, runner: CliRunner, p_data: str, expected: list[float]
     ) -> None:
@@ -331,7 +331,7 @@ class TestSampleTaskConfigCli:
 
     @pytest.mark.parametrize("p_edit", [0.3, 0.5, 0.7])
     @patch("builtins.open", new_callable=mock_open)
-    @patch("discobench.cli.sample_task_config")
+    @patch("discogen.cli.sample_task_config")
     def test_p_edit_passed_through(
         self, mock_sample: MagicMock, mock_file: MagicMock, runner: CliRunner, p_edit: float
     ) -> None:

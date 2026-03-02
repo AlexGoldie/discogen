@@ -3,10 +3,10 @@ import os
 import pytest
 import yaml
 
-from discobench import create_config
-from discobench.utils import get_domains
+from discogen import create_config
+from discogen.utils import get_domains
 
-DISCOBENCH_CONFIG_PATH = "discobench/discobench_configs/"
+DISCOGEN_CONFIG_PATH = "discogen/discobench_configs/"
 
 
 @pytest.mark.parametrize("domain", get_domains())
@@ -18,7 +18,7 @@ def test_single_config_valid(domain: str) -> None:
         if "change_" in k:
             module_name = k[7:]
 
-            discobench_change_config_path = f"{DISCOBENCH_CONFIG_PATH}/{domain}_{module_name}.yaml"
+            discobench_change_config_path = f"{DISCOGEN_CONFIG_PATH}/{domain}_{module_name}.yaml"
             assert os.path.exists(discobench_change_config_path)
             with open(discobench_change_config_path) as f:
                 discobench_config = yaml.safe_load(f)
@@ -46,7 +46,7 @@ def test_all_config_valid(domain: str) -> None:
     """Ensure all change DiscoBench configs exists."""
     expected_config = create_config(domain)
 
-    discobench_all_config_path = f"{DISCOBENCH_CONFIG_PATH}/{domain}_all.yaml"
+    discobench_all_config_path = f"{DISCOGEN_CONFIG_PATH}/{domain}_all.yaml"
     assert os.path.exists(discobench_all_config_path)
     with open(discobench_all_config_path) as f:
         discobench_config = yaml.safe_load(f)

@@ -1,11 +1,11 @@
-"""Command line interface for DiscoBench."""
+"""Command line interface for DiscOGen."""
 
 import os
 
 import click
 import yaml
 
-from discobench import (
+from discogen import (
     create_config,
     create_discobench,
     create_task,
@@ -18,7 +18,7 @@ from discobench import (
 
 @click.group()
 def cli() -> None:
-    """DiscoBench - Modular Benchmark for Automated Algorithm Discovery."""
+    """DiscoGen: Procedural Generation of Algorithm Discovery Tasks in Machine Learning."""
     pass
 
 
@@ -34,7 +34,7 @@ def cli() -> None:
 @click.option(
     "--config-path",
     type=str,
-    help="The path to your task_config.yaml. If not provided, this will default to the DiscoBench task_config.yaml for your provided task_domain.",
+    help="The path to your task_config.yaml. If not provided, this will default to the DiscoGen task_config.yaml for your provided task_domain.",
 )
 @click.option(
     "--use-base",
@@ -93,7 +93,7 @@ def create_task_cmd(
 
 @cli.command("get-domains")
 def get_domains_cmd() -> None:
-    """List all available task domains in DiscoBench."""
+    """List all available task domains in DiscoGen."""
     domains = get_domains()
     click.echo("\n".join(domains))
 

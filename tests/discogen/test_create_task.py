@@ -3,7 +3,7 @@ from unittest.mock import ANY, MagicMock, mock_open, patch
 
 import pytest
 
-from discobench import create_task
+from discogen import create_task
 
 
 @pytest.fixture
@@ -11,7 +11,7 @@ def mock_make_files() -> Iterator[MagicMock]:
     """Mock make_files as this is tested separately, and we don't want to deal with making new files here."""
     # Patch the class itself. We yield the class mock 'mocked' so we can
     # assert the constructor was called.
-    with patch("discobench.create_task.MakeFiles") as mocked:
+    with patch("discogen.create_task.MakeFiles") as mocked:
         yield mocked
 
 
@@ -28,7 +28,7 @@ def mock_yaml() -> Iterator[None]:
 def test_create_task_too_many_configs() -> None:
     """Ensure the function enforces mutual exclusivity."""
     with pytest.raises(ValueError, match="Provide only one of"):
-        create_task("OnPolicyRL", test=True, example=True, config_path="discobench/tasks/OnPolicyRL/task_config.yaml")
+        create_task("OnPolicyRL", test=True, example=True, config_path="discogen/domains/OnPolicyRL/task_config.yaml")
 
     with pytest.raises(ValueError, match="Provide only one of"):
         create_task("OnPolicyRL", test=True, example=True, config_dict={"abc": "123"})
@@ -38,7 +38,7 @@ def test_create_task_too_many_configs() -> None:
             "OnPolicyRL",
             test=True,
             config_dict={"abc": "123"},
-            config_path="discobench/tasks/OnPolicyRL/task_config.yaml",
+            config_path="discogen/domains/OnPolicyRL/task_config.yaml",
         )
 
 
@@ -94,8 +94,8 @@ def test_create_task_train_test_toggle(
 @pytest.mark.parametrize(
     "example, expected_path",
     [
-        (True, "discobench/example_configs/GreenhouseGasPrediction.yaml"),
-        (False, "discobench/tasks/GreenhouseGasPrediction/task_config.yaml"),
+        (True, "discogen/example_configs/GreenhouseGasPrediction.yaml"),
+        (False, "discogen/domains/GreenhouseGasPrediction/task_config.yaml"),
     ],
 )
 def test_create_task_config_path_selection(mock_make_files: MagicMock, example: bool, expected_path: str) -> None:
@@ -109,7 +109,7 @@ def test_create_task_config_path_selection(mock_make_files: MagicMock, example: 
         actual_path_called = mocked_file.call_args[0][0]
 
         assert str(actual_path_called).endswith(expected_path)
-        assert "discobench" in str(actual_path_called)
+        assert "discogen" in str(actual_path_called)
 
 
 def test_create_task_invalid_eval_type(mock_make_files: MagicMock) -> None:

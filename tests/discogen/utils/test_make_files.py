@@ -1,4 +1,4 @@
-"""Tests for MakeFiles class, parameterised over all domains from discobench."""
+"""Tests for MakeFiles class, parameterised over all domains from DiscoGen."""
 
 import json
 import os
@@ -9,9 +9,9 @@ from unittest.mock import MagicMock, patch
 import pytest
 import yaml
 
-from discobench import create_config
-from discobench.utils import get_domains
-from discobench.utils.make_files import MakeFiles
+from discogen import create_config
+from discogen.utils import get_domains
+from discogen.utils.make_files import MakeFiles
 
 ALL_DOMAINS = get_domains()
 
@@ -42,7 +42,7 @@ def config(domain: str) -> dict[str, Any]:
 @pytest.fixture
 def example_config(domain: str) -> dict[str, Any]:
     """Return the example config, with disjoint meta-train/meta-test, for the given domain."""
-    conf_path = f"discobench/example_configs/{domain}.yaml"
+    conf_path = f"discogen/example_configs/{domain}.yaml"
     with open(conf_path) as f:
         config: dict[str, Any] = yaml.safe_load(f)
     return config
@@ -197,7 +197,7 @@ class TestBuildBaseDescription:
     """All tests for _build_base_description."""
 
     def test_returns_nonempty_string(self, mf: MakeFiles, config: dict[str, Any]) -> None:
-        """Test that the base description combines discobench and domain descriptions."""
+        """Test that the base description combines discogen and domain descriptions."""
         template_backend = config.get("template_backend", "default")
         result = mf._build_base_description(template_backend)
         assert isinstance(result, str)

@@ -1,5 +1,5 @@
 name: Feature Request
-description: Suggest a new feature or enhancement for DiscoBench
+description: Suggest a new feature or enhancement for DiscoGen
 title: "[Feature]: "
 labels: ["enhancement", "needs-triage"]
 body:
@@ -57,9 +57,9 @@ body:
     attributes:
       value: |
         **Component Guide:**
-        - **Core**: Root package files in `discobench/` (e.g., `discobench/__init__.py`, `discobench/cli.py`)
-        - **Tasks**: Task domain implementations in `discobench/tasks/` (e.g., `discobench/tasks/OnPolicyRL/`, `discobench/tasks/ModelUnlearning/`)
-        - **Utils**: Utility modules in `discobench/utils/` (e.g., `discobench/utils/make_files.py`)
+        - **Core**: Root package files in `discogen/` (e.g., `discogen/__init__.py`, `discogen/cli.py`)
+        - **Tasks**: Task domain implementations in `discogen/domains/` (e.g., `discogen/domains/OnPolicyRL/`, `discogen/domains/ModelUnlearning/`)
+        - **Utils**: Utility modules in `discogen/utils/` (e.g., `discogen/utils/make_files.py`)
         - **Documentation**: Documentation files (e.g., `docs/`, `mkdocs.yml`, `README.md`)
         - **Testing Infrastructure**: Testing and CI/CD (e.g., `tests/`, `.github/workflows/`, `.pre-commit-config.yaml`)
         - **Other**: Project configuration and other files (e.g., `pyproject.toml`, `Makefile`, `.gitignore`)
@@ -100,7 +100,7 @@ body:
       placeholder: |
         ```python
         # Example of how you'd use the proposed feature
-        import discobench
+        import discogen
 
         # Your example code here...
         ```
@@ -130,7 +130,7 @@ body:
       options:
         - label: I have searched existing issues and discussions to ensure this is not a duplicate
           required: true
-        - label: I have considered how this feature fits with DiscoBench's goals
+        - label: I have considered how this feature fits with DiscoGen's goals
           required: false
         - label: I am willing to contribute to implementing this feature
           required: false

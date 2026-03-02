@@ -4,14 +4,14 @@ from pathlib import Path
 import pytest
 import yaml
 
-from discobench import create_config
-from discobench.utils import get_domains
+from discogen import create_config
+from discogen.utils import get_domains
 
 
 @pytest.mark.parametrize("domain", get_domains())
 def test_task_datasets(domain: str) -> None:
     """Ensure every dataset has a description."""
-    task_path = f"discobench/tasks/{domain}"
+    task_path = f"discogen/domains/{domain}"
     dataset_path = f"{task_path}/datasets"
 
     file_list = []
@@ -54,7 +54,7 @@ def test_task_datasets(domain: str) -> None:
 @pytest.mark.parametrize("domain", get_domains())
 def test_task_utils(domain: str) -> None:
     """Ensure every dataset has the correct files in its setup, including that all files are copied over."""
-    task_path = f"discobench/tasks/{domain}"
+    task_path = f"discogen/domains/{domain}"
     utils_path = f"{task_path}/utils"
 
     expected_files = [
@@ -119,7 +119,7 @@ def test_task_utils(domain: str) -> None:
 @pytest.mark.parametrize("domain", get_domains())
 def test_task_scores(domain: str) -> None:
     """Ensure every dataset and backend is reflected in baseline_scores.yaml."""
-    task_path = f"discobench/tasks/{domain}"
+    task_path = f"discogen/domains/{domain}"
     utils_path = f"{task_path}/utils"
 
     baselines_path = f"{utils_path}/baseline_scores.yaml"

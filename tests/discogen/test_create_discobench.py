@@ -4,8 +4,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 import yaml
 
-from discobench import create_discobench
-from discobench.utils import get_discobench_tasks
+from discogen import create_discobench
+from discogen.utils import get_discobench_tasks
 
 
 @pytest.fixture
@@ -13,7 +13,7 @@ def mock_make_files() -> Iterator[MagicMock]:
     """Mock make_files as this is tested separately, and we don't want to deal with making new files here."""
     # Patch the class itself. We yield the class mock 'mocked' so we can
     # assert the constructor was called.
-    with patch("discobench.create_discobench.MakeFiles") as mocked:
+    with patch("discogen.create_discobench.MakeFiles") as mocked:
         yield mocked
 
 
@@ -26,7 +26,7 @@ def test_create_discobench_task(
     """Tests that each discobench task can be created."""
     create_discobench(task_name, test=test_mode, eval_type=eval_type, no_data=True)
 
-    with open(f"discobench/discobench_configs/{task_name}.yaml") as f:
+    with open(f"discogen/discobench_configs/{task_name}.yaml") as f:
         task_config = yaml.safe_load(f)
 
     mock_make_files.return_value.make_files.assert_called_with(

@@ -3,8 +3,8 @@ from unittest.mock import mock_open, patch
 
 import pytest
 
-from discobench import create_config
-from discobench.utils import get_domains
+from discogen import create_config
+from discogen.utils import get_domains
 
 
 @pytest.fixture

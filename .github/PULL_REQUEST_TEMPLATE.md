@@ -31,9 +31,9 @@ Closes #
 
 <!-- Select the component(s) this PR affects -->
 
-- [ ] Core (Root package files in `discobench/`, e.g., `discobench/__init__.py`, `discobench/cli.py`)
-- [ ] Tasks (Task domains in `discobench/tasks/`)
-- [ ] Utils (Utility modules in `discobench/utils/`)
+- [ ] Core (Root package files in `discogen/`, e.g., `discogen/__init__.py`, `discogen/cli.py`)
+- [ ] Tasks (Task domains in `discogen/domains/`)
+- [ ] Utils (Utility modules in `discogen/utils/`)
 - [ ] Documentation (Documentation files, e.g., `docs/`, `mkdocs.yml`, `README.md`)
 - [ ] Testing Infrastructure
 - [ ] Other

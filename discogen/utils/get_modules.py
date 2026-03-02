@@ -2,12 +2,12 @@ import pathlib
 
 
 def get_modules() -> dict[str, list[str]]:
-    """Function to see all modules available in each DiscoBench domain.
+    """Function to see all modules available in each DiscoGen domain.
 
     Returns:
         Dictionary of {domain: modules}.
     """
-    task_path = pathlib.Path(__file__).parent.parent / "tasks"
+    task_path = pathlib.Path(__file__).parent.parent / "domains"
     module_dict = {}
     for task in task_path.iterdir():
         domain_path = task / "templates/default/base"

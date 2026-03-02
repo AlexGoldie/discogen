@@ -30,7 +30,7 @@ discobench create-task --task-domain OnPolicyRL
 
 See the [full documentation](https://AlexGoldie.github.io/discobench/) for detailed usage. Please note that each task_domain has its own set of requirements which may need to be installed.
 
-Every domain includes references in `discobench/tasks/<task_domain>/utils/_reference.txt`.
+Every domain includes references in `discobench/domains/<task_domain>/utils/_reference.txt`.
 
 ## Task Domains
 

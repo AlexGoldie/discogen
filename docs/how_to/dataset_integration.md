@@ -16,7 +16,7 @@ Each dataset must implement specific functions that integrate with the DiscoBenc
 
 ## 📁 Dataset Structure
 
-Every dataset lives in its own folder under `discobench/tasks/{TASK_DOMAIN}/datasets/{DATASET_NAME}/`:
+Every dataset lives in its own folder under `discobench/domains/{TASK_DOMAIN}/datasets/{DATASET_NAME}/`:
 
 ```
 FashionMNIST/

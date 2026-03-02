@@ -27,11 +27,11 @@ def create_config(task_domain: str) -> dict[str, Any]:
     Raises:
         TypeError: If the loaded task_config is not a dictionary.
     """
-    config_path = os.path.join(os.path.dirname(__file__), f"tasks/{task_domain}/task_config.yaml")
+    config_path = os.path.join(os.path.dirname(__file__), f"domains/{task_domain}/task_config.yaml")
 
     if not os.path.exists(config_path):
         raise ValueError(
-            "Invalid task_domain! Please make sure to select a valid task_domain. You can use discobench.utils.get_domains() to get a full list of task domains in discobench."
+            "Invalid task_domain! Please make sure to select a valid task_domain. You can use discogen.utils.get_domains() to get a full list of task domains in discogen."
         )
 
     with open(config_path) as f:

@@ -1,15 +1,15 @@
-site_name: DiscoBench
-repo_url: https://github.com/AlexGoldie/discobench
-site_url: https://AlexGoldie.github.io/discobench
+site_name: DiscoGen
+repo_url: https://github.com/AlexGoldie/discogen
+site_url: https://AlexGoldie.github.io/discogen
 site_description: This repository contains code for the DiscoBench modular benchmark for automated algorithm discovery.
 site_author: Alex Goldie
 edit_uri: edit/main/docs/
-repo_name: AlexGoldie/discobench
+repo_name: AlexGoldie/discogen
 copyright: Maintained by <a href="https://AlexGoldie.com">AlexGoldie</a>.
 
 nav:
   - Home: index.md
-  - Using DiscoBench: usage.md
+  - Using DiscoGen: usage.md
   - Domains: domains.md
   - Contributing:
     - Overview: how_to/overview.md

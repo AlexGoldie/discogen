@@ -1,10 +1,10 @@
-"""A function to create a discobench task given the task_name. A list of task names can got from discobench.utils.get_discobench_tasks."""
+"""A function to create a DiscoBench task given the task_name. A list of task names can got from discobench.utils.get_discobench_tasks."""
 
 from pathlib import Path
 
 import yaml
 
-from discobench.utils.make_files import MakeFiles
+from discogen.utils.make_files import MakeFiles
 
 
 def create_discobench(
@@ -15,7 +15,7 @@ def create_discobench(
     eval_type: str | None = "performance",
     cache_root: str = "cache",
 ) -> None:
-    """Prepare files for the training or testing subset of a discobench task.
+    """Prepare files for the training or testing subset of a DiscoBench task.
 
     Args:
         task_name: The DiscoBench task name.

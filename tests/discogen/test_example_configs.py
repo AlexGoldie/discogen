@@ -1,8 +1,8 @@
 import pytest
 import yaml
 
-from discobench import create_config
-from discobench.utils import get_domains
+from discogen import create_config
+from discogen.utils import get_domains
 
 
 @pytest.mark.parametrize("domain", get_domains())
@@ -10,7 +10,7 @@ def test_example_config_valid(domain: str) -> None:
     """Ensure the example_config has correct default values, and expected keys."""
     expected_config = create_config(domain)
 
-    example_config_path = f"discobench/example_configs/{domain}.yaml"
+    example_config_path = f"discogen/example_configs/{domain}.yaml"
     with open(example_config_path) as f:
         example_config = yaml.safe_load(f)
 

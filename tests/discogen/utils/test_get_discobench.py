@@ -1,4 +1,4 @@
-from discobench.utils import get_discobench_tasks, get_modules
+from discogen.utils import get_discobench_tasks, get_modules
 
 
 def test_single_config_valid() -> None:

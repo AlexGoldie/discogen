@@ -1,10 +1,10 @@
-# DiscoBench
+# DiscoGen
 
-<!-- [![Release](https://img.shields.io/github/v/release/AlexGoldie/discobench)](https://img.shields.io/github/v/release/AlexGoldie/discobench)
-[![Build status](https://img.shields.io/github/actions/workflow/status/AlexGoldie/discobench/main.yml?branch=main)](https://github.com/AlexGoldie/discobench/actions/workflows/main.yml?query=branch%3Amain)
-[![codecov](https://codecov.io/gh/AlexGoldie/discobench/branch/main/graph/badge.svg)](https://codecov.io/gh/AlexGoldie/discobench)
-[![Commit activity](https://img.shields.io/github/commit-activity/m/AlexGoldie/discobench)](https://img.shields.io/github/commit-activity/m/AlexGoldie/discobench)
-[![License](https://img.shields.io/github/license/AlexGoldie/discobench)](https://img.shields.io/github/license/AlexGoldie/discobench) -->
+<!-- [![Release](https://img.shields.io/github/v/release/AlexGoldie/discogen)](https://img.shields.io/github/v/release/AlexGoldie/discogen)
+[![Build status](https://img.shields.io/github/actions/workflow/status/AlexGoldie/discogen/main.yml?branch=main)](https://github.com/AlexGoldie/discogen/actions/workflows/main.yml?query=branch%3Amain)
+[![codecov](https://codecov.io/gh/AlexGoldie/discogen/branch/main/graph/badge.svg)](https://codecov.io/gh/AlexGoldie/discogen)
+[![Commit activity](https://img.shields.io/github/commit-activity/m/AlexGoldie/discogen)](https://img.shields.io/github/commit-activity/m/AlexGoldie/discogen)
+[![License](https://img.shields.io/github/license/AlexGoldie/discogen)](https://img.shields.io/github/license/AlexGoldie/discogen) -->
 
 **DiscoBench** is a modular benchmark for automated algorithm discovery in machine learning.
 
@@ -27,36 +27,36 @@ DiscoBench is a new, open-ended benchmark and research playground for developing
 Install from source:
 
 ```bash
-git clone git@github.com:AlexGoldie/discobench.git
-cd discobench
+git clone git@github.com:AlexGoldie/discogen.git
+cd discogen
 make install
 ```
 or install from pip:
 ```bash
-pip install discobench
+pip install discogen
 ```
 ### Basic Usage
 
 List available domains:
 ```bash
-uv run discobench get-domains
+uv run discogen get-domains
 ```
 
 Create a full task-domain codebase (with baseline implementations):
 ```bash
-uv run discobench create-task --task-domain OnPolicyRL
+uv run discogen create-task --task-domain OnPolicyRL
 ```
 
 Create an example task for algorithm discovery:
 ```bash
-uv run discobench create-task --task-domain OnPolicyRL --example
+uv run discogen create-task --task-domain OnPolicyRL --example
 ```
 
 See the full [Usage Guide](usage.md) for detailed instructions.
 
 ## Available Domains
 
-DiscoBench currently supports the following task domains:
+DiscoGen currently supports the following task domains:
 
 - **[OnPolicyRL](domains.md#onpolicyrl)**: On-policy reinforcement learning (PPO-style algorithms)
 - **[OffPolicyRL](domains.md#offpolicyrl)**: Off-policy reinforcement learning (DQN-style algorithms)
