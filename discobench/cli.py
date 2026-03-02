@@ -108,7 +108,7 @@ def get_modules_cmd() -> None:
 
 @cli.command("get-discobench")
 def get_discobench_tasks_cmd() -> None:
-    """List all available modules for a specified task domain."""
+    """List name of all discobench tasks currently supported."""
     discobench_list = get_discobench_tasks()
     click.echo("\n".join(discobench_list))
 
@@ -128,7 +128,7 @@ def create_config_cmd(task_domain: str, save_dir: str) -> None:
         yaml.dump(config, outfile, default_flow_style=False)
 
 
-@cli.command("sample-task")
+@cli.command("sample-task-config")
 @click.option(
     "--p-edit",
     type=float,
@@ -137,14 +137,13 @@ def create_config_cmd(task_domain: str, save_dir: str) -> None:
 )
 @click.option(
     "--p-data",
-    type=list[str],
-    default=[0.4, 0.4, 0.2],
-    help="A list of probabilities or weights for sampling. Supports either a list of 2 values, which must be [p_meta_train, p_meta_test], or a list of 3 values, which can be probabilities or weights [w_meta_train, w_meta_test, w_exclude].",
+    type=str,
+    default="[0.4,0.4,0.2]",
+    help="A list of probabilities or weights for sampling. Supports either a list of 2 values, which must be [p_meta_train, p_meta_test], or a list of 3 values, which can be probabilities or weights [w_meta_train, w_meta_test, w_exclude]. Can be passed with or without [].",
 )
 @click.option(
     "--eval-type",
-    type=str,
-    required=False,
+    type=click.Choice(["performance", "time", "energy", "random"], case_sensitive=False),
     default="random",
     help="What eval_type to use. Supports 'random', which will select a random eval_type, or one of ['performance', 'energy', 'time']. Defaults to 'random'.",
 )
@@ -174,7 +173,7 @@ def create_config_cmd(task_domain: str, save_dir: str) -> None:
     help="A random seed for reproducible task sampling. Defaults to None, in which case sampling will be non-deterministic.",
 )
 @click.option(
-    "--config_dest",
+    "--config-dest",
     type=str,
     required=False,
     default="task_config.yaml",
@@ -182,7 +181,7 @@ def create_config_cmd(task_domain: str, save_dir: str) -> None:
 )
 def sample_task_config_cmd(
     p_edit: float,
-    p_data: list[float],
+    p_data: str,
     eval_type: str,
     no_backends: bool,
     source_path: str,
@@ -192,9 +191,23 @@ def sample_task_config_cmd(
 ) -> None:
     """Create task source files for a specified task domain."""
     use_backends = not no_backends
+
+    if not config_dest.endswith(".yaml"):
+        raise click.BadParameter("config-dest must end with .yaml.", param_hint="'--config-dest'")
+
+    if p_data.startswith("[") or p_data.endswith("]"):
+        if not (p_data.startswith("[") and p_data.endswith("]")):
+            raise click.BadParameter(
+                "p-data must either have no square brackets, or be completely enclosed by square brackets.",
+                param_hint="'--p-data'",
+            )
+        p_data = p_data[1:-1]
+
+    p_data_list: list[float] = [float(x) for x in p_data.split(",")]
+
     task_domain, task_config = sample_task_config(
         p_edit=p_edit,
-        p_data=p_data,
+        p_data=p_data_list,
         eval_type=eval_type,
         use_backends=use_backends,
         source_path=source_path,

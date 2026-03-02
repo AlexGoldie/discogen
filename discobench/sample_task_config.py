@@ -25,7 +25,7 @@ def sample_task_config(
         eval_type: What eval_type to use. Supports 'random', which will select a random eval_type, or one of ['performance', 'energy', 'time']. Defaults to 'random'.
         use_backends: Whether to only use the default backend, or randomly sample from the supported backend for each domain. Defaults to True.
         source_path: Where the task code should be saved after calling create_task() on the returned config.
-        max_attempts: The max number of attempts supported for sampling a task from DiscoGen. Prevents the risk of inifinite or very long loops, if probabilities are set in such a way that tasks are valid tasks are hard to sample. Defaults to 10.
+        max_attempts: The max number of attempts supported for sampling a task from DiscoGen. Prevents the risk of infinite or very long loops, if probabilities are set in such a way that valid tasks are hard to sample. Defaults to 10.
         rng (optional): An np random generator for deterministic stochasticity.
         seed (optional): A random seed which can be used instead of rng.
 
@@ -128,7 +128,7 @@ def _check_args(
     p_data = _normalize_p_data(p_data)
 
     if eval_type not in ["random", "performance", "energy", "time"]:
-        raise ValueError("eval_type must be one of  ['random', 'performance', 'energy', 'time].")
+        raise ValueError("eval_type must be one of  ['random', 'performance', 'energy', 'time'].")
 
     if seed is not None and rng is not None:
         raise ValueError("When sampling a task, at most only one of seed and rng can be set.")
