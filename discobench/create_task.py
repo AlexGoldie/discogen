@@ -16,7 +16,7 @@ def create_task(
     no_data: bool = False,
     config_path: str | None = None,
     config_dict: dict[str, Any] | None = None,
-    eval_type: str = "performance",
+    eval_type: str | None = "performance",
     baseline_scale: float = 1.0,
     cache_root: str = "cache",
 ) -> None:
@@ -55,7 +55,6 @@ def create_task(
             config_path = str(Path(__file__).parent / f"example_configs/{task_domain}.yaml")
         else:
             config_path = str(Path(__file__).parent / f"tasks/{task_domain}/task_config.yaml")
-
     if config_dict is not None:
         task_config = config_dict
     else:

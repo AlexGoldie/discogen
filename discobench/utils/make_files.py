@@ -629,10 +629,10 @@ class MakeFiles:
         )
         self._save_description(full_description)
 
-        # Step 8: Create symlinks for discovered files
+        # Step 9: Create symlinks for discovered files
         unique_discovered_files = discovered_files
         self._create_symlinks_for_discovered(unique_discovered_files, task_ids, model_ids)
 
-        # Step 9: Copy run_main and requirements
+        # Step 10: Copy run_main and requirements
         self._load_run_main(eval_type)
         self._save_requirements(eval_type)
