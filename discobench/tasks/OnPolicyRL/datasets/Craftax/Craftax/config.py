@@ -3,7 +3,7 @@ config = {
         "ANNEAL_LR": True,
         "NUM_ENVS": 256,
         "NUM_STEPS": 16,
-        "TOTAL_TIMESTEPS": 1e9,
+        "TOTAL_TIMESTEPS": 1e8,
         "UPDATE_EPOCHS": 4,
         "NUM_MINIBATCHES": 8,
         "GAMMA": 0.99,

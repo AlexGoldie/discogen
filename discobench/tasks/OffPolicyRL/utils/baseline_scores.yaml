@@ -1,0 +1,7 @@
+return_mean:
+  default:
+    MinAtar/Asterix: 34.147118
+    MinAtar/Breakout: 29.891296
+    MinAtar/Freeway: 58.232498
+    MinAtar/SpaceInvaders: 137.625
+  objective: max

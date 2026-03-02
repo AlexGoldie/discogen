@@ -7,6 +7,7 @@ import data as data_utils
 from network import build_model
 from train_loop import train_across_tasks
 from wrappers import save_json, seed_everything
+import json
 
 # Modules (resolved at task generation time to base/edit variants)
 from regularizer import Regularizer, RegularizerConfig
@@ -77,7 +78,7 @@ def main() -> int:
     out_dir = cfg["logging"]["output_dir"]
     os.makedirs(out_dir, exist_ok=True)
     results_dict =  {**result["metrics"], "acc_matrix": result["acc_matrix"]}
-    print(results_dict)
+    print(json.dumps(results_dict))
     save_json(os.path.join(out_dir, "metrics.json"), results_dict)
     return 0
 

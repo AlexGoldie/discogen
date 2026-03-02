@@ -137,7 +137,7 @@ class AutoResetEnvWrapper(GymnaxWrapper):
 
         # Auto-reset environment based on termination
         def auto_reset(done, state_re, state_st, obs_re, obs_st):
-            state = jax.tree_map(
+            state = jax.tree.map(
                 lambda x, y: jax.lax.select(done, x, y), state_re, state_st
             )
             obs = jax.lax.select(done, obs_re, obs_st)

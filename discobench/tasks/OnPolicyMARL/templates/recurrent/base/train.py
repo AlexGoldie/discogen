@@ -340,8 +340,6 @@ def make_train(config):
             if config.get("DEBUG", False):
                 jax.experimental.io_callback(callback, None, metric)
             metric_return = {"mean_training_return": metric["mean_training_return"]}
-            if "returned_won_episode" in metric:
-                metric_return.update({"returned_won_episode": metric["returned_won_episode"]})
             update_steps = update_steps + 1
             runner_state = (train_state, env_state, last_obs, last_done, hstate, rng)
             return (runner_state, update_steps), metric_return

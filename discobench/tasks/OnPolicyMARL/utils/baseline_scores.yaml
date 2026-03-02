@@ -1,0 +1,38 @@
+return_mean:
+  default:
+    MABrax/Ant: -104995.3125
+    MABrax/HalfCheetah: 1036.730347
+    MABrax/Hopper: 565.263611
+    MABrax/Humanoid: 527.186218
+    MABrax/Walker: 668.26123
+    MPE/Spread: -27.709658
+    SMAX/10m_vs_11m: 5.707386
+    SMAX/27m_vs_30m: 5.340938
+    SMAX/2s3z: 8.557064
+    SMAX/3s5z: 7.508912
+    SMAX/3s5z_vs_3s6z: 4.819173
+    SMAX/3s_vs_5z: 6.000001
+    SMAX/5m_vs_6m: 5.9375
+    SMAX/6h_vs_8z: 12
+    SMAX/smacv2_10_units: 8.191476
+    SMAX/smacv2_20_units: 8.759515
+    SMAX/smacv2_5_units: 6.957738
+  recurrent:
+    MABrax/Ant: -753084.625
+    MABrax/HalfCheetah: -150.149521
+    MABrax/Hopper: 664.651001
+    MABrax/Humanoid: 409.974091
+    MABrax/Walker: -382201.625
+    MPE/Spread: -25.046518
+    SMAX/10m_vs_11m: 17.363352
+    SMAX/2s3z: 9.983481
+    SMAX/3s5z: 15.969991
+    SMAX/3s5z_vs_3s6z: 12.942286
+    SMAX/3s_vs_5z: 5.903339
+    SMAX/5m_vs_6m: 4.871094
+    SMAX/6h_vs_8z: 11.989453
+    SMAX/smacv2_10_units: 13.537593
+    SMAX/smacv2_20_units: 18.31802
+    SMAX/smacv2_5_units: 8.810609
+    SMAX/27m_vs_30m: 26.891722
+  objective: max

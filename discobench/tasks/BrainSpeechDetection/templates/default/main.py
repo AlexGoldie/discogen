@@ -14,7 +14,7 @@ from loss import compute_loss
 from networks import Model
 from optim import create_optimizer
 from utils import compute_macro_f1_score
-
+import json
 
 class SpeechClassifier(L.LightningModule):
 
@@ -193,9 +193,14 @@ def train_and_eval_model(config: Dict, model: SpeechClassifier, train_dataloader
     )
 
     trainer.fit(model, train_dataloader, test_dataloader)
-    trainer.test(model, test_dataloader)
 
-    return trainer, model
+    test_results = trainer.test(model, test_dataloader)
+
+    final_test_metrics = test_results[0] if test_results else {}
+
+    all_metrics = final_test_metrics
+
+    return trainer, model, all_metrics
 
 
 def set_seed(seed=42):
@@ -212,6 +217,10 @@ def set_seed(seed=42):
 def rank0_print(*args, **kwargs):
     print(*args, **kwargs)
 
+@rank_zero_only
+def rank0_print_json(*args, **kwargs):
+    print(json.dumps(*args, **kwargs))
+
 
 def main():
     set_seed(config["train"]["seed"])
@@ -221,13 +230,14 @@ def main():
     rank0_print(
         "The results of random classifier and optimistic classifier (predict all samples as positive) are:"
     )
-    for metric, value in baseline_results.items():
-        rank0_print(f"{metric}: {value}")
+    rank0_print(baseline_results)
     rank0_print(
         "If the F1 score of the optimistic classifier is too good, there may be a severe imbalance in the dataset."
     )
     model = SpeechClassifier(config)
-    train_and_eval_model(config['train'], model, train_dataloader, test_dataloader)
+    trainer, model, results = train_and_eval_model(config['train'], model, train_dataloader, test_dataloader)
+
+    rank0_print_json(results)
 
 
 if __name__ == "__main__":

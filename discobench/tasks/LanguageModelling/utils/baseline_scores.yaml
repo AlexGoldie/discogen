@@ -1,0 +1,7 @@
+val_accuracy:
+  default:
+    LMFineWeb: 0.206797
+    OPCFineWebCode: 0.225313
+    OPCFineWebMath: 0.240547
+    TinyStories: 0.508672
+  objective: max

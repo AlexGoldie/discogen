@@ -16,26 +16,42 @@ def runner() -> CliRunner:
     return CliRunner()
 
 
-@pytest.mark.parametrize("task_domain", ["OnPolicyRL", "OffPolicyRL", "abcdef"])
+@pytest.mark.parametrize(
+    ["task_domain", "expected_task_domain"],
+    [["OnPolicyRL", "OnPolicyRL"], ["OnPoLiCyRl", "OnPolicyRL"], ["OffPolicyRL", "OffPolicyRL"], ["abcdef", "abcdef"]],
+)
 @pytest.mark.parametrize("test", [True, False])
 @pytest.mark.parametrize("example", [True, False])
 @pytest.mark.parametrize("use_base", [True, False])
 @pytest.mark.parametrize("no_data", [True, False])
+@pytest.mark.parametrize("eval_type", ["performance", "time", "energy", "abcdef"])
+@pytest.mark.parametrize("baseline_scale", [0.5, 1.5, 1.0])
+@pytest.mark.parametrize("cache_root", ["cache1", "cache2"])
 def test_create_task_cli(
-    runner: CliRunner, task_domain: str, test: bool, example: bool, use_base: bool, no_data: bool
+    runner: CliRunner,
+    task_domain: str,
+    expected_task_domain: str,
+    test: bool,
+    example: bool,
+    use_base: bool,
+    no_data: bool,
+    eval_type: str,
+    baseline_scale: float,
+    cache_root: str,
 ) -> None:
     """Test that create_task called correctly. We already test create_task separately, so we just want to check echos."""
     with patch("discobench.cli.create_task") as mock_create:
-
-        def mock_behavior_error(
-            task_domain: str, test: bool, config_path: str | None, example: bool, use_base: bool, no_data: bool
-        ) -> None:
-            if task_domain not in discobench.get_domains():
-                raise ValueError("Invalid domain")
-
-        mock_create.side_effect = mock_behavior_error
-
-        args = ["create-task", "--task-domain", task_domain]
+        args = [
+            "create-task",
+            "--task-domain",
+            task_domain,
+            "--eval-type",
+            eval_type,
+            "--baseline-scale",
+            str(baseline_scale),
+            "--cache-root",
+            cache_root,
+        ]
         if test:
             args.append("--test")
         if example:
@@ -47,19 +63,36 @@ def test_create_task_cli(
 
         results = runner.invoke(cli, args)
 
-        if test and use_base:
-            assert "--use-base has no effect" in results.output
-
-        mock_create.assert_called_once_with(
-            task_domain=task_domain, test=test, config_path=None, example=example, use_base=use_base, no_data=no_data
-        )
         mode = "test" if test else "training"
 
-        if task_domain != "abcdef":
-            assert f"Successfully created {mode} task for domain: {task_domain}" in results.output
-            assert results.exit_code == 0
+        if task_domain == "abcdef" or eval_type == "abcdef":
+            if task_domain == "abcdef" or eval_type == "abcdef":
+                mock_create.assert_not_called()
+                assert results.exit_code != 0
+
+                if task_domain == "abcdef":
+                    assert "Invalid value for '--task-domain'" in results.output
+                elif eval_type == "abcdef":
+                    assert "Invalid value for '--eval-type'" in results.output
+
         else:
-            assert results.exit_code != 0
+            # Click passes, so the mock MUST be called
+            mock_create.assert_called_once_with(
+                task_domain=expected_task_domain,
+                test=test,
+                config_path=None,
+                example=example,
+                use_base=use_base,
+                no_data=no_data,
+                eval_type=eval_type,
+                baseline_scale=baseline_scale,
+                cache_root=cache_root,
+            )
+            assert results.exit_code == 0
+            assert f"Successfully created {mode} task for domain: {expected_task_domain}" in results.output
+
+            if test and use_base:
+                assert "--use-base has no effect" in results.output
 
 
 def test_get_domains(runner: CliRunner) -> None:
@@ -109,3 +142,68 @@ def test_create_config_cmd(runner: CliRunner, tmp_path: Path) -> None:
         saved_data = yaml.safe_load(f)
 
     assert saved_data == dummy_config
+
+
+@pytest.mark.parametrize(
+    ["task_name", "expected_task_name"],
+    [
+        ["OnPolicyRL_all", "OnPolicyRL_all"],
+        ["OnPolicyRL_optim", "OnPolicyRL_optim"],
+        ["OnPoLiCyRl_OpTiM", "OnPolicyRL_optim"],
+        ["abcdef", "abcdef"],
+    ],
+)
+@pytest.mark.parametrize("test", [True, False])
+@pytest.mark.parametrize("use_base", [True, False])
+@pytest.mark.parametrize("no_data", [True, False])
+@pytest.mark.parametrize("eval_type", ["performance", "time", "energy", "abcdef"])
+@pytest.mark.parametrize("cache_root", ["cache1", "cache2"])
+def test_create_discobench_cli(
+    runner: CliRunner,
+    task_name: str,
+    expected_task_name: str,
+    test: bool,
+    use_base: bool,
+    no_data: bool,
+    eval_type: str,
+    cache_root: str,
+) -> None:
+    """Test that create_discobench called correctly."""
+    with patch("discobench.cli.create_discobench") as mock_create:
+        args = ["create-discobench", "--task-name", task_name, "--eval-type", eval_type, "--cache-root", cache_root]
+        if test:
+            args.append("--test")
+        if use_base:
+            args.append("--use-base")
+        if no_data:
+            args.append("--no-data")
+
+        results = runner.invoke(cli, args)
+
+        mode = "test" if test else "training"
+
+        if task_name == "abcdef" or eval_type == "abcdef":
+            if task_name == "abcdef" or eval_type == "abcdef":
+                mock_create.assert_not_called()
+                assert results.exit_code != 0
+
+                if task_name == "abcdef":
+                    assert "Invalid value for '--task-name'" in results.output
+                elif eval_type == "abcdef":
+                    assert "Invalid value for '--eval-type'" in results.output
+
+        else:
+            # Click passes, so the mock MUST be called
+            mock_create.assert_called_once_with(
+                task_name=expected_task_name,
+                test=test,
+                use_base=use_base,
+                no_data=no_data,
+                eval_type=eval_type,
+                cache_root=cache_root,
+            )
+            assert results.exit_code == 0
+            assert f"Successfully created {mode} discobench task: {expected_task_name}" in results.output
+
+            if test and use_base:
+                assert "--use-base has no effect" in results.output

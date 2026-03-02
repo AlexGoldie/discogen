@@ -15,7 +15,12 @@ def cli() -> None:
 
 
 @cli.command("create-task")
-@click.option("--task-domain", type=str, required=True, help="The task domain to create the task for.")
+@click.option(
+    "--task-domain",
+    type=click.Choice(get_domains(), case_sensitive=False),
+    required=True,
+    help="The task domain to create the task for.",
+)
 @click.option("--test", is_flag=True, help="If passed, create test task instead of training task.")
 @click.option("--example", is_flag=True, help="If passed, use example task config rather than your own.")
 @click.option(
@@ -33,8 +38,29 @@ def cli() -> None:
     is_flag=True,
     help="If passed, will create the task without downloading the data. The task code will generally not be able to run, but this will allow you to see how the code looks for a specific task.",
 )
+@click.option(
+    "--eval-type",
+    type=click.Choice(["performance", "time", "energy"], case_sensitive=False),
+    default="performance",
+    help="What type of evaluation to use. Options are 'performance' (find the highest performance algorithm), 'time' (find the algorithm which matches baseline performance in the least time) and 'energy' (find the algorithm which matched the baseline performance using the least energy). Default: performance",
+)
+@click.option(
+    "--baseline-scale",
+    type=float,
+    default=1.0,
+    help="If using 'time' or 'energy' evaluation, what tolerance is allowed compared to baseline score. For instance, if this is 0.5, an algorithm is valid if it reaches a score within 0.5 of the baseline. Default: 1.0. Must be above 0.",
+)
+@click.option("--cache-root", type=str, default="cache", help="A directory to which data can be downloaded and cached.")
 def create_task_cmd(
-    task_domain: str, test: bool, example: bool, use_base: bool, no_data: bool, config_path: str | None = None
+    task_domain: str,
+    test: bool,
+    example: bool,
+    use_base: bool,
+    no_data: bool,
+    eval_type: str,
+    baseline_scale: float,
+    cache_root: str,
+    config_path: str | None = None,
 ) -> None:
     """Create task source files for a specified task domain."""
     if test and use_base:
@@ -43,7 +69,15 @@ def create_task_cmd(
         click.echo("Warning: passing example and config_path will cause an error.")
 
     create_task(
-        task_domain=task_domain, test=test, config_path=config_path, example=example, use_base=use_base, no_data=no_data
+        task_domain=task_domain,
+        test=test,
+        config_path=config_path,
+        use_base=use_base,
+        example=example,
+        no_data=no_data,
+        eval_type=eval_type,
+        baseline_scale=baseline_scale,
+        cache_root=cache_root,
     )
     mode = "test" if test else "training"
     click.echo(f"Successfully created {mode} task for domain: {task_domain}.")
@@ -87,7 +121,12 @@ def create_config_cmd(task_domain: str, save_dir: str) -> None:
 
 
 @cli.command("create-discobench")
-@click.option("--task-name", type=str, required=True, help="The name of the discobench task to create.")
+@click.option(
+    "--task-name",
+    type=click.Choice(get_discobench_tasks(), case_sensitive=False),
+    required=True,
+    help="The name of the discobench task to create.",
+)
 @click.option("--test", is_flag=True, help="If passed, create test task instead of training task.")
 @click.option(
     "--use-base",
@@ -99,12 +138,23 @@ def create_config_cmd(task_domain: str, save_dir: str) -> None:
     is_flag=True,
     help="If passed, will create the task without downloading the data. The task code will generally not be able to run, but this will allow you to see how the code looks for a specific task.",
 )
-def create_discobench_task_cmd(task_name: str, test: bool, use_base: bool, no_data: bool) -> None:
+@click.option(
+    "--eval-type",
+    type=click.Choice(["performance", "time", "energy"], case_sensitive=False),
+    default="performance",
+    help="What type of evaluation to use. Options are 'performance' (find the highest performance algorithm), 'time' (find the algorithm which matches baseline performance in the least time) and 'energy' (find the algorithm which matched the baseline performance using the least energy). Default: performance",
+)
+@click.option("--cache-root", type=str, default="cache", help="A directory to which data can be downloaded and cached.")
+def create_discobench_task_cmd(
+    task_name: str, test: bool, use_base: bool, no_data: bool, eval_type: str, cache_root: str
+) -> None:
     """Create task source files for a specified task domain."""
     if test and use_base:
         click.echo("Warning: --use-base has no effect with --test. Test tasks use discovered files from training.")
 
-    create_discobench(task_name=task_name, test=test, use_base=use_base, no_data=no_data)
+    create_discobench(
+        task_name=task_name, test=test, use_base=use_base, no_data=no_data, eval_type=eval_type, cache_root=cache_root
+    )
     mode = "test" if test else "training"
     click.echo(f"Successfully created {mode} discobench task: {task_name}.")
 

@@ -57,7 +57,14 @@ def test_task_utils(domain: str) -> None:
     task_path = f"discobench/tasks/{domain}"
     utils_path = f"{task_path}/utils"
 
-    expected_files = ["_reference.txt", "description.md", "requirements.txt", "task_information.yaml", "task_spec.yaml"]
+    expected_files = [
+        "_reference.txt",
+        "description.md",
+        "requirements.txt",
+        "task_information.yaml",
+        "task_spec.yaml",
+        "baseline_scores.yaml",
+    ]
 
     for file in expected_files:
         assert os.path.exists(f"{utils_path}/{file}")
@@ -107,3 +114,46 @@ def test_task_utils(domain: str) -> None:
         expected_information_keys.append(f"{file_name_only}_prompt")
 
     assert sorted(task_information.keys()) == sorted(expected_information_keys)
+
+
+@pytest.mark.parametrize("domain", get_domains())
+def test_task_scores(domain: str) -> None:
+    """Ensure every dataset and backend is reflected in baseline_scores.yaml."""
+    task_path = f"discobench/tasks/{domain}"
+    utils_path = f"{task_path}/utils"
+
+    baselines_path = f"{utils_path}/baseline_scores.yaml"
+
+    with open(baselines_path) as f:
+        baseline_scores = yaml.safe_load(f)
+
+    templates_path = f"{task_path}/templates"
+    backends = sorted([x.name for x in Path(templates_path).iterdir() if x.is_dir()])
+    expected_datasets = create_config(domain)["train_task_id"]
+
+    errors = []
+
+    for score, score_values in baseline_scores.items():
+        if "objective" not in score_values:
+            errors.append(f"key 'objective' not in baseline_scores for '{score}'")
+
+    for backend in backends:
+        for dataset in expected_datasets:
+            dataset_found = False
+
+            # Search through all scores to see if this backend/dataset combo exists
+            for _, score_values in baseline_scores.items():
+                backend_data = score_values.get(backend)
+
+                # Check if the backend exists and is a dictionary containing the dataset
+                if isinstance(backend_data, dict) and dataset in backend_data:
+                    dataset_found = True
+                    break  # Found it, move on to the next dataset
+
+            if not dataset_found:
+                errors.append(f"Dataset '{dataset}' is missing for backend '{backend}' across all scores")
+
+    # Check if we collected any errors and fail the test if we did
+    if errors:
+        error_msg = "The following baseline configurations are missing:\n* " + "\n* ".join(errors)
+        pytest.fail(error_msg)

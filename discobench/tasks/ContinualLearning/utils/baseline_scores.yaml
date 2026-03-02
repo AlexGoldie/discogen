@@ -1,0 +1,14 @@
+Score:
+  parameter_isolation:
+    PermutedMNIST: 0.743843
+    SplitCIFAR100: 0.052928
+    TinyImageNetSplit: 0.008572
+  default:
+    PermutedMNIST: 0.743843
+    SplitCIFAR100: 0.052928
+    TinyImageNetSplit: 0.008572
+  transformer:
+    PermutedMNIST: 0.348764
+    SplitCIFAR100: -0.039917
+    TinyImageNetSplit: -0.019433
+  objective: max

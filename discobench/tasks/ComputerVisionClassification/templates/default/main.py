@@ -12,7 +12,7 @@ import random
 import numpy as np
 import pandas as pd
 import torch
-
+import json
 
 def set_seed(seed=42):
     random.seed(seed)
@@ -96,7 +96,7 @@ def train_and_eval_model(config, model, optimizer, train_dataset, test_dataset):
     print("Training completed. Evaluating the model...")
     train_metrics = trainer.evaluate(eval_dataset=train_dataset, metric_key_prefix="train")
     eval_metrics = trainer.evaluate(eval_dataset=test_dataset, metric_key_prefix="eval")
-
+    print(json.dumps({"train_metrics":train_metrics, "eval_metrics":eval_metrics}))
 
 def main():
     set_seed(config["train"]["seed"])

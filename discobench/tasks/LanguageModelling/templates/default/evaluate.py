@@ -84,6 +84,8 @@ def evaluate_model():
     model.eval()
     val_loader.reset()
     val_loss = 0.0
+    total_correct = torch.tensor(0.0, device=device) # Track correct predictions
+    total_samples = torch.tensor(0.0, device=device) # Track total predictions made
     criterion = nn.CrossEntropyLoss()
     torch.cuda.empty_cache()
 
@@ -127,11 +129,31 @@ def evaluate_model():
 
                 loss = criterion(masked_outputs, masked_targets)
                 val_loss += loss.detach()
+
+                predictions = torch.argmax(masked_outputs, dim=-1)
+
+                # Count how many match the target
+                correct = (predictions == masked_targets).float().sum()
+
+                # Update accumulators
+                total_correct += correct
+                total_samples += masked_targets.size(0) # Adds batch size
                 del loss
     dist.all_reduce(val_loss, op=dist.ReduceOp.AVG)
     val_loss /= val_steps
+
+    dist.all_reduce(total_correct, op=dist.ReduceOp.SUM)
+    dist.all_reduce(total_samples, op=dist.ReduceOp.SUM)
+    val_accuracy = total_correct / total_samples
+
+    perplexity = torch.exp(val_loss)
+
     # log val loss to console and to logfile
     if master_process:
         # Create and print the result dictionary
-        result = {"val_loss": val_loss.item()}
+        result = {
+                    "val_loss": val_loss.item(),
+                    "val_accuracy": val_accuracy.item(),
+                    "perplexity": perplexity.item()
+                }
         print(json.dumps(result))

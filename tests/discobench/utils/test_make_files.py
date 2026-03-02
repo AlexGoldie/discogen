@@ -1,8 +1,10 @@
 """Tests for MakeFiles class, parameterised over all domains from discobench."""
 
+import json
 import os
 from pathlib import Path
 from typing import Any
+from unittest.mock import MagicMock, patch
 
 import pytest
 import yaml
@@ -203,6 +205,194 @@ class TestBuildBaseDescription:
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Tests for _get_eval_description
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+
+class TestGetEvalDescription:
+    """All tests for _get_eval_description."""
+
+    @pytest.mark.parametrize("eval_type", ["performance", "time", "energy"])
+    def test_returns_nonempty_string(self, mf: MakeFiles, eval_type: str) -> None:
+        """Test that each valid eval_type returns a non-empty description."""
+        result = mf._get_eval_description(eval_type)
+        assert isinstance(result, str)
+        assert len(result) > 0
+
+    def test_invalid_eval_type_raises(self, mf: MakeFiles) -> None:
+        """Test that an invalid eval_type raises KeyError."""
+        with pytest.raises(KeyError):
+            mf._get_eval_description("nonexistent_eval_type")
+
+    def test_different_eval_types_return_different_descriptions(self, mf: MakeFiles) -> None:
+        """Test that each eval_type produces a distinct description."""
+        descriptions = {et: mf._get_eval_description(et) for et in ["performance", "time", "energy"]}
+        assert len(set(descriptions.values())) == 3
+
+    @pytest.mark.parametrize(
+        ("eval_type", "expected_substring"),
+        [
+            ("performance", "maximise the performance of your discovered algorithms"),
+            ("time", "minimise the time taken by your discovered algorithms to match a performance threshold"),
+            ("energy", "minimise the energy used by your discovered algorithms to match a performance threshold"),
+        ],
+    )
+    def test_description_contains_expected_content(
+        self, mf: MakeFiles, eval_type: str, expected_substring: str
+    ) -> None:
+        """Test that each eval description contains domain-specific expected content."""
+        result = mf._get_eval_description(eval_type)
+        assert expected_substring in result, f"Expected '{expected_substring}' in {eval_type} eval description"
+
+
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Tests for _load_run_main
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+
+class TestLoadRunMain:
+    """All tests for _load_run_main."""
+
+    @pytest.mark.parametrize("eval_type", ["performance", "time", "energy"])
+    def test_copies_run_main(self, mf: MakeFiles, source_path: Path, eval_type: str) -> None:
+        """Test that run_main.py is created in the source directory."""
+        mf.source_path = source_path
+        mf._load_run_main(eval_type)
+        assert (source_path / "run_main.py").exists()
+        assert len((source_path / "run_main.py").read_text()) > 0
+
+    def test_invalid_eval_type_raises(self, mf: MakeFiles, source_path: Path) -> None:
+        """Test that an invalid eval_type raises FileNotFoundError."""
+        mf.source_path = source_path
+        with pytest.raises(FileNotFoundError):
+            mf._load_run_main("nonexistent_eval_type")
+
+    def test_different_eval_types_produce_different_content(self, mf: MakeFiles, source_path: Path) -> None:
+        """Test that each eval_type copies a distinct run_main.py."""
+        contents = {}
+        for eval_type in ["performance", "time", "energy"]:
+            mf.source_path = source_path
+            mf._load_run_main(eval_type)
+            contents[eval_type] = (source_path / "run_main.py").read_text()
+        # At least two of the three should differ
+        assert len(set(contents.values())) > 1
+
+    @pytest.mark.parametrize("eval_type", ["performance", "time", "energy"])
+    def test_run_main_contains_run_all_main_py(self, mf: MakeFiles, source_path: Path, eval_type: str) -> None:
+        """Test that every run_main.py defines or calls run_all_main_py."""
+        mf.source_path = source_path
+        mf._load_run_main(eval_type)
+        content = (source_path / "run_main.py").read_text()
+        assert "run_all_main_py" in content
+
+    @pytest.mark.parametrize("eval_type", ["performance", "time", "energy"])
+    def test_run_main_contains_expected_imports(self, mf: MakeFiles, source_path: Path, eval_type: str) -> None:
+        """Test that every run_main.py has the expected standard imports."""
+        mf.source_path = source_path
+        mf._load_run_main(eval_type)
+        content = (source_path / "run_main.py").read_text()
+        assert "import json" in content
+        assert "import os" in content
+        assert "import subprocess" in content
+
+    @pytest.mark.parametrize(
+        ("eval_type", "expected_substring"),
+        [
+            ("performance", "baseline_path"),
+            ("time", "time.perf_counter()"),
+            ("energy", """EmissionsTracker(log_level="error", save_to_file=False)"""),
+        ],
+    )
+    def test_run_main_has_eval_specific_content(
+        self, mf: MakeFiles, source_path: Path, eval_type: str, expected_substring: str
+    ) -> None:
+        """Test that each run_main variant contains content specific to its eval type."""
+        mf.source_path = source_path
+        mf._load_run_main(eval_type)
+        content = (source_path / "run_main.py").read_text()
+        if eval_type == "performance":
+            assert expected_substring not in content, (
+                f"Expected '{expected_substring}' not to be in run_main_{eval_type}.py"
+            )
+        else:
+            assert expected_substring in content, f"Expected '{expected_substring}' in run_main_{eval_type}.py"
+
+    @pytest.mark.parametrize("eval_type", ["performance", "time", "energy"])
+    def test_run_main_is_executable_python(self, mf: MakeFiles, source_path: Path, eval_type: str) -> None:
+        """Test that each run_main.py can be compiled (is valid Python syntax)."""
+        mf.source_path = source_path
+        mf._load_run_main(eval_type)
+        content = (source_path / "run_main.py").read_text()
+        compile(content, f"run_main_{eval_type}.py", "exec")  # raises SyntaxError if invalid
+
+    @pytest.mark.parametrize("eval_type", ["performance", "time", "energy"])
+    def test_run_main_has_main_guard(self, mf: MakeFiles, source_path: Path, eval_type: str) -> None:
+        """Test that each run_main.py has an if __name__ == '__main__' guard."""
+        mf.source_path = source_path
+        mf._load_run_main(eval_type)
+        content = (source_path / "run_main.py").read_text()
+        assert "__name__" in content and "__main__" in content
+
+    @pytest.mark.parametrize("eval_type", ["time", "energy"])
+    @pytest.mark.parametrize("baseline_score", [0.5, 1.0, 1.5])
+    def test_run_main_output_keys(
+        self, mf: MakeFiles, source_path: Path, eval_type: str, baseline_score: float
+    ) -> None:
+        """Test that run_main.py, when mocked, produces the expected metric keys.
+
+        We patch subprocess.run so that each main.py "returns" a known JSON line,
+        then verify run_all_main_py picks up the metrics dict.
+        """
+        mf.source_path = source_path
+        mf._load_run_main(eval_type)
+        content = (source_path / "run_main.py").read_text()
+
+        # Compile and extract run_all_main_py from the copied script
+        code_globals: dict[str, Any] = {}
+        exec(compile(content, "run_main.py", "exec"), code_globals)  # noqa: S102
+
+        mock_tracker_class = MagicMock()
+
+        mock_tracker_instance = mock_tracker_class.return_value
+        mock_tracker_instance.__enter__.return_value._total_energy.kWh = 123
+
+        code_globals["EmissionsTracker"] = mock_tracker_class
+
+        run_fn = code_globals["run_all_main_py"]
+
+        expected_keys: dict[str, list[str]] = {
+            "time": ["time_to_completion (s)", "Exceeded Threshold"],
+            "energy": ["Energy (kWh)", "Exceeded Threshold"],
+        }
+
+        # Create a fake task directory with a main.py
+        task_dir = source_path / "fake_task"
+        task_dir.mkdir()
+        # The fake main.py just prints a JSON dict — content doesn't matter because
+        # we mock subprocess.run below.
+        (task_dir / "main.py").write_text("print(json.dumps({'dummy_metric':1.0}))")
+        (task_dir / "baseline_scores.json").write_text(json.dumps({"dummy_metric": baseline_score}))
+
+        # Build a mock metrics dict with all expected keys
+        mock_metrics = {"dummy_metric": 1.0}
+        mock_stdout = json.dumps(mock_metrics)
+
+        mock_result = type("CompletedProcess", (), {"stdout": mock_stdout + "\n", "stderr": "", "returncode": 0})()
+
+        with patch("subprocess.run", return_value=mock_result):
+            results = run_fn(start_dir=str(source_path))
+
+        assert len(results) > 0, "run_all_main_py returned no results"
+        for _dir, metrics in results.items():
+            for key in expected_keys[eval_type]:
+                assert key in metrics, f"Expected key '{key}' missing from {eval_type} metrics output"
+                if baseline_score > 1:
+                    assert not metrics["Exceeded Threshold"]
+                else:
+                    assert metrics["Exceeded Threshold"]
+
+
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Tests for _load_model_description
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
@@ -269,6 +459,85 @@ class TestCopyModelFiles:
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Tests for _create_baseline_scores
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+
+class TestCreateBaselineScores:
+    """All tests for _create_baseline_scores."""
+
+    def test_writes_valid_json(self, mf: MakeFiles, tmp_path: Path) -> None:
+        """Test that baseline_scores.json is written with correct content."""
+        dest = tmp_path / "dest"
+        dest.mkdir()
+        baselines = {"return_mean": {"objective": "min", "default": {"task_a": 2.0}}}
+        mf._create_baseline_scores(baselines, dest, template_backend="default", task_id="task_a", baseline_scale=1.0)
+        scores_path = dest / "baseline_scores.json"
+        assert scores_path.exists()
+        scores = json.loads(scores_path.read_text())
+        # min objective flips sign: 2.0 * -1 * 1.0 = -2.0
+        assert scores["return_mean"] == -2.0
+
+    def test_max_objective_preserves_sign(self, mf: MakeFiles, tmp_path: Path) -> None:
+        """Test that max objective keeps positive sign."""
+        dest = tmp_path / "dest"
+        dest.mkdir()
+        baselines = {"accuracy": {"objective": "max", "default": {"task_a": 0.95}}}
+        mf._create_baseline_scores(baselines, dest, template_backend="default", task_id="task_a", baseline_scale=1.0)
+        scores = json.loads((dest / "baseline_scores.json").read_text())
+        # max objective: 0.95 * 1 * 1.0 = 0.95
+        assert scores["accuracy"] == pytest.approx(0.95)
+
+    def test_baseline_scale_applied(self, mf: MakeFiles, tmp_path: Path) -> None:
+        """Test that baseline_scale multiplies the score."""
+        dest = tmp_path / "dest"
+        dest.mkdir()
+        baselines = {"return_mean": {"objective": "min", "default": {"task_a": 2.0}}}
+        mf._create_baseline_scores(baselines, dest, template_backend="default", task_id="task_a", baseline_scale=0.5)
+        scores = json.loads((dest / "baseline_scores.json").read_text())
+        # 2.0 * -1 * 0.5 = -1.0
+        assert scores["return_mean"] == pytest.approx(-1.0)
+
+    def test_missing_task_id_produces_empty_targets(self, mf: MakeFiles, tmp_path: Path) -> None:
+        """Test that a task_id absent from the baseline dict writes an empty JSON object."""
+        dest = tmp_path / "dest"
+        dest.mkdir()
+        baselines = {"return_mean": {"objective": "min", "default": {"other_task": 5.0}}}
+        mf._create_baseline_scores(
+            baselines, dest, template_backend="default", task_id="missing_task", baseline_scale=1.0
+        )
+        scores = json.loads((dest / "baseline_scores.json").read_text())
+        assert scores == {}
+
+    def test_multiple_metrics(self, mf: MakeFiles, tmp_path: Path) -> None:
+        """Test that multiple metrics are all written to the JSON file."""
+        dest = tmp_path / "dest"
+        dest.mkdir()
+        baselines = {
+            "metric_a": {"objective": "min", "default": {"task_a": 10.0}},
+            "metric_b": {"objective": "max", "default": {"task_a": 3.0}},
+        }
+        mf._create_baseline_scores(baselines, dest, template_backend="default", task_id="task_a", baseline_scale=2.0)
+        scores = json.loads((dest / "baseline_scores.json").read_text())
+        # metric_a: 10.0 * -1 * 2.0 = -20.0
+        assert scores["metric_a"] == pytest.approx(-20.0)
+        # metric_b: 3.0 * 1 * 2.0 = 6.0
+        assert scores["metric_b"] == pytest.approx(6.0)
+
+    def test_uses_template_backend_key(self, mf: MakeFiles, tmp_path: Path) -> None:
+        """Test that the correct template_backend key is used to look up scores."""
+        dest = tmp_path / "dest"
+        dest.mkdir()
+        baselines = {"loss": {"objective": "min", "default": {"task_a": 99.0}, "custom_backend": {"task_a": 1.5}}}
+        mf._create_baseline_scores(
+            baselines, dest, template_backend="custom_backend", task_id="task_a", baseline_scale=1.0
+        )
+        scores = json.loads((dest / "baseline_scores.json").read_text())
+        # Should use custom_backend value, not default: 1.5 * -1 * 1.0 = -1.5
+        assert scores["loss"] == pytest.approx(-1.5)
+
+
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Tests for _process_single_task
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
@@ -295,6 +564,8 @@ class TestProcessSingleTask:
             train=True,
             use_base=True,
             no_data=True,
+            baselines={"return_mean": {"objective": "min", template_backend: {task_ids[0]: 1}}},
+            baseline_scale=1.0,
         )
 
         assert isinstance(discovered, list)
@@ -324,12 +595,14 @@ class TestBuildFullDescription:
             data_descriptions=["Data desc 0"],
             model_descriptions=["Model desc 0"],
             task_information={"model_prompt": "Improve it."},
+            eval_description="Eval desc 0",
         )
         assert "Base." in result
         assert "Improve it." in result
         assert "Data desc 0" in result
         assert "Model desc 0" in result
         assert "Problem 0" in result
+        assert "Eval desc 0" in result
 
     def test_no_prompt_for_unknown_file(self, mf: MakeFiles) -> None:
         """Test that a discovered file without a matching prompt key adds nothing."""
@@ -339,6 +612,7 @@ class TestBuildFullDescription:
             data_descriptions=["Data"],
             model_descriptions=[""],
             task_information={"model_prompt": "Only for model."},
+            eval_description="",
         )
         assert "Only for model." not in result
 
@@ -350,11 +624,39 @@ class TestBuildFullDescription:
             data_descriptions=["Desc A", "Desc B"],
             model_descriptions=["", ""],
             task_information={},
+            eval_description="",
         )
         assert "Problem 0" in result
         assert "Problem 1" in result
         assert "Desc A" in result
         assert "Desc B" in result
+
+    def test_eval_description_appears_in_output(self, mf: MakeFiles) -> None:
+        """Test that a non-empty eval_description is included in the full description."""
+        eval_text = "You must optimise for wall-clock time."
+        result = mf._build_full_description(
+            base_description="Base.",
+            all_discovered_files=[],
+            data_descriptions=["Data"],
+            model_descriptions=[""],
+            task_information={},
+            eval_description=eval_text,
+        )
+        assert eval_text in result
+
+    def test_real_eval_descriptions_appear(self, mf: MakeFiles) -> None:
+        """Test that real eval descriptions from _get_eval_description appear in full description."""
+        for eval_type in ["performance", "time", "energy"]:
+            eval_desc = mf._get_eval_description(eval_type)
+            result = mf._build_full_description(
+                base_description="Base.",
+                all_discovered_files=[],
+                data_descriptions=["Data"],
+                model_descriptions=[""],
+                task_information={},
+                eval_description=eval_desc,
+            )
+            assert eval_desc in result
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -611,12 +913,23 @@ class TestSaveDescription:
 class TestSaveRequirements:
     """All tests for _save_requirements."""
 
-    def test_copies_requirements(self, mf: MakeFiles, source_path: Path) -> None:
+    @pytest.mark.parametrize("eval_type", ["time", "energy", "performance"])
+    def test_copies_requirements(self, mf: MakeFiles, source_path: Path, eval_type: str) -> None:
         """Test that requirements.txt is copied to the source directory."""
         mf.source_path = source_path
-        mf._save_requirements()
+        mf._save_requirements(eval_type)
         result = (mf.source_path / "requirements.txt").read_text()
         assert len(result) > 0
+        if eval_type == "energy":
+            assert "codecarbon" in result
+
+    @pytest.mark.parametrize("eval_type", ["performance", "time"])
+    def test_no_codecarbon_for_non_energy(self, mf: MakeFiles, source_path: Path, eval_type: str) -> None:
+        """Test that codecarbon is NOT included for non-energy eval types."""
+        mf.source_path = source_path
+        mf._save_requirements(eval_type)
+        result = (mf.source_path / "requirements.txt").read_text()
+        assert "codecarbon" not in result
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -802,7 +1115,7 @@ class TestMakeFilesEndToEnd:
 
     def test_make_files_train(self, mf: MakeFiles, config_with_tmp: dict[str, Any]) -> None:
         """Test that a full train run completes and produces all expected outputs."""
-        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True)
+        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True, eval_type="performance")
 
         sp = Path(config_with_tmp["source_path"])
         assert sp.exists()
@@ -840,14 +1153,14 @@ class TestMakeFilesEndToEnd:
 
     def test_make_files_test_after_train(self, mf: MakeFiles, config_with_tmp: dict[str, Any]) -> None:
         """Test that a test run after train completes and preserves discovered/."""
-        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True)
+        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True, eval_type="performance")
 
         sp = Path(config_with_tmp["source_path"])
         for k, v in config_with_tmp.items():
             if k.startswith("change_") and v:
                 (sp / "discovered" / f"{k[7:]}.py").write_text("abc123")
 
-        mf.make_files(config_with_tmp, train=False, use_base=True, no_data=True)
+        mf.make_files(config_with_tmp, train=False, use_base=True, no_data=True, eval_type="performance")
 
         for k, v in config_with_tmp.items():
             if k.startswith("change_") and v:
@@ -855,8 +1168,8 @@ class TestMakeFilesEndToEnd:
 
     def test_make_files_test_discovered_preserved(self, mf: MakeFiles, config_with_tmp: dict[str, Any]) -> None:
         """Test that any files written after train in discovered/ are preserved."""
-        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True)
-        mf.make_files(config_with_tmp, train=False, use_base=True, no_data=True)
+        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True, eval_type="performance")
+        mf.make_files(config_with_tmp, train=False, use_base=True, no_data=True, eval_type="performance")
 
         sp = Path(config_with_tmp["source_path"])
         assert sp.exists()
@@ -879,7 +1192,7 @@ class TestMakeFilesEndToEnd:
 
     def test_make_files_train_use_base_false(self, mf: MakeFiles, config_with_tmp: dict[str, Any]) -> None:
         """Test that train with use_base=False (edit templates) completes without error."""
-        mf.make_files(config_with_tmp, train=True, use_base=False, no_data=True)
+        mf.make_files(config_with_tmp, train=True, use_base=False, no_data=True, eval_type="performance")
 
         sp = Path(config_with_tmp["source_path"])
         assert sp.exists()
@@ -887,25 +1200,25 @@ class TestMakeFilesEndToEnd:
 
     def test_make_files_twice_train(self, mf: MakeFiles, config_with_tmp: dict[str, Any]) -> None:
         """Test that running train twice produces an identical description."""
-        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True)
+        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True, eval_type="performance")
         sp = Path(config_with_tmp["source_path"])
         first_desc = (sp / "description.md").read_text()
 
-        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True)
+        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True, eval_type="performance")
         second_desc = (sp / "description.md").read_text()
 
         assert first_desc == second_desc
 
     def test_description_is_nonempty(self, mf: MakeFiles, config_with_tmp: dict[str, Any]) -> None:
         """Test that the generated description has substantial content."""
-        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True)
+        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True, eval_type="performance")
         sp = Path(config_with_tmp["source_path"])
         desc = (sp / "description.md").read_text()
         assert len(desc) > 50
 
     def test_symlinks_resolve(self, mf: MakeFiles, config_with_tmp: dict[str, Any]) -> None:
         """Test that all symlinks in task directories resolve to existing files."""
-        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True)
+        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True, eval_type="performance")
 
         sp = Path(config_with_tmp["source_path"])
         task_ids = mf._normalize_task_ids(config_with_tmp, "train")
@@ -918,3 +1231,112 @@ class TestMakeFilesEndToEnd:
             for item in dest.iterdir():
                 if item.is_symlink():
                     assert item.resolve().exists(), f"Broken symlink: {item} -> {os.readlink(item)}"
+
+    # --- New eval_type end-to-end tests ---
+
+    @pytest.mark.parametrize("eval_type", ["time", "energy"])
+    def test_make_files_train_creates_baseline_scores(
+        self, mf: MakeFiles, config_with_tmp: dict[str, Any], eval_type: str
+    ) -> None:
+        """Test that time/energy eval types create baseline_scores.json in each task directory."""
+        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True, eval_type=eval_type)
+
+        sp = Path(config_with_tmp["source_path"])
+        task_ids = mf._normalize_task_ids(config_with_tmp, "train")
+        model_ids = mf._normalize_model_ids(config_with_tmp, "train", task_ids)
+
+        for task_id, model_id in zip(task_ids, model_ids, strict=False):
+            dest = sp / f"{task_id}_{model_id}" if model_id else sp / task_id
+            scores_file = dest / "baseline_scores.json"
+            assert scores_file.exists(), f"baseline_scores.json missing from {dest} for eval_type={eval_type}"
+            scores = json.loads(scores_file.read_text())
+            assert isinstance(scores, dict)
+
+    def test_make_files_performance_no_baseline_scores(self, mf: MakeFiles, config_with_tmp: dict[str, Any]) -> None:
+        """Test that performance eval type does NOT create baseline_scores.json."""
+        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True, eval_type="performance")
+
+        sp = Path(config_with_tmp["source_path"])
+        task_ids = mf._normalize_task_ids(config_with_tmp, "train")
+        model_ids = mf._normalize_model_ids(config_with_tmp, "train", task_ids)
+
+        for task_id, model_id in zip(task_ids, model_ids, strict=False):
+            dest = sp / f"{task_id}_{model_id}" if model_id else sp / task_id
+            assert not (dest / "baseline_scores.json").exists()
+
+    @pytest.mark.parametrize("eval_type", ["performance", "time", "energy"])
+    def test_make_files_train_all_eval_types(
+        self, mf: MakeFiles, config_with_tmp: dict[str, Any], eval_type: str
+    ) -> None:
+        """Test that train completes successfully for all eval types and produces core outputs."""
+        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True, eval_type=eval_type)
+
+        sp = Path(config_with_tmp["source_path"])
+        assert sp.exists()
+        assert (sp / "description.md").exists()
+        assert (sp / "requirements.txt").exists()
+        assert (sp / "run_main.py").exists()
+        assert (sp / "discovered").is_dir()
+
+    @pytest.mark.parametrize("eval_type", ["performance", "time", "energy"])
+    def test_make_files_description_contains_eval_description(
+        self, mf: MakeFiles, config_with_tmp: dict[str, Any], eval_type: str
+    ) -> None:
+        """Test that the generated description includes the eval type description."""
+        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True, eval_type=eval_type)
+
+        sp = Path(config_with_tmp["source_path"])
+        desc = (sp / "description.md").read_text()
+        eval_desc = mf._get_eval_description(eval_type)
+        assert eval_desc in desc
+
+    @pytest.mark.parametrize("eval_type", ["performance", "time", "energy"])
+    def test_make_files_energy_requirements(
+        self, mf: MakeFiles, config_with_tmp: dict[str, Any], eval_type: str
+    ) -> None:
+        """Test that requirements.txt contains codecarbon only for energy eval type."""
+        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True, eval_type=eval_type)
+
+        sp = Path(config_with_tmp["source_path"])
+        reqs = (sp / "requirements.txt").read_text()
+        if eval_type == "energy":
+            assert "codecarbon" in reqs
+        else:
+            assert "codecarbon" not in reqs
+
+    def test_make_files_baseline_scale(self, mf: MakeFiles, config_with_tmp: dict[str, Any]) -> None:
+        """Test that baseline_scale is reflected in baseline_scores.json values."""
+        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True, eval_type="time", baseline_scale=2.0)
+
+        sp_scaled = Path(config_with_tmp["source_path"])
+        task_ids = mf._normalize_task_ids(config_with_tmp, "train")
+        model_ids = mf._normalize_model_ids(config_with_tmp, "train", task_ids)
+        dest = sp_scaled / f"{task_ids[0]}_{model_ids[0]}" if model_ids[0] else sp_scaled / task_ids[0]
+        scaled_scores = json.loads((dest / "baseline_scores.json").read_text())
+
+        # Re-run with scale=1.0 to compare
+        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True, eval_type="time", baseline_scale=1.0)
+        unscaled_scores = json.loads((dest / "baseline_scores.json").read_text())
+
+        for key in unscaled_scores:
+            if unscaled_scores[key] != 0:
+                assert scaled_scores[key] == pytest.approx(unscaled_scores[key] * 2.0)
+
+    @pytest.mark.parametrize("eval_type", ["performance", "time", "energy"])
+    def test_make_files_run_main_matches_eval_type(
+        self, mf: MakeFiles, config_with_tmp: dict[str, Any], eval_type: str, tmp_path: Path
+    ) -> None:
+        """Test that the run_main.py copied by make_files matches the standalone _load_run_main output."""
+        mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True, eval_type=eval_type)
+
+        sp = Path(config_with_tmp["source_path"])
+        e2e_content = (sp / "run_main.py").read_text()
+
+        # Load via _load_run_main into a separate temp dir and compare
+        standalone_dir = tmp_path / "standalone"
+        standalone_dir.mkdir()
+        mf.source_path = standalone_dir
+        mf._load_run_main(eval_type)
+        standalone_content = (standalone_dir / "run_main.py").read_text()
+
+        assert e2e_content == standalone_content

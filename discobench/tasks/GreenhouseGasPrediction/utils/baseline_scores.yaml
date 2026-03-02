@@ -1,0 +1,7 @@
+Test MSE:
+  default:
+    CH4: 1026.526802
+    CO2: 62.411583
+    N2O: 3.240422
+    SF6: 0.673511
+  objective: min

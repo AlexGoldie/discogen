@@ -1,0 +1,12 @@
+eval_metrics.eval_accuracy:
+  default:
+    CIFAR10: 0.841
+    CIFAR100: 0.6854
+    CIFAR10C: 0.692144
+    CIFAR10LT: 0.7688
+    FashionMNIST: 0.9461
+    MNIST: 0.9933
+    OxfordFlowers: 0.494118
+    StanfordCars: 0.140032
+    TinyImageNet: 0.555556
+  objective: max

@@ -277,7 +277,7 @@ See `discobench/tasks/ModelUnlearning` for an example of how `models` can be use
     change_train: false
     ```
 
-13. **Create discobench configs in `discobench_configs/<task_domain>.yaml`**
+14. **Create discobench configs in `discobench_configs/<task_domain>.yaml`**
 
     * This will create all the discobench tasks for people to evaluate their algorithm discovery agents.
     * There should be one discobench config *per* module (`change_x: true`), and one where all modules are true.
@@ -286,6 +286,24 @@ See `discobench/tasks/ModelUnlearning` for an example of how `models` can be use
 15. **Keep metrics outside modules**
 
     * The main performance metric should not be computed *inside* a module (we don't want it to be possible to cheat)!
+
+16. **Track the baseline scores**
+    * To enable extra evaluation types, we need to know the score of the baselines for your task.
+    * Therefore, run each of your baseline implementations for any backends, and update the score in `<task_domain>/utils/baseline_scores.yaml`.
+    * We support possibly multiple metrics, each of which can be set to maximise or minimise!
+    * This has the added benefit of ensuring all datasets run as expected.
+
+    Example from OffPolicyRL:
+
+    ```yaml
+    return_mean:
+      default:
+        MinAtar/Asterix: 34.147118
+        MinAtar/Breakout: 29.891296
+        MinAtar/Freeway: 58.232498
+        MinAtar/SpaceInvaders: 137.625
+      objective: max
+    ```
 
 ✅ Done! Your task is ready for integration.
 

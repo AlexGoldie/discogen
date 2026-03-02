@@ -1,5 +1,5 @@
 import datasets
-
+import numpy as np
 
 def download_dataset(dest_loc: str):
     ds_dict = datasets.load_dataset("uoft-cs/cifar10")
