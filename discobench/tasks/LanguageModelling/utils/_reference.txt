@@ -4,3 +4,4 @@ References:
 - FineWeb dataset (https://huggingface.co/datasets/HuggingFaceFW/fineweb) and preprocessed version we are using (https://huggingface.co/datasets/kjj0/fineweb10B-gpt2)
 - OpenCoder: FineWebMath dataset (https://huggingface.co/datasets/OpenCoder-LLM/opc-fineweb-math-corpus)
 - OpenCoder: FineWebCode dataset (https://huggingface.co/datasets/OpenCoder-LLM/opc-fineweb-code-corpus)
+- Mamba: Linear-Time Sequence Modeling with Selective State Spaces (https://github.com/state-spaces/mamba)
