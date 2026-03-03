@@ -39,7 +39,8 @@ def sample_task_config(
     """
     p_data = _check_args(p_edit, p_data, eval_type, use_backends, source_path, max_attempts, rng, seed)
 
-    rng = np.random.default_rng(seed) if seed is not None else np.random.default_rng(None)
+    if rng is None:
+        rng = np.random.default_rng(seed)
 
     discogen_path = Path(__file__).parent / "domains"
 
