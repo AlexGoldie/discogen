@@ -218,6 +218,8 @@ class TestSampleTaskConfigCli:
         "0.5",
         "--p-data",
         "[0.2,0.4,0.3]",
+        "--p-use-base",
+        "0.6",
         "--eval-type",
         "random",
         "--source-path",
@@ -253,6 +255,7 @@ class TestSampleTaskConfigCli:
         mock_sample.assert_called_once_with(
             p_edit=0.5,
             p_data=[0.2, 0.4, 0.3],
+            p_use_base=0.6,
             eval_type="random",
             use_backends=True,
             source_path="task_src",
@@ -341,3 +344,16 @@ class TestSampleTaskConfigCli:
 
         assert result.exit_code == 0
         assert mock_sample.call_args.kwargs["p_edit"] == p_edit
+
+    @pytest.mark.parametrize("p_use_base", [0.0, 0.5, 1.0])
+    @patch("builtins.open", new_callable=mock_open)
+    @patch("discogen.cli.sample_task_config")
+    def test_p_use_base_passed_through(
+        self, mock_sample: MagicMock, mock_file: MagicMock, runner: CliRunner, p_use_base: float
+    ) -> None:
+        """Test that p_use_base values are passed through correctly."""
+        mock_sample.return_value = ("fake_domain", {"fake_key": "fake_value"})
+        result = runner.invoke(cli, self._make_args(**{"p-use-base": p_use_base}))
+
+        assert result.exit_code == 0
+        assert mock_sample.call_args.kwargs["p_use_base"] == p_use_base

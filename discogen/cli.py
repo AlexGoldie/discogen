@@ -142,6 +142,12 @@ def create_config_cmd(task_domain: str, save_dir: str) -> None:
     help="A list of probabilities or weights for sampling. Supports either a list of 2 values, which must be [p_meta_train, p_meta_test], or a list of 3 values, which can be probabilities or weights [w_meta_train, w_meta_test, w_exclude]. Can be passed with or without [].",
 )
 @click.option(
+    "--p-use-base",
+    type=float,
+    default=0.5,
+    help="The probability of starting modules from the baseline implementation, instead of only the interfaces.",
+)
+@click.option(
     "--eval-type",
     type=click.Choice(["performance", "time", "energy", "random"], case_sensitive=False),
     default="random",
@@ -182,6 +188,7 @@ def create_config_cmd(task_domain: str, save_dir: str) -> None:
 def sample_task_config_cmd(
     p_edit: float,
     p_data: str,
+    p_use_base: float,
     eval_type: str,
     no_backends: bool,
     source_path: str,
@@ -208,6 +215,7 @@ def sample_task_config_cmd(
     task_domain, task_config = sample_task_config(
         p_edit=p_edit,
         p_data=p_data_list,
+        p_use_base=p_use_base,
         eval_type=eval_type,
         use_backends=use_backends,
         source_path=source_path,

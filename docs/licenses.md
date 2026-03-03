@@ -17,6 +17,10 @@ opc-fineweb-math-corpus uses the odc-by license. fineweb uses the odc-by license
 
 Gymnax uses the Apache2.0 License. PureJaxRL uses the Apache2.0 License.
 
+## OnPolicyMARL
+
+JaxMARL uses the Apache2.0 License.
+
 ## OnPolicyRL
 
 Gymnax uses the Apache2.0 License. PureJaxRL uses the Apache2.0 License. Brax uses the Apache2.0 License.
