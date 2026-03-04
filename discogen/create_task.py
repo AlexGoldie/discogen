@@ -45,7 +45,7 @@ def create_task(
         raise ValueError("Provide only one of config_path, example=True, or config_dict.")
 
     if baseline_scale <= 0.0:
-        raise ValueError("Relative tolerance must be greater than 0.")
+        raise ValueError("Relative tolerance (i.e., baseline_scale) must be greater than 0.")
 
     if config_path is None and config_dict is None:
         if example is True:

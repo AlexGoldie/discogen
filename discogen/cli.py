@@ -131,7 +131,7 @@ def create_config_cmd(task_domain: str, save_dir: str) -> None:
 @cli.command("sample-task-config")
 @click.option(
     "--p-edit",
-    type=float,
+    type=click.FloatRange(0.0, 1.0),
     default=0.3,
     help="The probability a module is marked as editable. Must be between 0. and 1.",
 )
@@ -143,7 +143,7 @@ def create_config_cmd(task_domain: str, save_dir: str) -> None:
 )
 @click.option(
     "--p-use-base",
-    type=float,
+    type=click.FloatRange(0.0, 1.0),
     default=0.5,
     help="The probability of starting modules from the baseline implementation, instead of only the interfaces.",
 )

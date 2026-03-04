@@ -4,7 +4,7 @@ This guide provides instructions for setting up and running the Unlearning task 
 
 ## Installation
 
-After setting up the discogen environment (ie make install), install task-specific requirements:
+After setting up the discogen environment (i.e., make install), install task-specific requirements:
 
 ```bash
 pip install -r discogen/domains/ModelUnlearning/utils/requirements.txt
