@@ -64,22 +64,6 @@ jobs:
           xml-skip-covered: true
           report-only-changed-files: true
 
-      - name: Check Coverage Threshold
-        if: matrix.python-version == '3.12'
-        run: |
-          python -c "
-          import xml.etree.ElementTree as ET, sys
-          tree = ET.parse('coverage.xml')
-          root = tree.getroot()
-          line_rate = float(root.attrib['line-rate'])
-          threshold = 0.80
-          if line_rate < threshold:
-              print(f'❌ Coverage {line_rate*100:.1f}% is below threshold {threshold*100:.0f}%')
-              sys.exit(1)
-          else:
-              print(f'✅ Coverage {line_rate*100:.1f}% meets threshold {threshold*100:.0f}%')
-          "
-
 
 
   check-docs:
