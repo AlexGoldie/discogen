@@ -1,4 +1,4 @@
-"""Command line interface for DiscOGen."""
+"""Command line interface for DiscoGen."""
 
 import os
 

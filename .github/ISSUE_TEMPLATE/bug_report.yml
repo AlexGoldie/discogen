@@ -53,7 +53,7 @@ body:
       value: |
         **Component Guide:**
         - **Core**: Root package files in `discogen/` (e.g., `discogen/__init__.py`, `discogen/cli.py`)
-        - **Tasks**: Task domain implementations in `discogen/domains/` (e.g., `discogen/domains/OnPolicyRL/`, `discogen/domains/ModelUnlearning/`)
+        - **Domains**: Task domain implementations in `discogen/domains/` (e.g., `discogen/domains/OnPolicyRL/`, `discogen/domains/ModelUnlearning/`)
         - **Utils**: Utility modules in `discogen/utils/` (e.g., `discogen/utils/make_files.py`)
         - **Documentation**: Documentation files (e.g., `docs/`, `mkdocs.yml`, `README.md`)
         - **Testing Infrastructure**: Testing and CI/CD (e.g., `tests/`, `.github/workflows/`, `.pre-commit-config.yaml`, `pytest.ini`)

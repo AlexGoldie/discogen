@@ -32,7 +32,7 @@ Closes #
 <!-- Select the component(s) this PR affects -->
 
 - [ ] Core (Root package files in `discogen/`, e.g., `discogen/__init__.py`, `discogen/cli.py`)
-- [ ] Tasks (Task domains in `discogen/domains/`)
+- [ ] Domains (Task domains in `discogen/domains/`)
 - [ ] Utils (Utility modules in `discogen/utils/`)
 - [ ] Documentation (Documentation files, e.g., `docs/`, `mkdocs.yml`, `README.md`)
 - [ ] Testing Infrastructure

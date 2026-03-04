@@ -30,7 +30,7 @@ def create_task(
         no_data: Whether to create the codebase without loading any of the data files. If the code loads a pretrained model, this will also be skipped.
         config_path: The path to the task configuration file. If not provided, the default task configuration file will be used. Check `discogen/domains/{task_domain}/task_config.yaml` for expected structure for a given task.
         config_dict: A pre-built config dictionary, following the expected structure from `discogen/domains/{task_domain}/task_config.yaml`.
-        eval_type: What type of evaluation to use. One of ['performance', 'time', 'energy']. In 'performance', the goal is to discover algorithms which maximise performance. In 'time', the goal is to discover algorithms that match the baseline performance in the shortest length of time. In 'energy', the objective is to discover algorithms which match the baseline performance using the least amount of estimate energy. This can also be provided in task_config. If eval_type is also provided in the config, passing an eval_type arg will raise an error. If neither are provided, defaults to performance.
+        eval_type: What type of evaluation to use. One of ['performance', 'time', 'energy']. In 'performance', the goal is to discover algorithms which maximise performance. In 'time', the goal is to discover algorithms that match the baseline performance in the shortest length of time. In 'energy', the objective is to discover algorithms which match the baseline performance using the least amount of estimated energy. This can also be provided in task_config. If eval_type is also provided in the config, passing an eval_type arg will raise an error. If neither are provided, defaults to performance.
         baseline_scale: What relative scale to allow compared to the baseline when using either the 'time' or 'energy' eval_type. If not provided, this will default to 1.0. Must be greater than 0.
         cache_root: A directory which data can be cached in.
 
@@ -65,8 +65,6 @@ def create_task(
 
     train = not test
 
-    config_eval = task_config.get("eval_type", None)
-
     eval_type, use_base = _resolve_config_overrides(task_config, eval_type, use_base)
 
     MakeFiles(task_domain, cache_root=cache_root).make_files(
@@ -98,6 +96,11 @@ def _resolve_config_overrides(
             "Provide only one to avoid ambiguity."
         )
 
-    use_base = use_base if use_base is not None else config_use_base if config_use_base is not None else False
+    if use_base is not None:
+        use_base = use_base
+    elif config_use_base is not None:
+        use_base = config_use_base
+    else:
+        use_base = False
 
     return eval_type, use_base
