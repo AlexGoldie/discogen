@@ -1,5 +1,5 @@
 # Task Domains
-Here, we describe the various task domains available in DiscoBench. We expect this to continue to grow as our benchmark scales.
+Here, we describe the various task domains available in DiscoGen. We expect this to continue to grow as our benchmark scales.
 
 ## BayesianOptimisation
 The agent must maximise randomly sampled variables using Bayesian Optimisation.

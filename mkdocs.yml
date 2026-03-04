@@ -1,15 +1,15 @@
-site_name: DiscoBench
-repo_url: https://github.com/AlexGoldie/discobench
-site_url: https://AlexGoldie.github.io/discobench
-site_description: This repository contains code for the DiscoBench modular benchmark for automated algorithm discovery.
+site_name: DiscoGen
+repo_url: https://github.com/AlexGoldie/discogen
+site_url: https://AlexGoldie.github.io/discogen
+site_description: This repository contains code for the DiscoGen procedural generator of algorithm discovery tasks.
 site_author: Alex Goldie
 edit_uri: edit/main/docs/
-repo_name: AlexGoldie/discobench
+repo_name: AlexGoldie/discogen
 copyright: Maintained by <a href="https://AlexGoldie.com">AlexGoldie</a>.
 
 nav:
   - Home: index.md
-  - Using DiscoBench: usage.md
+  - Using DiscoGen: usage.md
   - Domains: domains.md
   - Contributing:
     - Overview: how_to/overview.md
@@ -19,7 +19,7 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
-          paths: ["discobench"]
+          paths: ["discogen"]
 theme:
   name: material
   feature:
@@ -45,11 +45,11 @@ theme:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/AlexGoldie/discobench
+      link: https://github.com/AlexGoldie/discogen
     - icon: fontawesome/brands/python
-      link: https://pypi.org/project/discobench
+      link: https://pypi.org/project/discogen
     - icon: fontawesome/solid/blog
-      link: https://alexgoldie.github.io/discobench-blog/
+      link: https://alexgoldie.github.io/discogen-blog/
 
 markdown_extensions:
   - toc:

@@ -42,8 +42,7 @@ jobs:
       continue-on-error: true
 
     - name: Test with pytest
-      # Removed the useless HTML report flag
-      run: uv run pytest tests/ --doctest-modules --junitxml=junit/test-results.xml --cov=discobench --cov-report=xml
+      run: uv run pytest tests/ --doctest-modules --junitxml=junit/test-results.xml --cov=discogen --cov-report=xml
 
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2

@@ -1,22 +1,22 @@
 # 🗂️ **Dataset Integration Guide**
 
-This guide explains how to add new datasets to DiscoBench tasks. This is particularly useful for task like ComputerVision or LanguageModelling, which use datasets instead of environments. We'll use FashionMNIST as our primary example throughout this guide.
+This guide explains how to add new datasets to DiscoGen domains. This is particularly useful for task like ComputerVision or LanguageModelling, which use datasets instead of environments. We'll use FashionMNIST as our primary example throughout this guide.
 
 ---
 
 ## 🎯 Overview
 
-Datasets in DiscoBench serve two main purposes:
+Datasets in DiscoGen serve two main purposes:
 1. **[Data Download](#download_datasetdest_loc-str)**: Provide raw data for training/evaluation
 2. **[Data Loading](#load_datasetsrc_loc-str--data)**: Preprocess and format data for PyTorch models
 
-Each dataset must implement specific functions that integrate with the DiscoBench framework.
+Each dataset must implement specific functions that integrate with the DiscoGen framework.
 
 ---
 
 ## 📁 Dataset Structure
 
-Every dataset lives in its own folder under `discobench/tasks/{TASK_DOMAIN}/datasets/{DATASET_NAME}/`:
+Every dataset lives in its own folder under `discogen/domains/{TASK_DOMAIN}/datasets/{DATASET_NAME}/`:
 
 ```
 FashionMNIST/
@@ -101,12 +101,11 @@ def load_dataset(src_loc: str = "./FashionMNIST/data"):
 
 ### What to put into `download_dataset` vs. `load_dataset`:
 
-Given that the output of `download_dataset` will be cached in the forseeable future, I would recommend moving any expensive overhead (if possible) into `download_dataset`. For example, for the Language Modelling task, `load_dataset` not only handles the downloading, but also the preprocessing into `*.bin` files, which is quite an expensive task in itself.
+The output of `download_dataset` is cached on first run, so it is recommended to move any expensive overhead (if possible) into `download_dataset`. For example, for the Language Modelling task, `load_dataset` not only handles the downloading, but also the preprocessing into `*.bin` files, which is quite an expensive task in itself.
 
-(I think this open to debate, as this means that the data)
 ---
 
-## 🎨 Integration with DiscoBench
+## 🎨 Integration with DiscoGen
 
 ### How Data Flows Through the System
 

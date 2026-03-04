@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from discobench import create_config
-from discobench.utils import get_domains, get_modules
+from discogen import create_config
+from discogen.utils import get_domains, get_modules
 
 ROOT: Path = Path(__file__).resolve().parent.parent
 README_PATH: Path = ROOT / "README.md"

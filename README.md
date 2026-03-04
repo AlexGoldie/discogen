@@ -1,36 +1,36 @@
-<h1 align="center">DiscoBench: An Open-Ended Benchmark For Algorithm Discovery</h1>
+<h1 align="center">DiscoGen: Procedural Generation of Algorithm Discovery Tasks in Machine Learning</h1>
 
 <p align="center">
-  <img src="docs/assets/discobench.png" alt="DiscoBench Logo" width="100%">
+  <img src="docs/assets/discogen.png" alt="DiscoGen Logo" width="100%">
 </p>
 
-This repository contains code for the DiscoBench modular benchmark for automated algorithm discovery.
+This repository contains code for the DiscoGen modular benchmark for automated algorithm discovery.
 
-- **Github repository**: <https://github.com/AlexGoldie/discobench/>
-- **Documentation**: <https://AlexGoldie.github.io/discobench/>
-- **Blog**: <https://alexgoldie.github.io/discobench-blog/>
+- **GitHub repository**: <https://github.com/AlexGoldie/discogen/>
+- **Documentation**: <https://AlexGoldie.github.io/discogen/>
+- **Blog**: <https://alexgoldie.github.io/discogen-blog/>
 
 ## Quick Start
 
-Install DiscoBench:
+Install DiscoGen:
 
 ```bash
-pip install discobench
+pip install discogen
 ```
 
 List available domains:
 ```bash
-discobench get-domains
+discogen get-domains
 ```
 
 Create a task:
 ```bash
-discobench create-task --task-domain OnPolicyRL
+discogen create-task --task-domain OnPolicyRL
 ```
 
-See the [full documentation](https://AlexGoldie.github.io/discobench/) for detailed usage. Please note that each task_domain has its own set of requirements which may need to be installed.
+See the [full documentation](https://AlexGoldie.github.io/discogen/) for detailed usage. Please note that each task_domain has its own set of requirements which may need to be installed.
 
-Every domain includes references in `discobench/tasks/<task_domain>/utils/_reference.txt`.
+Every domain includes references in `discogen/domains/<task_domain>/utils/_reference.txt`.
 
 ## Task Domains
 
@@ -62,26 +62,26 @@ This will also generate your `uv.lock` file.
 
 ## Contributing
 
-We welcome contributions! DiscoBench grows stronger with more tasks and domains.
+We welcome contributions! DiscoGen grows stronger with more tasks and domains.
 
-- **Found a bug?** [Open an issue](https://github.com/AlexGoldie/discobench/issues)
-- **Want to add a task?** See our [Contributing Guide](https://AlexGoldie.github.io/discobench/how_to/overview/)
-- **Adding datasets?** Check the [Dataset Integration Guide](https://AlexGoldie.github.io/discobench/how_to/dataset_integration/)
+- **Found a bug?** [Open an issue](https://github.com/AlexGoldie/discogen/issues)
+- **Want to add a task?** See our [Contributing Guide](https://AlexGoldie.github.io/discogen/how_to/overview/)
+- **Adding datasets?** Check the [Dataset Integration Guide](https://AlexGoldie.github.io/discogen/how_to/dataset_integration/)
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed development guidelines.
 
 ## Citation
 
-If you use DiscoBench in your research, please cite:
+If you use DiscoGen in your research, please cite:
 
 ```bibtex
-@article{goldie2025discobench,
-  title={DiscoBench: An Open-Ended Benchmark For Algorithm Discovery},
-  author={Alexander D. Goldie and Zilin Wang and Adrian Hayler and Deepak Nathani and Edan Toledo and Ken Thampiratwong and Aleksandra Kalisz and Michael Beukman and Alistair Letcher and Shashank Reddy and Clarisse Wibault and Theo Wolf and Charles O'Neill and Jakob N. Foerster and Shimon Whiteson and Roberta Raileanu},
-  year={2025}
+@article{goldie2026discogen,
+  title={DiscoGen: Procedural Generation of Algorithm Discovery Tasks in Machine Learning},
+  author={Alexander D. Goldie and Zilin Wang and Adrian Hayler and Deepak Nathani and Edan Toledo and Ken Thampiratwong and Aleksandra Kalisz and Michael Beukman and Alistair Letcher and Shashank Reddy and Clarisse Wibault and Theo Wolf and Charles O'Neill and Uljad Berdica and Nicholas Roberts and Saeed Rahmani and Hannah Erlebach and Roberta Raileanu and Shimon Whiteson and Jakob N. Foerster},
+  year={2026}
 }
 ```
 
 ## License
 
-DiscoBench is released under the [MIT License](LICENSE).
+DiscoGen is released under the [MIT License](LICENSE).

@@ -1,0 +1,9 @@
+This file contains reference information for the Brain Speech Detection task in DiscoGen.
+
+# Datasets References
+These are the datasets supported by this task and their reference links:
+- LibriBrain: https://neural-processing-lab.github.io/2025-libribrain-competition/
+
+# Codebase References
+- The code templates for this task are adapted from the following repositories:
+  - LibriBrain Competition Tutorials: https://neural-processing-lab.github.io/2025-libribrain-competition/

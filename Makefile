@@ -2,7 +2,7 @@
 install: ## Install the virtual environment and install the pre-commit hooks
 	@echo "🚀 Creating virtual environment using uv"
 	@uv sync
-	@echo "🚀 Installing discobench package in editable mode"
+	@echo "🚀 Installing discogen package in editable mode"
 	@uv pip install -e .
 	@uv run pre-commit install
 
@@ -48,7 +48,7 @@ docs-serve: ## Build and serve the documentation
 
 .PHONY: docs-deploy
 docs-deploy: ## Deploy the documentation to GitHub Pages
-	@echo "🚀 Deploying documentation to GitHub Pages at https://AlexGoldie.github.io/discobench/"
+	@echo "🚀 Deploying documentation to GitHub Pages at https://AlexGoldie.github.io/discogen/"
 	@uv run mkdocs build -s
 	@uv run mkdocs gh-deploy
 
