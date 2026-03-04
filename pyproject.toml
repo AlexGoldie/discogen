@@ -62,6 +62,7 @@ discogen = "discogen.cli:cli"
 
 [tool.mypy]
 namespace_packages = true
+files = ["discogen"]
 # The options below are what `--strict` encompasses.
 no_implicit_optional = true
 check_untyped_defs = true
