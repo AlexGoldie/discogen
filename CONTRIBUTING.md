@@ -4,7 +4,7 @@ The utility of DiscoGen dramatically increases as we improve the number and dive
 
 ## New Domains
 
-If you have an interesting idea for a new task that can fit the DiscoGen style, please add it (following the guidance in [our documentation](/docs/hot_to/overview.md)). We will endeavour to add all well-implemented tasks to make sure DiscoGen remains a live and fresh benchmark with significant open-source contribution.
+If you have an interesting idea for a new task that can fit the DiscoGen style, please add it (following the guidance in [our documentation](/docs/how_to/overview.md)). We will endeavour to add all well-implemented tasks to make sure DiscoGen remains a live and fresh benchmark with significant open-source contribution.
 
 ## Improvements To Domains
 
