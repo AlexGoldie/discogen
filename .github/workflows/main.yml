@@ -7,6 +7,10 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   quality:
     runs-on: ubuntu-latest
@@ -57,6 +61,8 @@ jobs:
           title: "Test Coverage Report"
           create-new-comment: false
           unique-id-for-comment: python-coverage
+          xml-skip-covered: true
+          report-only-changed-files: true
 
       - name: Check Coverage Threshold
         if: matrix.python-version == '3.12'
