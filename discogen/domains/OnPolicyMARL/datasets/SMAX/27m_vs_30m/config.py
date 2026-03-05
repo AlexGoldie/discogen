@@ -1,6 +1,6 @@
 config = {
     "LR": 1e-3,
-    "NUM_ENVS": 32,
+    "NUM_ENVS": 64,
     "NUM_STEPS": 300,
     "TOTAL_TIMESTEPS": 1e7,
     "UPDATE_EPOCHS": 4,
