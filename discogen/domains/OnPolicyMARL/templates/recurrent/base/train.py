@@ -19,7 +19,6 @@ class Transition(NamedTuple):
     value: jnp.ndarray
     reward: jnp.ndarray
     log_prob: jnp.ndarray
-    obs: jnp.ndarray
     info: jnp.ndarray
     avail_actions: jnp.ndarray
 
@@ -169,7 +168,6 @@ def make_train(config):
                     value.squeeze(),
                     batchify(reward, env.agents, config["NUM_ACTORS"]).squeeze(),
                     log_prob.squeeze(),
-                    obs_batch,
                     info,
                     avail_actions,
                 )

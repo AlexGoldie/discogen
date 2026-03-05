@@ -21,7 +21,6 @@ class Transition(NamedTuple):
     value: jnp.ndarray
     reward: jnp.ndarray
     log_prob: jnp.ndarray
-    obs: jnp.ndarray
     info: jnp.ndarray
     ac_in: tuple
 
@@ -158,7 +157,6 @@ def make_train(config):
                     value,
                     batchify(reward, env.agents, config["NUM_ACTORS"]).squeeze(),
                     log_prob,
-                    obs_batch,
                     info,
                     ac_in,
                 )
