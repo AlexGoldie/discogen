@@ -161,6 +161,7 @@ def make_train(config):
                     _info["returned_won_episode"] = info["returned_won_episode"]
                 info = jax.tree.map(lambda x: x.reshape((config["NUM_ACTORS"])), _info)
                 done_batch = batchify(done, env.agents, config["NUM_ACTORS"]).squeeze()
+                info = {"returned_episode_returns": info["returned_episode_returns"]}
                 transition = Transition(
                     jnp.tile(done["__all__"], env.num_agents),
                     last_done,
