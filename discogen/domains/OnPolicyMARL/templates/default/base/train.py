@@ -151,6 +151,7 @@ def make_train(config):
                     ),
                     info,
                 )
+                info = {"returned_episode_returns": info["returned_episode_returns"]}
                 transition = Transition(
                     batchify(done, env.agents, config["NUM_ACTORS"]).squeeze(),
                     action,
