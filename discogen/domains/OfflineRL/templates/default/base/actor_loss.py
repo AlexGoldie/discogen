@@ -11,7 +11,7 @@ def compute_actor_loss(
     batch,
     rng,
 ):
-    """Compute the ReBRAC actor loss.
+    """Compute the actor loss.
 
     The actor loss combines Q-value maximization with a behavior cloning penalty.
     The Q-loss is normalized by its absolute mean to make the BC coefficient

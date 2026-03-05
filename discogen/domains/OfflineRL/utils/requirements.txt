@@ -1,7 +1,7 @@
 # Core dependencies for Offline RL with OGBench
 mujoco==3.2.3
-ogbench==1.1.0
-jax>=0.4.26
+ogbench==1.1.5
+jax[cuda12]>=0.4.26
 flax>=0.8.4
 distrax>=0.1.5
 optax>=0.1.7

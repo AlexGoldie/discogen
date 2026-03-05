@@ -73,6 +73,16 @@ Please note, after installing the ModelUnlearning `requirements.txt`, you must i
 pip install flash-attn==2.6.3 --no-build-isolation
 ```
 
+## OfflineRL
+The agent must train a value-based RL agent in game environments.
+
+### Modules
+`actor_loss`, `critic_loss`, `networks`, `optim`, `train`
+
+### Datasets
+`OGBench/antmaze-giant-navigate`, `OGBench/antmaze-large-navigate`, `OGBench/antsoccer-arena-navigate`, `OGBench/cube-double-play`, `OGBench/cube-single-play`, `OGBench/humanoidmaze-large-navigate`, `OGBench/humanoidmaze-medium-navigate`, `OGBench/puzzle-3x3-play`, `OGBench/puzzle-4x4-play`, `OGBench/scene-play`
+`
+
 ## OffPolicyRL
 The agent must train a value-based RL agent in game environments.
 

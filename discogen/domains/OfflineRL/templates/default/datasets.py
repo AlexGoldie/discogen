@@ -16,7 +16,7 @@ class Dataset(FrozenDict):
     """Dataset class for offline RL.
 
     Wraps a dictionary of numpy arrays and provides batch sampling functionality.
-    Supports returning next_actions for algorithms like ReBRAC that need them.
+    Supports returning next_actions for algorithms that need them.
     """
 
     @classmethod

@@ -1,7 +1,7 @@
 train_task_id: [OGBench/antmaze-giant-navigate, OGBench/antmaze-large-navigate,OGBench/antsoccer-arena-navigate,OGBench/cube-double-play,OGBench/cube-single-play, OGBench/humanoidmaze-large-navigate, OGBench/humanoidmaze-medium-navigate, OGBench/puzzle-3x3-play, OGBench/puzzle-4x4-play, OGBench/scene-play]
 test_task_id: [OGBench/antmaze-giant-navigate, OGBench/antmaze-large-navigate,OGBench/antsoccer-arena-navigate,OGBench/cube-double-play,OGBench/cube-single-play, OGBench/humanoidmaze-large-navigate, OGBench/humanoidmaze-medium-navigate, OGBench/puzzle-3x3-play, OGBench/puzzle-4x4-play, OGBench/scene-play]
 
-source_path: task_src
+source_path: task_src/OfflineRL
 template_backend: default
 
 change_optim: false

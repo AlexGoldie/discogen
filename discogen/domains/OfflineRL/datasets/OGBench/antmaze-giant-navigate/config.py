@@ -18,7 +18,6 @@ config = {
     'tanh_squash': True,
     'actor_fc_scale': 0.01,
 
-    # --- ReBRAC hyperparameters ---
     'discount': 0.995,  # Higher discount for longer horizon
     'tau': 0.005,
     'actor_freq': 2,

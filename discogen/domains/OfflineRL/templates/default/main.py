@@ -15,7 +15,7 @@ from evaluation import evaluate
 
 
 def main():
-    """Run offline RL training with ReBRAC."""
+    """Run offline RL training."""
 
     # --- Setup ---
     rng = jax.random.PRNGKey(config['seed'])
@@ -29,7 +29,7 @@ def main():
 
     # Wrap dataset
     train_dataset = Dataset.create(**train_dataset)
-    train_dataset.return_next_actions = True  # ReBRAC needs next actions
+    train_dataset.return_next_actions = True
 
     if val_dataset is not None:
         val_dataset = Dataset.create(**val_dataset)
@@ -127,7 +127,9 @@ def main():
     print(f"  Return: {final_eval_info.get('episode.return', 0):.2f}")
     print(f"  Normalized Return: {final_eval_info.get('episode.normalized_return', 0):.2f}")
 
-    return_out = {k: float(v) for k, v in final_eval_info.items()}
+    eval_keys = ["episode.return", "episode.length", "success"]
+
+    return_out = {k: float(v) for k, v in final_eval_info.items() if k in eval_keys}
     print(json.dumps(return_out))
 
     return final_eval_info

@@ -13,7 +13,7 @@ def compute_critic_loss(
     batch,
     rng,
 ):
-    """Compute the ReBRAC critic loss.
+    """Compute the critic loss.
 
     The critic loss is TD error with a behavior cloning penalty on the next actions.
     This encourages the critic to be conservative on out-of-distribution actions.
