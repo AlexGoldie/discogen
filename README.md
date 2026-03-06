@@ -42,7 +42,7 @@ Every domain includes references in `discogen/domains/<task_domain>/utils/_refer
 | **ContinualLearning** | optim, regularizer, replay, sampler, scheduler | PermutedMNIST, SplitCIFAR100, TinyImageNetSplit. | Training a model on continually changing data, such that it can adapt to new data without losing old capabilities. |
 | **GreenhouseGasPrediction** | data_processing, model | 4 Mauna Loa Time-series (CO2, N2O, SF6, CH4). | Time-series forecasting of atmospheric greenhouse gas concentrations. |
 | **LanguageModelling** | loss, networks, optim | OPCFineWebCode, OPCFineWebMath, LMFineWeb, TinyStories. | Training transformer-based models on code, mathematics, and narrative text. |
-| **ModelUnlearning** | loss | MUSE, TOFU, WMDP_Cyber. | 10 OGBench | Fine-tuning pretrained models to remove specific knowledge or data points while retaining others. |
+| **ModelUnlearning** | loss | MUSE, TOFU, WMDP_Cyber. | Fine-tuning pretrained models to remove specific knowledge or data points while retaining others. |
 | **OfflineRL** | actor_loss, critic_loss, optim, networks, train | 10 OGBench | Training RL policies from offline datasets. |
 | **OffPolicyRL** | q_update, policy, networks, optim, rb, train, config | 4 MinAtar. | Value-based RL for training an agent in MinAtar. |
 | **OnPolicyMARL** | activation, loss, networks, optim, targets, train | 5 MABrax, MPE Spread, 11 SMAX | Training multiple on-policy RL agents in different multi-agent environments. |
