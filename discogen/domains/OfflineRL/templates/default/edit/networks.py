@@ -6,21 +6,7 @@ import jax.numpy as jnp
 
 
 def default_init(scale=1.0):
-    return nn.initializers.variance_scaling(scale, 'fan_avg', 'uniform')
-
-
-class MLP(nn.Module):
-    hidden_dims: Sequence[int]
-    activations: Any = nn.gelu
-    activate_final: bool = False
-    layer_norm: bool = False
-
-    @nn.compact
-    def __call__(self, x):
-        """Fill in your MLP forward pass logic here."""
-
-        # Your function must return the output tensor after passing through all layers.
-        return x
+    return ...
 
 
 class Actor(nn.Module):
