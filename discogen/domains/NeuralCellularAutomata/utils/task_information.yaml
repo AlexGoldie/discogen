@@ -1,0 +1,42 @@
+perceive_prompt: |-
+  You should change the perception file, which can be found in `perceive.py`. The perception module determines how each cell observes its local neighborhood. It takes the current grid state and produces a perception tensor that the update module uses to compute state transitions. You should not change the function signature of `create_perceive`, which must return a Flax NNX module with a `__call__` method that maps state to perception.
+
+  You may want to refer to the following hyperparameters from config["nca"]:
+    - channel_size: number of input channels
+    - cell_dropout_rate: dropout rate for cells
+    - alive_threshold: threshold for determining if a cell is alive
+    - use_alive_masking: whether to mask updates based on alive status
+    - preserve_channels: number of channels to preserve (some channels may hold information about the task that is maintained across updates)
+
+update_prompt: |-
+  You should change the update file, which can be found in `update.py`. The update module is the neural network that computes how each cell's state changes based on its perception. This is the core "rule" of the NCA. You should not change the function signature of `create_update`, which must return a Flax NNX module with a `__call__` method that maps (state, perception) to next_state.
+
+  You may want to use the following hyperparameters from config["nca"]:
+    - channel_size: number of input channels
+    - cell_dropout_rate: dropout rate for cells
+    - alive_threshold: threshold for determining if a cell is alive
+    - use_alive_masking: whether to mask updates based on alive status
+    - preserve_channels: number of channels to preserve (some channels may hold information about the task that is maintained across updates)
+
+loss_prompt: |-
+  You should change the loss file, which can be found in `loss.py`. The loss function determines what objective the NCA optimizes during training. Different loss designs can dramatically affect the learned behaviors. You should not change the function signature of `compute_loss`, which takes the NCA system, initial state, target and PRNG key, and returns a scalar loss and the final state.
+
+  You may want to use the following hyperparameters from config["train"]:
+    - seed: random seed
+    - batch_size: number of samples per batch
+
+train_prompt: |-
+  You should change the training file, which can be found in `train.py`. The training loop determines how samples are drawn, how the optimizer is configured, and how the pool of states is managed. You should not change the function signature of `create_train_step`, which must return a JIT-compiled function that performs one training iteration.
+
+  You may want to use the following hyperparameters from config["train"]:
+    - seed: random seed
+    - batch_size: number of samples per batch
+
+optimiser_prompt: |-
+  You should change the optimizer file, which can be found in `optimiser.py`. The optimizer determines how gradient updates are applied to the NCA parameters during training. You should not change the function signature of `create_optimizer`, which takes the NCA module and returns a Flax NNX Optimizer.
+
+  You may want to use the following hyperparameters from config["optimizer"]:
+    - learning_rate: initial learning rate
+    - lr_decay_factor: factor to decay learning rate by
+    - lr_decay_steps: number of steps between learning rate decays
+    - max_grad_norm: maximum gradient norm for clipping

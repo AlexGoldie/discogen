@@ -1,0 +1,15 @@
+fixed_files:
+  - __init__.py
+  - main.py
+  - config.py
+  - make_dataset.py
+  - visualize.py
+  - nca.py
+  - pool.py
+
+module_files:
+  - perceive.py
+  - update.py
+  - loss.py
+  - train.py
+  - optimiser.py

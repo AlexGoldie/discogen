@@ -1,0 +1,7 @@
+jax>=0.4.20
+flax>=0.10.0
+optax>=0.2.0
+Pillow>=10.0.0
+requests>=2.31.0
+torchvision>=0.15.0
+matplotlib>=3.7.0
