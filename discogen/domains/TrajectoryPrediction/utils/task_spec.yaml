@@ -1,0 +1,13 @@
+fixed_files:
+  - __init__.py
+  - main.py
+  - config.py
+  - evaluate.py
+  - data_utils.py
+  - make_dataset.py
+
+module_files:
+  - loss.py
+  - networks.py
+  - optim.py
+  - train.py

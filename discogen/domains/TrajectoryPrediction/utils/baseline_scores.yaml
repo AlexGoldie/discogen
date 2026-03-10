@@ -1,0 +1,6 @@
+minADE:
+  default:
+    nuScenes: 1.015808
+    Argoverse2: 2.50259
+    Waymo: 1.81189
+  objective: min

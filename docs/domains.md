@@ -111,6 +111,16 @@ The agent must train an on-policy RL agent in game and robotics environments.
 ### Datasets
 `Brax/Ant`, `Brax/HalfCheetah`, `Brax/Hopper`, `Brax/Humanoid`, `Brax/Pusher`, `Brax/Reacher`, `Brax/Walker2D`, `Craftax/Craftax`, `Craftax/Craftax-Classic`, `MinAtar/Asterix`, `MinAtar/Breakout`, `MinAtar/Freeway`, `MinAtar/SpaceInvaders`
 
+## TrajectoryPrediction
+The agent must develop algorithms to predict the trajectories of traffic participants, such as cars or pedestrians.
+
+### Modules
+`loss`, `networks`, `optim`, `train`
+
+### Datasets
+`Argoverse2`, `nuScenes`, `Waymo`
+
+
 ## UnsupervisedEnvironmentDesign
 The agent must develop level sampling methods for an on-policy RL agent.
 
