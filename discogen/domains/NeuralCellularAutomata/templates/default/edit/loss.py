@@ -21,6 +21,22 @@ def compute_sample_loss(state: jnp.ndarray, target: jnp.ndarray) -> jnp.ndarray:
     """Fill in per-sample loss logic here."""
 
     # Must return a scalar loss value
+
+    if "matrix" in config:
+        output_ch = config["matrix"]["output_channel"]
+        pred = state[..., output_ch : output_ch + 1]
+        loss = ...
+    else:
+        target_channels = target.shape[-1]
+
+        if target_channels == 10: # classifying
+            pred_logits = state[..., :target_channels]
+            loss = ...
+        else:
+            pred = state[..., -target_channels:]
+            loss = ...
+
+
     return loss
 
 

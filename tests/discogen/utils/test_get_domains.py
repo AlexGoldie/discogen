@@ -13,6 +13,7 @@ def test_all_domains_valid_config() -> None:
         "GreenhouseGasPrediction",
         "LanguageModelling",
         "ModelUnlearning",
+        "NeuralCellularAutomata",
         "OfflineRL",
         "OffPolicyRL",
         "OnPolicyMARL",

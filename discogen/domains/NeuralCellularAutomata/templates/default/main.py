@@ -7,8 +7,8 @@ import jax.numpy as jnp
 from flax import nnx
 
 from config import config
-from loss import compute_sample_loss
 from make_dataset import sample_state
+from test_loss import eval_loss
 from nca import NCA
 from optimiser import create_optimizer
 from perceive import create_perceive
@@ -32,7 +32,6 @@ def initialize_pool(key: jax.Array) -> Pool:
     states, targets = jax.vmap(sample_state, in_axes=(None, 0))(config, keys)
     return Pool.create({"state": states, "target": targets})
 
-
 def evaluate(nca: NCA, key: jax.Array) -> dict:
     """Evaluate the trained NCA."""
     eval_config = config["eval"]
@@ -50,7 +49,7 @@ def evaluate(nca: NCA, key: jax.Array) -> dict:
         )
     )(nca, state_init)
 
-    losses = jax.vmap(compute_sample_loss)(state_final, targets)
+    losses = jax.vmap(eval_loss)(state_final, targets)
     return {
         "loss_mean": float(jnp.mean(losses)),
         "loss_std": float(jnp.std(losses)),

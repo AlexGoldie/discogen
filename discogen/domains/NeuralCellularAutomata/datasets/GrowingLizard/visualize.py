@@ -33,7 +33,7 @@ def visualize(state_final, targets, config, output_dir: str = ".") -> dict | Non
     ax2.axis("off")
 
     plt.tight_layout()
-    comparison_path = os.path.join(output_dir, "nca_comparison.png")
+    comparison_path = os.path.join(output_dir, "growing_lizard_nca_comparison.png")
     plt.savefig(comparison_path, dpi=150, bbox_inches="tight")
     plt.close()
     print(f"Saved comparison image to: {comparison_path}")

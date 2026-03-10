@@ -28,6 +28,7 @@ def compute_sample_loss(state: State, target: jnp.ndarray) -> jnp.ndarray:
             jnp.sum(-target * jax.nn.log_softmax(pred_logits, axis=-1), axis=-1)
         )
     else:
+        pred = state[..., -target_channels:]
         return jnp.mean(jnp.square(pred - target))
 
 

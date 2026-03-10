@@ -6,6 +6,7 @@ fixed_files:
   - visualize.py
   - nca.py
   - pool.py
+  - test_loss.py
 
 module_files:
   - perceive.py
