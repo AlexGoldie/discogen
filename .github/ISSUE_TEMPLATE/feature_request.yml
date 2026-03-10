@@ -71,7 +71,7 @@ body:
       description: Which component would this feature affect?
       options:
         - Core
-        - Tasks
+        - Domains
         - Utils
         - Documentation
         - Testing Infrastructure

@@ -4,4 +4,9 @@ val_accuracy:
     OPCFineWebCode: 0.225313
     OPCFineWebMath: 0.240547
     TinyStories: 0.508672
+  ssm:
+    LMFineWeb: 0.202656
+    OPCFineWebCode: 0.229687
+    OPCFineWebMath: 0.237891
+    TinyStories: 0.508906
   objective: max
