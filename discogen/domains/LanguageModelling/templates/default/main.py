@@ -15,11 +15,10 @@ def train_worker_launcher(rank, world_size):
     """
 
     # --- 1. Set the environment variables ---
-    # These are the *exact* variables that torchrun would have set.
     os.environ['MASTER_ADDR'] = 'localhost'
     os.environ['MASTER_PORT'] = '12355'  # A free port
     os.environ['RANK'] = str(rank)
-    os.environ['LOCAL_RANK'] = str(rank) # In this setup, RANK and LOCAL_RANK are the same
+    os.environ['LOCAL_RANK'] = str(rank)
     os.environ['WORLD_SIZE'] = str(world_size)
 
     # --- 2. Run the actual training logic ---

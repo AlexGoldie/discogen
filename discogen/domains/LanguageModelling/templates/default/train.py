@@ -80,13 +80,11 @@ def main():
         )
     x, y = train_loader.next_batch()
 
-    # there are only 50257 unique GPT-2 tokens; we extend to nearest multiple of 128 for efficiency. suggested to me by @Grad62304977.
-    # this originates from Karpathy's experiments.
     num_vocab = 50304
     model = Model(ModelConfig(vocab_size=num_vocab))
     model = model.cuda()
     if hasattr(config, "coordinate_descent_tuning"):
-        config.coordinate_descent_tuning = True  # suggested by @Chillee
+        config.coordinate_descent_tuning = True
     model = torch.compile(model)
     # here we wrap model into DDP container
     model = DDP(model, device_ids=[ddp_local_rank])

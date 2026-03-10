@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 # -----------------------------------------------------------------------------
-# PyTorch nn.Module definitions for the GPT-2 model
+# PyTorch nn.Module definitions for the model
 
 
 class Rotary(torch.nn.Module):
@@ -52,7 +52,7 @@ class CausalSelfAttention(nn.Module):
         self.c_v = nn.Linear(self.n_embd, self.n_embd, bias=False)
         # output projection
         self.c_proj = nn.Linear(self.n_embd, self.n_embd, bias=False)
-        self.c_proj.weight.data.zero_()  # zero init suggested by @Grad62304977
+        self.c_proj.weight.data.zero_()
         self.rotary = Rotary(self.head_dim)
 
     def forward(self, x):
@@ -65,7 +65,7 @@ class CausalSelfAttention(nn.Module):
         cos, sin = self.rotary(q)
         q, k = F.rms_norm(q, (q.size(-1),)), F.rms_norm(
             k, (k.size(-1),)
-        )  # QK norm suggested by @Grad62304977
+        )
         q, k = apply_rotary_emb(q, cos, sin), apply_rotary_emb(k, cos, sin)
         y = F.scaled_dot_product_attention(
             q.transpose(1, 2), k.transpose(1, 2), v.transpose(1, 2), is_causal=True
@@ -83,13 +83,13 @@ class MLP(nn.Module):
         super().__init__()
         self.c_fc = nn.Linear(config.n_embd, 4 * config.n_embd, bias=False)
         self.c_proj = nn.Linear(4 * config.n_embd, config.n_embd, bias=False)
-        self.c_proj.weight.data.zero_()  # zero init suggested by @Grad62304977
+        self.c_proj.weight.data.zero_()
 
     def forward(self, x):
         x = self.c_fc(x)
         x = F.relu(
             x
-        ).square()  # https://arxiv.org/abs/2109.08668v2; ~1-2% better than GELU; suggested by @SKYLINEZ007 and @Grad62304977
+        ).square()
         x = self.c_proj(x)
         return x
 
@@ -108,12 +108,12 @@ class Block(nn.Module):
 
 
 # -----------------------------------------------------------------------------
-# The main GPT-2 model
+# The main model
 @dataclass
 class ModelConfig:
     vocab_size: int = 50304
     n_layer: int = 12
-    n_head: int = 6  # head dim 128 suggested by @Grad62304977
+    n_head: int = 6  # head dim 128
     n_embd: int = 768
 
 
@@ -130,13 +130,12 @@ class Model(nn.Module):
             )
         )
         self.lm_head = nn.Linear(config.n_embd, config.vocab_size, bias=False)
-        self.lm_head.weight.data.zero_()  # @Grad62304977
+        self.lm_head.weight.data.zero_()
 
     def forward(self, idx):
 
-        # forward the GPT model itself
         x = self.transformer.wte(idx)  # token embeddings of shape (b, t, n_embd)
-        x = F.rms_norm(x, (x.size(-1),))  # @Grad62304977
+        x = F.rms_norm(x, (x.size(-1),))
         for block in self.transformer.h:
             x = block(x)
         x = F.rms_norm(x, (x.size(-1),))
