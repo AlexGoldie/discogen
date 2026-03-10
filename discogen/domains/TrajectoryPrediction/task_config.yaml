@@ -2,6 +2,7 @@ train_task_id: [Argoverse2, nuScenes, Waymo]
 test_task_id: [Argoverse2, nuScenes, Waymo]
 
 source_path: task_src/TrajectoryPrediction
+template_backend: default
 
 change_optim: false
 change_loss: false

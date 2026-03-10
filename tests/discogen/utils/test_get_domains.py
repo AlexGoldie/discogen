@@ -16,6 +16,7 @@ def test_all_domains_valid_config() -> None:
         "OffPolicyRL",
         "OnPolicyMARL",
         "OnPolicyRL",
+        "TrajectoryPrediction",
         "UnsupervisedEnvironmentDesign",
     ]
 
