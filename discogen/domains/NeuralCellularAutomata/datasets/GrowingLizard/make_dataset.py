@@ -37,7 +37,6 @@ def download_dataset(cache_dir: Path) -> None:
         print(f"Downloading emoji {DEFAULT_EMOJI}...")
         img = get_emoji(DEFAULT_EMOJI)
         img.save(emoji_path)
-        print(f"Saved to {emoji_path}")
 
 
 def _load_target(config: dict) -> jnp.ndarray:

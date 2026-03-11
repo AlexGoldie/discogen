@@ -28,8 +28,9 @@ dependencies = [
     "pnpl>=0.0.7",
     "click>=8.3.0",
     "PyYAML>=6.0.3",
-    "codecarbon>=3.2.2"
-]
+    "codecarbon>=3.2.2",
+    "jax>=0.4.26"
+    ]
 
 [project.urls]
 Homepage = "https://AlexGoldie.github.io/discogen/"
