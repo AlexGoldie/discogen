@@ -1,0 +1,15 @@
+train_task_id: [MNIST, FashionMNIST, CIFAR10, StanfordCars, TinyImageNet, SUN397]
+test_task_id: [MNIST, FashionMNIST, CIFAR10, StanfordCars, TinyImageNet, SUN397]
+# ImageNet1k is not included since it takes a significant time (days) to train
+
+source_path: task_src/Diffusion
+template_backend: default
+
+change_diffusion: false
+change_embedding: false
+change_helpers: false
+change_loss: false
+change_networks: false
+change_norm: false
+change_optim: false
+change_schedule: false

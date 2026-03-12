@@ -1,0 +1,8 @@
+--index-url https://download.pytorch.org/whl/cu128
+
+numpy
+datasets
+einops
+torch
+torchvision
+pytorch-fid
