@@ -3,7 +3,6 @@ import os
 import torch
 from torch import distributed as dist
 from einops import rearrange, repeat
-from pytorch_fid.fid_score import calculate_frechet_distance
 from pytorch_fid.inception import InceptionV3
 from torch.nn.functional import adaptive_avg_pool2d
 
@@ -21,13 +20,12 @@ def sqrtm(matrix):
     """
     Compute matrix square root using SVD.
     """
-    matrix = matrix.float()
-    U, S, Vh = torch.linalg.svd(matrix)
+    U, S, Vh = torch.linalg.svd(matrix, driver="gesvd")
 
     sqrtS = torch.sqrt(S)
     sqrtm = U @ torch.diag(sqrtS) @ Vh
 
-    return sqrtm.half()
+    return sqrtm
 
 
 class FIDEvaluator:
@@ -35,31 +33,28 @@ class FIDEvaluator:
         self,
         real_dataset_dl,
         channels=3,
-        num_samples=50000,
+        num_fake_samples=50000,
         batch_size=128,
         stats_dir="./results",
-        device="cuda",
         rank=0,
         world_size=1,
         inception_block_idx=2048,
     ):
         self.batch_size = batch_size
-        self.n_samples = num_samples
+        self.n_samples = num_fake_samples // world_size
         self.channels = channels
         self.dl = real_dataset_dl
         self.stats_dir = stats_dir
 
         assert inception_block_idx in InceptionV3.BLOCK_INDEX_BY_DIM
         self.block_idx = InceptionV3.BLOCK_INDEX_BY_DIM[inception_block_idx]
-        inception_v3 = InceptionV3([self.block_idx]).to(device)
+        inception_v3 = InceptionV3([self.block_idx]).to(rank)
         inception_v3.eval()
         self.inception_v3 = torch.compile(inception_v3)
         self.inception_v3 = inception_v3.half()
 
-        self.device = device
         self.rank = rank
         self.world_size = world_size
-
 
     @torch.inference_mode()
     def evaluate(self, sampler, model):
@@ -91,9 +86,9 @@ class FIDEvaluator:
         mu1, sigma1, mu2, sigma2 = mu1.float(), sigma1.float(), mu2.float(), sigma2.float()
 
         diff = mu1 - mu2
-        covmean = sqrtm(sigma1 @ sigma2)
-
-        if not torch.isfinite(covmean).all():
+        try:
+            covmean = sqrtm(sigma1 @ sigma2)
+        except torch._C._LinAlgError:
             offset = torch.eye(sigma1.shape[0], device=self.rank) * eps
             covmean = sqrtm((sigma1 + offset) @ (sigma2 + offset))
 
@@ -145,7 +140,7 @@ class FIDEvaluator:
         features_local = []
 
         for batch in self.dl:
-            batch = batch.to(self.device)
+            batch = batch.to(self.rank)
             features = self._calculate_inception_features(batch)
             features_local.append(features)
 

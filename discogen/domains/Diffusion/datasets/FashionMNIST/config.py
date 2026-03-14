@@ -7,17 +7,17 @@ label_key = "label"
 dataset = "FashionMNIST"
 
 config = {
+    "meta": {"name": dataset, "seed": 2},
     "train": {
-        "seed": 2,
-        "epoch": 64,
+        "validation_split": 0.2,
+        "steps": 200_000,
         "per_device_batch_size": 512,
         "num_classes": num_classes,
         "optimizer": {
-            "lr": 1e-4, 
+            "lr": 2e-4, 
             "weight_decay": 1e-4,
         },
-        "image_key": image_key,
-        "label_key": label_key,
+        "early_stopping": {"n_fake_samples": 10_000, "interval": 5_000, "patience": 4},
     },
     "eval": {
         "per_device_batch_size": 1024,
@@ -27,21 +27,19 @@ config = {
         "n_real_samples": 50_000,
         "n_fake_samples": 10_000,
     },
-    "dataset": {
-        "name": dataset,
+    "preprocess": {
         "transformed_image_size": (transformed_image_size, transformed_image_size),
-        "channels": num_channels,
-        "num_classes": num_classes,
         "image_key": image_key,
         "label_key": label_key,
+        "channels": num_channels,
     },
     "model": {
         "dim": 64,
         "dim_mults": (1, 2, 4, 8),
         "num_classes": num_classes,
         "channels": num_channels,
-        "dropout": 0.2,
         "timesteps": timesteps,
         "image_size": transformed_image_size,
+        "dropout": 0.1,
     },
 }

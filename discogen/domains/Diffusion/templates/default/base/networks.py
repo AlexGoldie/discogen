@@ -250,8 +250,9 @@ class Backbone(nn.Module):
         super().__init__()
 
         cond_drop_prob = config.get("cond_drop_prob", 0.5)
-        init_dim = config.get("init_dim", None)
-        out_dim = config.get("out_dim", None)
+        dropout = config.get("dropout", 0)
+        init_dim = config.get("init_dim")
+        out_dim = config.get("out_dim")
         dim_mults = config.get("dim_mults", (1, 2, 4, 8))
         channels = config.get("channels", 3)
         learned_variance = config.get("learned_variance", False)
@@ -306,6 +307,7 @@ class Backbone(nn.Module):
                     ResnetBlock(dim_in, dim_in, time_emb_dim=time_dim, classes_emb_dim=classes_dim),
                     Residual(PreNormalization(dim_in, LinearAttention(dim_in))),
                     Downsample(dim_in, dim_out) if not is_last else nn.Conv2d(dim_in, dim_out, 3, padding=1),
+                    nn.Dropout(dropout),
                 ])
             )
 
@@ -315,6 +317,7 @@ class Backbone(nn.Module):
             PreNormalization(mid_dim, Attention(mid_dim, dim_head=attn_dim_head, heads=attn_heads))
         )
         self.mid_block2 = ResnetBlock(mid_dim, mid_dim, time_emb_dim=time_dim, classes_emb_dim=classes_dim)
+        self.mid_dropout = nn.Dropout(dropout)
 
         for ind, (dim_in, dim_out) in enumerate(reversed(in_out)):
             is_last = ind == (len(in_out) - 1)
@@ -325,6 +328,7 @@ class Backbone(nn.Module):
                     ResnetBlock(dim_out + dim_in, dim_out, time_emb_dim=time_dim, classes_emb_dim=classes_dim),
                     Residual(PreNormalization(dim_out, LinearAttention(dim_out))),
                     Upsample(dim_out, dim_in) if not is_last else nn.Conv2d(dim_out, dim_in, 3, padding=1),
+                    nn.Dropout(dropout),
                 ])
             )
 
@@ -413,8 +417,6 @@ class Backbone(nn.Module):
 
         cond_drop_prob = default(cond_drop_prob, self.cond_drop_prob)
 
-        # derive condition, with condition dropout for classifier free guidance
-
         classes_emb = self.classes_emb(classes)
 
         if cond_drop_prob > 0:
@@ -426,7 +428,6 @@ class Backbone(nn.Module):
         c = self.classes_mlp(classes_emb)
 
         # unet
-
         x = self.init_conv(x)
         r = x.clone()
 
@@ -434,7 +435,7 @@ class Backbone(nn.Module):
 
         h = []
 
-        for block1, block2, attn, downsample in self.downs:
+        for block1, block2, attn, downsample, dropout in self.downs:
             x = block1(x, t, c)
             h.append(x)
 
@@ -443,12 +444,14 @@ class Backbone(nn.Module):
             h.append(x)
 
             x = downsample(x)
+            x = dropout(x)
 
         x = self.mid_block1(x, t, c)
         x = self.mid_attn(x)
         x = self.mid_block2(x, t, c)
+        x = self.mid_dropout(x)
 
-        for block1, block2, attn, upsample in self.ups:
+        for block1, block2, attn, upsample, dropout in self.ups:
             x = torch.cat((x, h.pop()), dim=1)
             x = block1(x, t, c)
 
@@ -457,6 +460,7 @@ class Backbone(nn.Module):
             x = attn(x)
 
             x = upsample(x)
+            x = dropout(x)
 
         x = torch.cat((x, r), dim=1)
 
