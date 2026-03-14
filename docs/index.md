@@ -71,6 +71,9 @@ DiscoGen currently supports the following task domains:
 - **[ContinualLearning](domains.md#continuallearning)**: Learning under non-stationarity
 - **[GreenhouseGasPrediction](domains.md#greenhousegasprediction)**: Predicting atmospheric greenhouse gas concentrations
 - **[OnPolicyMARL](domains.md#onpolicymarl)**: On-policy Multi-Agent reinforcement learning (IPPO-style algorithms)
+- **[OfflineRL](domains.md#offlinerl)**: Offline reinforcement learning from fixed datasets.
+- **[TrajectoryPrediction](domains.md#trajectoryprediction)**: Trajectory prediction of vehicles for self-driving.
+- **[NeuralCellularAutomata](domains.md#neuralcellularautomata)**: Evolving neural cellular automata for open-ended tasks.
 
 See the [Domains](domains.md) page for detailed information about each domain.
 
