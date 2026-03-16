@@ -10,12 +10,12 @@ mmlu_stemp/acc:
 
 retain_knowmem_ROUGE:
   default:
-    muse: 0.14323
+    muse: 0.143769
   objective: max
 
 forget_knowmem_ROUGE:
   default:
-    muse: 0.1433
+    muse: 0.15243
   objective: min
 
 model_utility:
