@@ -5,10 +5,8 @@ OBSERVATION SPACE
 Each observation is a 64×64×3 RGB color image representing one of 200 object classes.
 
 CLASSES
-The dataset contains 200 classes selected from ImageNet, covering diverse object categories.
+The dataset contains 200 evenly distributed classes selected from ImageNet, covering diverse object categories.
 
 DATASET STRUCTURE
-Training set: 100,000 images (500 per class)
-Validation set: 10,000 images (50 per class)
-Test set: 10,000 images (50 per class)
-Total: 120,000 images
+Training and Validation set: 100,000 images (split can be tuned in config.py, default is 80:20 split)
+Evaluation set: 10,000 images

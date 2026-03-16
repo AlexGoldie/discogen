@@ -8,7 +8,6 @@ CLASSES
 The dataset contains 196 classes representing different car make-model-year combinations (e.g., 2012 Tesla Model S, 2012 BMW M3 coupe).
 
 DATASET STRUCTURE
-Training set: 8,144 images
-Test set: 8,041 images
+Training and validation set: 8,144 images (split can be tuned in config.py, default is 80:20 split)
+Evaluation set: 8,041 images
 Approximately 50-50 split between training and testing within each class
-Total: 16,185 images

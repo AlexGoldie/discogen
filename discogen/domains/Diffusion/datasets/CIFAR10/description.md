@@ -6,7 +6,6 @@ Each observation is a 32×32×3 RGB image with pixel values in the range [0, 255
 
 CLASSES
 The dataset contains 10 classes:
-
 0: airplane
 1: automobile
 2: bird

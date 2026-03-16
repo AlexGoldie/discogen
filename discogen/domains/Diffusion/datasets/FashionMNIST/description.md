@@ -5,8 +5,7 @@ OBSERVATION SPACE
 Each observation is a 28×28 grayscale image with pixel values in the range [0, 255], where higher values represent darker pixels. Total of 784 pixels per image.
 
 CLASSES
-The dataset contains 10 fashion item categories:
-
+The dataset contains 10 evenly divided fashion item categories:
 0: T-shirt/top
 1: Trouser
 2: Pullover
@@ -19,5 +18,5 @@ The dataset contains 10 fashion item categories:
 9: Ankle boot
 
 DATASET STRUCTURE
-Training set: 60,000 images (6,000 per class)
-Test set: 10,000 images (1,000 per class)
+Training and validation set: 60,000 images (split can be tuned in config.py, default is 80:20 split)
+Evaluation set: 10,000 images
