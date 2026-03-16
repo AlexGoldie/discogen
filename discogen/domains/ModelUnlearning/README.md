@@ -1,15 +1,18 @@
 # Unlearning Task
 
-This guide provides instructions for setting up and running the Unlearning task in DiscoGen.
+This guide provides instructions for setting up and running the ModelUnlearning task in DiscoGen.
 
 ## Installation
 
-After setting up the discogen environment (i.e., make install), install task-specific requirements:
+ModelUnlearning requires installing packages in two steps. Therefore, in addition to installing from `requirements.txt`, you should install `flash-attn`.
 
+After creating the ModelUnlearning task, and entering the correct directory, use the following commands:
 ```bash
-pip install -r discogen/domains/ModelUnlearning/utils/requirements.txt
+pip install -r requirements.txt
 pip install flash-attn==2.6.3 --no-build-isolation
 ```
+
+This is also handled by `install.sh`.
 
 ## Configuration
 
@@ -23,25 +26,7 @@ export HF_TOKEN="your_token"
 
 (Make sure your HF account has access to eg Llama models if one of your train/test datasets includes a Llama model.)
 
-## Usage
-
-### Select datasets
-
-Specify train/test datasets in discogen/domains/ModelUnlearning/task_config.yaml. The list of available datasets is given by the folder names in discogen/domains/ModelUnlearning/datasets. Default: train = wmdp_cyber_qwen, test = tofu_qwen.
-
-### Create Task
-
-```bash
-python discogen/create_task.py --task_domain ModelUnlearning
-```
-
-### Run Task
-
-```bash
-cd task_src
-python run_main.py
-```
-
+# Additional Information
 
 ## For Mac users
 

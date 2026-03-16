@@ -314,6 +314,17 @@ See `discogen/domains/ModelUnlearning` for an example of how `models` can be use
       objective: max
     ```
 
+17. **Create install.sh**
+    * To make task installation easier, for every domain we create `install.sh` which will run all installation commands.
+    * Generally, this can follow a standard template. This only needs to change if your domain involves installing packages over multiple different commands, or setting certain environment variables.
+
+    The standard template is:
+    ```bash
+    #!/usr/bin/env bash
+
+    pip install -r requirements.txt
+    ```
+
 ✅ Done! Your task is ready for integration.
 
 ---

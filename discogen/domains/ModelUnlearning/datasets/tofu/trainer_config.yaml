@@ -11,7 +11,3 @@ args:
   weight_decay: 0.01
   seed: 0
   disable_tqdm: True
-
-# Method-specific (CustomUnlearnTrainer) args
-# method_args:
-  # optional_arg: 1.0
