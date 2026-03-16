@@ -26,6 +26,7 @@ from trainer.utils import seed_everything
 _base_dir = Path(__file__).resolve().parent
 shutil.copy2(_base_dir / "main_config.yaml", _base_dir / "configs" / "main_config.yaml")
 shutil.copy2(_base_dir / "trainer_config.yaml", _base_dir / "configs/trainer" / "custom.yaml")
+(_base_dir / "configs/model").mkdir(parents=True, exist_ok=True)
 shutil.copy2(_base_dir / "model_config.yaml", _base_dir / "configs/model" / "model_conf.yaml")
 
 
@@ -97,7 +98,7 @@ def unlearn(cfg: DictConfig):
     for _, evaluator in evaluators.items():
         summary_file = evaluator.get_logs_file_path(eval_dir, suffix="SUMMARY")
         with open(summary_file, 'r') as f:
-            print(json.dumps(json.load(f), indent=2))
+            print(json.dumps(json.load(f)))
 
 
 if __name__ == "__main__":

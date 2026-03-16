@@ -25,6 +25,7 @@ def test_task_datasets(domain: str) -> None:
     task_config = create_config(domain)
 
     assert task_config["train_task_id"] == task_config["test_task_id"]
+    assert task_config["template_backend"] == "default"
 
     found_in_datasets = set()
     task_data = set(task_config["train_task_id"])
@@ -61,6 +62,7 @@ def test_task_utils(domain: str) -> None:
         "_reference.txt",
         "description.md",
         "requirements.txt",
+        "install.sh",
         "task_information.yaml",
         "task_spec.yaml",
         "baseline_scores.yaml",
