@@ -1,0 +1,10 @@
+train_task_id: [MinAtar/Breakout, MinAtar/Freeway,]
+test_task_id: [MinAtar/Asterix, MinAtar/SpaceInvaders]
+
+source_path: task_src/OnPolicyRL
+template_backend: default
+
+change_optim: true
+change_loss: true
+change_networks: false
+change_train: false

@@ -1,0 +1,29 @@
+wmdp_cyber/acc:
+  default:
+    wmdp_cyber: 0.24761
+  objective: min
+
+mmlu_stemp/acc:
+  default:
+    wmdp_cyber: 0.51792
+  objective: max
+
+retain_knowmem_ROUGE:
+  default:
+    muse: 0.14323
+  objective: max
+
+forget_knowmem_ROUGE:
+  default:
+    muse: 0.1433
+  objective: min
+
+model_utility:
+  default:
+    tofu: 0.27061
+  objective: max
+
+forget_Q_A_Prob:
+  default:
+    tofu: 0.15958
+  objective: min

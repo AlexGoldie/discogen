@@ -1,0 +1,17 @@
+optim_prompt: |-
+  You should change the optimizer file, which can be found in `optim.py`. In deep learning, optimization is used to descend the gradient of a loss function with respect to the parameters of a neural network. The correct functional form should implement a class, 'scale_by_optimizer', with functions 'init_fn' and 'update_fn'. The learning rate will be tuned to your optimizer.
+
+loss_prompt: |-
+  You should change the loss file, which can be found in `loss.py`. In deep learning, the loss provides an objective to minimize; in reinforcement learning, minimizing this objective corresponds to maximising the return of an agent. You should not change the name of the function, `loss_actor_and_critic`, or its inputs.
+
+networks_prompt: |-
+  You should change the network file, which can be found in `networks.py`. In deep learning, the network provides the architecture of the model, and specifies the number of parameters, width of layers, and type of connections that those layers should have. You should not change the name or interface of the function `ActorCritic`. The network takes at input an observation from the RL environment, and must output a policy and a value.
+
+train_prompt: |-
+  You should change the train file, which can be found in `train.py`. In modern reinforcement learning, the train loop is responsible for collecting data from the environment, processing it (possibly multiple times), and then using it to update the parameters of the model. You should not change the name or interface of the function `train`. You are allowed to make whatever changes you like, but you should ensure that your training loop is compatible with the rest of the codebase. You should never change the logic for computing the return during or after training. Some useful function calls have been provided, though possibly not in the optimal place.
+
+activation_prompt: |-
+  You should change the activation file, which can be found in `activation.py`. In deep learning, the activation function is used to introduce non-linearity into the model, allowing neural networks to model complex, non-linear relationships. It also strongly affects gradient flow during backpropagation, influencing how efficiently errors propagate through the network, how fast the model learns, and whether training remains stable or suffers from issues such as vanishing or exploding gradients. You should not change the name or interface of the function `activation`.
+
+targets_prompt: |-
+  You should change the targets file, which can be found in `targets.py`. In reinforcement learning, targets define the values the agent aims to predict, while advantages measure how much better or worse a specific action is compared to the agent’s baseline expectation. You should not change the name or interface of the function `get_targets`.

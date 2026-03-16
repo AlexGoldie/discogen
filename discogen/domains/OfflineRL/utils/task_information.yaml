@@ -1,0 +1,38 @@
+optim_prompt: |-
+  You should change the optimizer file, which can be found in `optim.py`. The optimizer is responsible for updating the neural network parameters based on computed gradients. You should implement the `create_optimizer` function that returns an optax optimizer. The optimizer should be compatible with the training loop in `train.py`.
+
+actor_loss_prompt: |-
+  You should change the actor loss file, which can be found in `actor_loss.py`. This file contains the policy optimization objective for offline reinforcement learning.
+
+  Implement `compute_actor_loss`: The actor should maximize Q-values while staying close to the data distribution to avoid exploiting errors in the Q-function. The loss function receives network apply functions, parameters, and batches of transitions. You should not change the function signature.
+
+critic_loss_prompt: |-
+  You should change the critic loss file, which can be found in `critic_loss.py`. This file contains the TD-learning objective for offline reinforcement learning.
+
+  Implement `compute_critic_loss`: For offline RL, you should consider techniques to handle distribution shift, such as behavior cloning penalties on out-of-distribution actions, conservative Q-learning, or other regularization methods. The loss function receives network apply functions, parameters, and batches of transitions. You should not change the function signature.
+
+networks_prompt: |-
+  You should change the network file, which can be found in `networks.py`. This file defines the neural network architectures for the actor (policy) and critic (Q-function). You need to implement:
+
+  1. `MLP`: A multi-layer perceptron helper class with configurable hidden dimensions, activations, and optional layer normalization.
+
+  2. `Actor`: The policy network that takes observations and outputs an action distribution. For continuous control, this is typically a Gaussian distribution. Consider using tanh squashing for bounded actions.
+
+  3. `Value`: The critic network that takes observations and actions, returning Q-value estimates. Consider using an ensemble of critics for more stable learning (clipped double Q-learning).
+
+  The networks should be compatible with the loss functions and training loop.
+
+train_prompt: |-
+  You should change the train file, which can be found in `train.py`. This file implements the training loop for offline RL. You need to implement:
+
+  1. `target_update`: Polyak averaging for target networks, which stabilizes training by slowly updating target parameters.
+
+  2. `make_train_step`: Creates a JIT-compiled training step function that:
+     - Updates the critic using the critic loss
+     - Optionally updates the actor (delayed policy updates can improve stability)
+     - Updates target networks using Polyak averaging
+     - Returns updated state and logging information
+
+  3. `sample_actions`: Samples actions from the policy for evaluation, with optional exploration noise.
+
+  The training step should be efficient and fully JIT-compilable.

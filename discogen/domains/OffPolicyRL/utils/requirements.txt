@@ -1,0 +1,12 @@
+--pre
+
+--find-links https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+
+# === Core Dependencies ===
+jax[cuda12]
+flax
+optax
+chex
+flashbax
+distrax
+gymnax

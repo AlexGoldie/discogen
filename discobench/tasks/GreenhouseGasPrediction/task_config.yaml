@@ -1,7 +1,0 @@
-train_task_id: [CH4, CO2, N2O, SF6]
-test_task_id: [CH4, CO2, N2O, SF6]
-
-source_path: task_src/GreenhouseGasPrediction
-
-change_data_processing: False
-change_model: False

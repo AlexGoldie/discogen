@@ -1,0 +1,15 @@
+fixed_files:
+  - __init__.py
+  - config.py
+  - env_specific_config.py
+  - eval_utils.py
+  - sfl_types.py
+  - utils.py
+  - main.py
+  - make_network.py
+  - make_env.py
+
+module_files:
+  - sample_levels.py
+  - train_step.py
+  - variable_config.py

@@ -1,0 +1,12 @@
+train_task_id: [MABrax/Ant, MABrax/Walker, SMAX/2s3z, SMAX/6h_vs_8z, SMAX/27m_vs_30m, SMAX/smacv2_10_units]
+test_task_id: [MABrax/HalfCheetah, MABrax/Hopper, MABrax/Humanoid, MPE/Spread, SMAX/3s_vs_5z, SMAX/3s5z, SMAX/3s5z_vs_3s6z, SMAX/5m_vs_6m, SMAX/10m_vs_11m, SMAX/smacv2_5_units, SMAX/smacv2_20_units]
+
+source_path: task_src/OnPolicyMARL_networks
+template_backend: default
+
+change_optim: false
+change_loss: false
+change_networks: true
+change_train: false
+change_activation: false
+change_targets: false

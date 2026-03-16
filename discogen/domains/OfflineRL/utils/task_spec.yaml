@@ -1,0 +1,17 @@
+# Task Specification for OfflineRL
+# Defines which files are fixed (infrastructure) vs editable (algorithm)
+
+fixed_files:
+  - __init__.py
+  - main.py
+  - make_env.py
+  - config.py
+  - datasets.py
+  - evaluation.py
+
+module_files:
+  - actor_loss.py
+  - critic_loss.py
+  - networks.py
+  - optim.py
+  - train.py

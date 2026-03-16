@@ -1,0 +1,9 @@
+train_task_id: [SplitCIFAR100]
+test_task_id: [PermutedMNIST, TinyImageNetSplit]
+source_path: task_src/ContinualLearning_scheduler
+template_backend: default
+change_regularizer: false
+change_replay: false
+change_sampler: false
+change_scheduler: true
+change_optim: false

@@ -1,0 +1,13 @@
+success_rate:
+  default:
+    OGBench/antmaze-giant-navigate: 0.73
+    OGBench/antmaze-large-navigate: 0.99
+    OGBench/antsoccer-arena-navigate: 0.0
+    OGBench/cube-double-play: 0.01
+    OGBench/cube-single-play: 0.14
+    OGBench/humanoidmaze-large-navigate: 0.03
+    OGBench/humanoidmaze-medium-navigate: 0.0
+    OGBench/puzzle-3x3-play: 1.0
+    OGBench/puzzle-4x4-play: 0.22
+    OGBench/scene-play: 0.99
+  objective: max

@@ -1,0 +1,17 @@
+acq_fn_prompt: |-
+  You should change the acquisition function file, which can be found in `acq_fn.py`. Implement a single, differentiable acquisition function that computes scalar utilities from the surrogate mean and variance, returning a 1D jnp.ndarray. The acquistion function must be numerically stable, fully differentiable, and shape-consistent. All fixed design choices should be defined directly in the function, rather than in the config.
+
+acq_optimizer_prompt: |-
+  You should change the optimizer file, which can be found in `acq_optimizer.py`. The acquisition function optimizer is used to globally optimise the acquisition function over a set of candidate points. The query may then be further optimised by implementing local, gradient-based optimisation at the top N points, for example.
+
+next_queries_prompt: |-
+  You should change the next queries file, which can be found in `next_queries.py`. The function should output one or a batch of points at which you would like to evaluate the objective function. Your overall budget is fixed, i.e. choosing in a batch will not increase your overall budget.
+
+sampler_prompt: |-
+  You should change the sampler file, which can be found in `sampler.py`. Implement a single, consistent sampling method that produces samples in [0, 1] space, ensuring that transformations are vectorised, stable, and reversible. The sampler should be deterministic when a seed is provided. Ensure correct dtype handling, reproducibility, and compatibility with the surrogate model's input scale.
+
+surrogate_optimizer_prompt: |-
+  You should change the surrogate optimizer file, which can be found in `surrogate_optimizer.py`. You should change the surrogate optimizer builder so it returns a stable optax.GradientTransformation for fitting the surrogate model. The optimizer type and learning rate can be fixed directly in the function. It must integrate cleanly with the fit_posterior loop and support smooth convergence.
+
+surrogate_prompt: |-
+  You should change the surrogate file, which can be found in `surrogate.py`. You should implement one concrete, fully-defined surrogate model. The predict function should always accept X and y as inputs, even if you choose to ignore them within the prediction function (e.g. if you choose to define a parametric surrogate model). The surrogate must predict both a mean and a variance (to quantify uncertainty). Implement setup, neg_log_likelihood, and predict functions, ensure consistent tensor shapes and numerical stability. Any kernel, network architecture, or other modelling choices should be fixed within the surrogate itself, rather than in the config.

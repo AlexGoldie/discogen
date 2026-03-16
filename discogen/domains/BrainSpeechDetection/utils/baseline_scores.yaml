@@ -1,0 +1,10 @@
+test_f1:
+  default:
+    LibriBrainSherlock1: 0.595156
+    LibriBrainSherlock2: 0.722192
+    LibriBrainSherlock3: 0.592207
+    LibriBrainSherlock4: 0.724471
+    LibriBrainSherlock5: 0.677632
+    LibriBrainSherlock6: 0.670467
+    LibriBrainSherlock7: 0.746318
+  objective: max

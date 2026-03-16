@@ -1,0 +1,7 @@
+train_task_id: [muse]
+test_task_id: [tofu, wmdp_cyber]
+train_model_id: [Qwen2.5-1.5B-Instruct]
+test_model_id: [Qwen2.5-1.5B-Instruct]
+source_path: task_src/ModelUnlearning_all
+template_backend: default
+change_loss: true

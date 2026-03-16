@@ -1,0 +1,8 @@
+train_task_id: [CIFAR10, FashionMNIST, MNIST, OxfordFlowers, TinyImageNet]
+test_task_id: [CIFAR10C, CIFAR10LT, CIFAR100, StanfordCars]
+source_path: task_src/ComputerVisionClassification_loss
+template_backend: default
+change_optim: false
+change_loss: true
+change_networks: false
+change_preprocess: false

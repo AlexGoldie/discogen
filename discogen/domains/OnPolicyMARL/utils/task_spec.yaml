@@ -1,0 +1,13 @@
+fixed_files:
+  - __init__.py
+  - make_env.py
+  - main.py
+  - config.py
+
+module_files:
+  - loss.py
+  - networks.py
+  - optim.py
+  - train.py
+  - activation.py
+  - targets.py

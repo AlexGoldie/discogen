@@ -1,0 +1,9 @@
+train_task_id: [Kinetix/Small, Kinetix/Medium, Kinetix/Large, Minigrid]
+test_task_id: [Kinetix/Small, Kinetix/Medium, Kinetix/Large, Minigrid]
+
+source_path: task_src/UnsupervisedEnvironmentDesign
+template_backend: default
+
+change_sample_levels: false
+change_train_step: false
+change_variable_config: false

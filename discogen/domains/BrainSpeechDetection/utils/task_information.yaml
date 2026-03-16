@@ -1,0 +1,8 @@
+optim_prompt: |-
+  You should change the optimizer, which can be found in `optim.py`. In deep learning, optimization is used to descend the gradient of a loss function with respect to the parameters of a neural network. The name of the function should be `create_optimizer`, and this function should return an `Optimizer` with functions including `zero_grad` and `step`. Besides this, you are allowed to make whatever changes you like.
+
+loss_prompt: |-
+  You should change the loss, which can be found in `loss.py`. In deep learning, the loss provides an objective to minimize; You should not change the name of the function, `compute_loss`, or its inputs. This function should return a scalar loss value.
+
+networks_prompt: |-
+  You should change the network, which can be found in `networks.py`. In deep learning, the network provides the architecture of the model, and specifies the number of parameters, width of layers, and type of connections that those layers should have. You should not change the name or interface of the function `Model`, or its inputs.

@@ -1,0 +1,16 @@
+Original NCA paper:
+Mordvintsev, A., Randazzo, E., Niklasson, E., & Levin, M. (2020). Growing Neural Cellular Automata. Distill. https://distill.pub/2020/growing-ca/
+
+CAX library (implementation reference):
+Faldor, M., & Cully, A. (2025). CAX: Cellular Automata Accelerated in JAX. International Conference on Representation Learning. https://github.com/maxencefaldor/cax
+
+Self-classifying MNIST:
+Randazzo, E., Mordvintsev, A., Niklasson, E., Levin, M., & Greydanus, S. (2020). Self-classifying MNIST Digits. Distill. https://distill.pub/2020/selforg/mnist/
+
+Universal NCAs (matrix multiplication task):
+Gabriel Béna and Maxence Faldor and Dan F. M. Goodman and Antoine Cully. (2025). A Path to Universal Neural Cellular Automata. Genetic and Evolutionary Computation Conference. https://arxiv.org/abs/2505.13058
+
+Attention-based NCAs:
+Mattie Tesfaldet, Derek Nowrouzezahrai, and Chris Pal. Attention-based Neural Cellular
+Automata. Advances in Neural Information Processing Systems, 35:8174–8186, December 2022. URL https://proceedings.neurips.cc/paper_files/paper/2022/
+hash/361e5112d2eca09513bbd266e4b2d2be-Abstract-Conference.html.

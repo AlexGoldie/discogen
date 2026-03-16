@@ -1,0 +1,8 @@
+train_task_id: [CIFAR10, FashionMNIST, MNIST, OxfordFlowers, TinyImageNet]
+test_task_id: [CIFAR10C, CIFAR10LT, CIFAR100, StanfordCars]
+source_path: task_src/ComputerVisionClassification_networks
+template_backend: default
+change_optim: false
+change_loss: false
+change_networks: true
+change_preprocess: false

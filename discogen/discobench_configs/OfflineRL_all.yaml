@@ -1,0 +1,11 @@
+train_task_id: [OGBench/antmaze-large-navigate, OGBench/cube-single-play, OGBench/humanoidmaze-medium-navigate, OGBench/puzzle-3x3-play, OGBench/scene-play]
+test_task_id: [OGBench/antmaze-giant-navigate, OGBench/antsoccer-arena-navigate,OGBench/cube-double-play, OGBench/humanoidmaze-large-navigate, OGBench/puzzle-4x4-play]
+
+source_path: task_src/OfflineRL_all
+template_backend: default
+
+change_optim: true
+change_actor_loss: true
+change_critic_loss: true
+change_networks: true
+change_train: true

@@ -1,0 +1,7 @@
+solve_rate:
+  default:
+    Kinetix/Large: 0.083333
+    Kinetix/Medium: 0.180556
+    Kinetix/Small: 0.6
+    Minigrid: 0.28125
+  objective: max

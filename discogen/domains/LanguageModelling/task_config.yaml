@@ -1,0 +1,9 @@
+train_task_id: [OPCFineWebCode, OPCFineWebMath, LMFineWeb, TinyStories]
+test_task_id: [OPCFineWebCode, OPCFineWebMath, LMFineWeb, TinyStories]
+
+source_path: task_src/LanguageModelling
+template_backend: default  # available backends: default, ssm
+
+change_optim: false
+change_loss: false
+change_networks: false

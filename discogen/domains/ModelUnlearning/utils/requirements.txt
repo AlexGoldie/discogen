@@ -1,0 +1,18 @@
+--index-url https://download.pytorch.org/whl/cu128
+--extra-index-url https://pypi.org/simple
+
+torch
+huggingface-hub
+transformers
+numpy
+hydra-core
+hydra_colorlog
+datasets
+accelerate
+bitsandbytes
+rouge-score
+scipy
+tensorboard
+scikit-learn
+deepspeed
+lm_eval

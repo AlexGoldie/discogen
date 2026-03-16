@@ -1,0 +1,8 @@
+performance_description: |-
+  In this task, your objective is to maximise the performance of your discovered algorithms. It is important to remember that your algorithms will be evaluated on held-out datasets.
+
+time_description: |-
+  In this task, your objective is to minimise the time taken by your discovered algorithms to match a performance threshold. As such, when you run experiments, you will be told how well your algorithms are performing in addition to how long they take to complete. It is important to remember that your algorithms will be evaluated on held-out datasets. Your algorithm failing to meet the performance threshold is equivalent to failing the task.
+
+energy_description: |-
+  In this task, your objective is to minimise the energy used by your discovered algorithms to match a performance threshold. As such, when you run experiments, you will be told how well your algorithms are performing in addition to how energy used by your algorithm. It is important to remember that your algorithms will be evaluated on held-out datasets. Your algorithm failing to meet the performance threshold is equivalent to failing the task.

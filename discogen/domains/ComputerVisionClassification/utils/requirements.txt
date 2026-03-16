@@ -1,0 +1,13 @@
+--index-url https://download.pytorch.org/whl/cu128
+--extra-index-url https://pypi.org/simple
+
+numpy
+pandas
+scipy
+torch
+torchvision
+scikit-learn
+datasets
+gymnasium
+transformers[torch]
+datasets

@@ -1,6 +1,0 @@
-References:
-- Codebase: NanoGPT (https://github.com/karpathy/nanoGPT) & modded-nanogpt (https://github.com/KellerJordan/modded-nanogpt/tree/master)
-- TinyStories dataset (https://huggingface.co/datasets/roneneldan/TinyStories)
-- FineWeb dataset (https://huggingface.co/datasets/HuggingFaceFW/fineweb) and preprocessed version we are using (https://huggingface.co/datasets/kjj0/fineweb10B-gpt2)
-- OpenCoder: FineWebMath dataset (https://huggingface.co/datasets/OpenCoder-LLM/opc-fineweb-math-corpus)
-- OpenCoder: FineWebCode dataset (https://huggingface.co/datasets/OpenCoder-LLM/opc-fineweb-code-corpus)

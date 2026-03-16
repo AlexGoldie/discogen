@@ -1,18 +1,18 @@
-# Contributing to `DiscoBench`
+# Contributing to `DiscoGen`
 
-The utility of DiscoBench dramatically increases as we improve the number and diversity of tasks available within the repository. As such, there are three types of contributions to DiscoBench:
+The utility of DiscoGen dramatically increases as we improve the number and diversity of tasks available within the repository. As such, there are three types of contributions to DiscoGen:
 
-## New Tasks
+## New Domains
 
-If you have an interesting idea for a new task that can fit the DiscoBench style, please add it (following the guidance in /). We will endeavour to add all well-implemented tasks to make sure DiscoBench remains a live and fresh benchmark with significant open-source contribution.
+If you have an interesting idea for a new task that can fit the DiscoGen style, please add it (following the guidance in [our documentation](/docs/how_to/overview.md)). We will endeavour to add all well-implemented tasks to make sure DiscoGen remains a live and fresh benchmark with significant open-source contribution.
 
-## Improvements To Tasks
+## Improvements To Domains
 
 Have you noticed more interesting modules in a pre-existing task than the original author? Great! Please feel free to separate out that module from the original codebase into a `base` and `edit` implementation! Simply increasing the number of modules in a codebase from 3 -> 4 increases the number of module combinations from 5 -> 23!
 
 ## Bug-Fixes
 
-If you spot any bugs in DiscoBench, please raise an issue and we will see to fix it as soon as possible!
+If you spot any bugs in DiscoGen, please raise an issue and we will see to fix it as soon as possible!
 
 
 # New to using Ruff and Mypy?
@@ -53,22 +53,22 @@ These settings are meant to disable the annoying and redundant pyright/pylance e
 
 # Get Started!
 
-Ready to contribute? Here's how to set up `discobench` for local development.
+Ready to contribute? Here's how to set up `discogen` for local development.
 Please note this documentation assumes you already have `uv` and `Git` installed and ready to go.
 
-1. Fork the `discobench` repo on GitHub.
+1. Fork the `discogen` repo on GitHub.
 
 2. Clone your fork locally:
 
 ```bash
 cd <directory_in_which_repo_should_be_created>
-git clone git@github.com:YOUR_NAME/discobench.git
+git clone git@github.com:YOUR_NAME/discogen.git
 ```
 
 3. Now we need to install the environment. Navigate into the directory
 
 ```bash
-cd discobench
+cd discogen
 ```
 
 Then, install and activate the environment with:

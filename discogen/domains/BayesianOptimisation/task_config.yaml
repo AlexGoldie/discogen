@@ -1,0 +1,12 @@
+train_task_id: [Ackley1d, Ackley2d, Branin2d, Bukin2d, Cosine8d, DropWave2d, EggHolder2d, Griewank5d, Hartmann6d, HolderTable2d, Levy6d]
+test_task_id: [Ackley1d, Ackley2d, Branin2d, Bukin2d, Cosine8d, DropWave2d, EggHolder2d, Griewank5d, Hartmann6d, HolderTable2d, Levy6d]
+
+source_path: task_src/BayesianOptimisation
+template_backend: default
+
+change_acq_fn: false
+change_acq_optimizer: false
+change_next_queries: false
+change_sampler: false
+change_surrogate_optimizer: false
+change_surrogate: false

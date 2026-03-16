@@ -1,0 +1,8 @@
+loss_mean:
+  default:
+    GrowingButterfly: 0.007956
+    GrowingLizard: 0.004053
+    MatrixOperations: 0.724980
+    MNISTInpainting: 0.004888
+    SelfClassifyingMNIST: 0.195693
+  objective: min

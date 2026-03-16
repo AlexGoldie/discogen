@@ -1,0 +1,17 @@
+# Core dependencies for Offline RL with OGBench
+mujoco==3.2.3
+ogbench==1.1.5
+jax[cuda12]>=0.4.26
+flax>=0.8.4
+distrax>=0.1.5
+optax>=0.1.7
+
+# Configuration and logging
+ml_collections
+
+# Environment dependencies
+gymnasium==0.29.1
+numpy==1.26.4
+
+# Utilities
+matplotlib

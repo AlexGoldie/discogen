@@ -1,0 +1,28 @@
+regularizer_prompt: |
+  Implement a consolidation penalty to mitigate catastrophic forgetting across tasks.
+  - Maintain any needed task-wise statistics in on_task_start/on_task_end.
+  - compute_penalty(model, step) must be fast; avoid full-dataset passes.
+  - Examples: EWC-style quadratic penalty, L2 pull toward previous parameters, or Fisher/diagonal approximations.
+
+replay_prompt: |
+  Implement a replay buffer with reservoir sampling supporting add/sample/size.
+  - Store (x, y, task_id) triplets; keep memory bounded.
+  - sample(batch) should mix current data with buffer according to a ratio.
+  - Deterministic behavior under fixed seeds is preferred.
+
+sampler_prompt: |
+  Mix the current batch with replay data at a fixed ratio.
+  - Handle empty buffer gracefully (fall back to current-only).
+  - Return a dict with keys: x (Tensor), y (Tensor), task_id (Tensor).
+  - Keep batch size consistent with cfg["training"]["batch_size"].
+
+scheduler_prompt: |
+  Build a step-based LR scheduler with warmup plus cosine or step decay.
+  - Return an object exposing .step() per update; no metric dependence.
+  - For cosine: linear warmup to base LR, then cosine to zero.
+  - For step: linear warmup, then decay LR by gamma every step_size.
+
+optim_prompt: |
+  Build a torch optimizer from config.
+  - Support {"name": "sgd"|"adam"|"adamw"}; use momentum/nesterov for SGD; betas/eps for Adam/AdamW.
+  - Respect weight_decay and lr; return a ready-to-use optimizer over model parameters.

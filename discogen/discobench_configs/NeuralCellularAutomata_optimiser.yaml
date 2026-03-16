@@ -1,0 +1,11 @@
+train_task_id: [GrowingLizard, SelfClassifyingMNIST]
+test_task_id: [GrowingButterfly, MatrixOperations, MNISTInpainting]
+
+source_path: task_src/NeuralCellularAutomata_optimiser
+template_backend: default
+
+change_perceive: false
+change_update: false
+change_loss: false
+change_train: false
+change_optimiser: true

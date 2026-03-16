@@ -1,0 +1,27 @@
+This file contains reference information for the Trajectory Prediction task in DiscoBench.
+
+# Datasets References
+These are the datasets supported by this task and their reference links:
+- Argoverse 2: https://huggingface.co/datasets/saeedrmd/trajectory-prediction-argoverse2
+- nuScenes: https://huggingface.co/datasets/saeedrmd/trajectory-prediction-nuscenes
+- Waymo Open Dataset: https://huggingface.co/datasets/saeedrmd/trajectory-prediction-waymo
+
+# Codebase References
+- The code templates for this task are adapted from the following repositories:
+  - UniTraj: https://github.com/vita-epfl/UniTraj
+  - AutoBot (ICLR 2022): https://github.com/roggirg/AutoBot
+
+# Paper References
+@article{feng2024unitraj,
+  title={UniTraj: A Unified Framework for Scalable Vehicle Trajectory Prediction},
+  author={Feng, Lan and Bahari, Mohammadhossein and Amor, Kaouther Messaoud Ben and Zablocki, Eloi and Cord, Matthieu and Alahi, Alexandre},
+  journal={arXiv preprint arXiv:2403.15098},
+  year={2024}
+}
+
+@inproceedings{girgis2022autobot,
+  title={Latent Variable Sequential Set Transformers for Joint Multi-Agent Motion Prediction},
+  author={Girgis, Roger and Golber, Florian and Codevilla, Felipe and Tsai, Martin and Urtasun, Raquel},
+  booktitle={ICLR},
+  year={2022}
+}

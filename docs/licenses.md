@@ -1,4 +1,4 @@
-We provide relevant references for all work in `discobench/tasks/<task_domain>/utils/_reference.txt`. Unless otherwise specified, all referenced work ahs been used under the MIT license.
+We provide relevant references for all work in `discogen/domains/<task_domain>/utils/_reference.txt`. Unless otherwise specified, all referenced work ahs been used under the MIT license.
 
 ## BrainSpeechDetection
 
@@ -16,6 +16,10 @@ opc-fineweb-math-corpus uses the odc-by license. fineweb uses the odc-by license
 ## OffPolicyRL
 
 Gymnax uses the Apache2.0 License. PureJaxRL uses the Apache2.0 License.
+
+## OnPolicyMARL
+
+JaxMARL uses the Apache2.0 License.
 
 ## OnPolicyRL
 

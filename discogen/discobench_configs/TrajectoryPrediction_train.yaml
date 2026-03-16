@@ -1,0 +1,10 @@
+train_task_id: [nuScenes, Argoverse2]
+test_task_id: [Waymo]
+
+source_path: task_src/TrajectoryPrediction_train
+template_backend: default
+
+change_optim: false
+change_loss: false
+change_networks: false
+change_train: true

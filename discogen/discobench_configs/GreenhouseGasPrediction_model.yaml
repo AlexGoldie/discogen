@@ -1,0 +1,6 @@
+train_task_id: [CH4, SF6]
+test_task_id: [CO2, N2O]
+source_path: task_src/GreenhouseGasPrediction_model
+template_backend: default
+change_data_processing: false
+change_model: true

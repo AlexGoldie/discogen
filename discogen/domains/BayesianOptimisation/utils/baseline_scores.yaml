@@ -1,0 +1,14 @@
+maximum_value_mean:
+  default:
+    Ackley1d: -1.091586
+    Ackley2d: -5.329276
+    Branin2d: -3.532408
+    Bukin2d: -17.279566
+    Cosine8d: 8.206348
+    DropWave2d: 0.686731
+    EggHolder2d: 654.713379
+    Griewank5d: -35.72414
+    Hartmann6d: 1.650412
+    HolderTable2d: 17.290287
+    Levy6d: -17.508945
+  objective: max

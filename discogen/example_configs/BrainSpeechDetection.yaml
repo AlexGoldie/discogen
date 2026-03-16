@@ -1,0 +1,9 @@
+train_task_id: [LibriBrainSherlock1,LibriBrainSherlock2,LibriBrainSherlock3]
+test_task_id: [LibriBrainSherlock4,LibriBrainSherlock5,LibriBrainSherlock6,LibriBrainSherlock7]
+
+source_path: task_src/BrainSpeechDetection
+template_backend: default
+
+change_optim: false
+change_loss: true
+change_networks: false

@@ -1,7 +1,0 @@
-numpy
-pandas
-scipy
-torch
-scikit-learn
-lightning
-pnpl
