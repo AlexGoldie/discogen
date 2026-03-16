@@ -1,4 +1,4 @@
-# Unlearning Task
+# LanguageModelling Task
 
 This guide provides instructions for setting up and running the LanguageModelling task in DiscoGen.
 
