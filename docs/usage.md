@@ -368,6 +368,8 @@ When DiscoGen creates a task, it will create two files needed for installing pac
 If you prefer to not use `./install.sh`, or want to install additional packages, please check if the domain has a `README.md` which details additional package requirements. Some domains (e.g., ModelUnlearning) may also need environment variables set - for example, in that case, a HuggingFace API Key.
 
 
+We do not currently provide code for any agents in DiscoGen. This is subject to change in the future!
+
 ## Running DiscoBench
 
 We provide all DiscoBench configs in `discogen/discobench_configs`. DiscoBench is a set of specific, hand-designed tasks for meta-meta-evaluation of algorithm discovery agents; in other words, these are tasks that exist within the support of DiscoGen, but should not be directly optimised on.
