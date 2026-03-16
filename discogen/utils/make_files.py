@@ -437,9 +437,16 @@ class MakeFiles:
         # Copy the template file to the source directory
         shutil.copy2(requirements, dest)
 
-        if eval_type == "energy":
-            with dest.open("a", encoding="utf-8") as f:
-                f.write("\ncodecarbon\n")
+        # codecarbon is needed for energy evaluation. Include it for all requirements.txt to make caching images/environments easier.
+        with dest.open("a", encoding="utf-8") as f:
+            f.write("\ncodecarbon\n")
+
+    def _save_install(self) -> None:
+        install_path = self.base_path / "utils" / "install.sh"
+        dest = self.source_path / "install.sh"
+
+        # Copy the template file to the source directory
+        shutil.copy2(install_path, dest)
 
     def _get_template(self, file: str, task_path: Path, template_backend: str) -> Path:
         data_template = task_path / file
@@ -636,3 +643,4 @@ class MakeFiles:
         # Step 10: Copy run_main and requirements
         self._load_run_main(eval_type)
         self._save_requirements(eval_type)
+        self._save_install()

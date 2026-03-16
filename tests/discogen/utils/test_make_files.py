@@ -920,16 +920,14 @@ class TestSaveRequirements:
         mf._save_requirements(eval_type)
         result = (mf.source_path / "requirements.txt").read_text()
         assert len(result) > 0
-        if eval_type == "energy":
-            assert "codecarbon" in result
+        assert "codecarbon" in result
 
-    @pytest.mark.parametrize("eval_type", ["performance", "time"])
-    def test_no_codecarbon_for_non_energy(self, mf: MakeFiles, source_path: Path, eval_type: str) -> None:
-        """Test that codecarbon is NOT included for non-energy eval types."""
+    def test_copies_install(self, mf: MakeFiles, source_path: Path) -> None:
+        """Test that install.sh is copied to the source directory."""
         mf.source_path = source_path
-        mf._save_requirements(eval_type)
-        result = (mf.source_path / "requirements.txt").read_text()
-        assert "codecarbon" not in result
+        mf._save_install()
+        result = (mf.source_path / "install.sh").read_text()
+        assert len(result) > 0
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -1121,6 +1119,7 @@ class TestMakeFilesEndToEnd:
         assert sp.exists()
         assert (sp / "description.md").exists()
         assert (sp / "requirements.txt").exists()
+        assert (sp / "install.sh").exists()
         assert (sp / "run_main.py").exists()
         assert (sp / "discovered").is_dir()
 
@@ -1275,6 +1274,7 @@ class TestMakeFilesEndToEnd:
         assert sp.exists()
         assert (sp / "description.md").exists()
         assert (sp / "requirements.txt").exists()
+        assert (sp / "install.sh").exists()
         assert (sp / "run_main.py").exists()
         assert (sp / "discovered").is_dir()
 
@@ -1294,15 +1294,12 @@ class TestMakeFilesEndToEnd:
     def test_make_files_energy_requirements(
         self, mf: MakeFiles, config_with_tmp: dict[str, Any], eval_type: str
     ) -> None:
-        """Test that requirements.txt contains codecarbon only for energy eval type."""
+        """Test that requirements.txt contains codecarbon."""
         mf.make_files(config_with_tmp, train=True, use_base=True, no_data=True, eval_type=eval_type)
 
         sp = Path(config_with_tmp["source_path"])
         reqs = (sp / "requirements.txt").read_text()
-        if eval_type == "energy":
-            assert "codecarbon" in reqs
-        else:
-            assert "codecarbon" not in reqs
+        assert "codecarbon" in reqs
 
     def test_make_files_baseline_scale(self, mf: MakeFiles, config_with_tmp: dict[str, Any]) -> None:
         """Test that baseline_scale is reflected in baseline_scores.json values."""

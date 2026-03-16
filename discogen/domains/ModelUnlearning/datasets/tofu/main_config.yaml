@@ -10,32 +10,3 @@ defaults:
 
 mode: unlearn
 task_name: tofu
-
-# Alex: I think this can all be commented out because it just copies what is already specified in defaults:data:muse and defaults:eval:muse above.
-
-# forget_split: forget10
-# retain_split: retain90
-# holdout_split: holdout10
-# retain_logs_path: null
-# question_key: "question"
-
-# eval:
-#   tofu:
-#     forget_split: ${forget_split}
-#     holdout_split: ${holdout_split}
-#     retain_logs_path: ${retain_logs_path}
-#     overwrite: true
-#     question_key: ${question_key}
-
-# data:
-#   anchor: forget
-#   forget:
-#     TOFU_QA_forget:
-#       args:
-#         hf_args:
-#           name: ${forget_split}
-#   retain:
-#     TOFU_QA_retain:
-#       args:
-#         hf_args:
-#           name: ${retain_split}

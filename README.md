@@ -28,7 +28,7 @@ Create a task:
 discogen create-task --task-domain OnPolicyRL
 ```
 
-See the [full documentation](https://AlexGoldie.github.io/discogen/) for detailed usage. Please note that each task_domain has its own set of requirements which may need to be installed.
+See the [full documentation](https://AlexGoldie.github.io/discogen/) for detailed usage. Please note that each task_domain has its own set of requirements which may need to be installed, and these are often in conflict with the base DiscoGen requirements. This can be done using the `install.sh` script provided in each task folder.
 
 Every domain includes references in `discogen/domains/<task_domain>/utils/_reference.txt`.
 
