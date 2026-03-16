@@ -116,7 +116,7 @@ The agent must train multiple RL agents in cooperative and competitive multi-age
 The agent must train an on-policy RL agent in game and robotics environments.
 
 ### Modules
-`loss`, `networks`, `optim`, `train`
+`loss`, `networks`, `optim`, `train`, `activation`, `targets`
 
 ### Datasets
 `Brax/Ant`, `Brax/HalfCheetah`, `Brax/Hopper`, `Brax/Humanoid`, `Brax/Pusher`, `Brax/Reacher`, `Brax/Walker2D`, `Craftax/Craftax`, `Craftax/Craftax-Classic`, `MinAtar/Asterix`, `MinAtar/Breakout`, `MinAtar/Freeway`, `MinAtar/SpaceInvaders`
