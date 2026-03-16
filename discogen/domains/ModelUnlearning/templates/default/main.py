@@ -98,7 +98,7 @@ def unlearn(cfg: DictConfig):
     for _, evaluator in evaluators.items():
         summary_file = evaluator.get_logs_file_path(eval_dir, suffix="SUMMARY")
         with open(summary_file, 'r') as f:
-            print(json.dumps(json.load(f), indent=2))
+            print(json.dumps(json.load(f)))
 
 
 if __name__ == "__main__":

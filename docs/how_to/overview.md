@@ -46,7 +46,7 @@ OnPolicyRL/
 │   │
 │   └── utils/
 │       ├── _reference.txt
-│       ├── baseline_score.yaml
+│       ├── baseline_scores.yaml
 │       ├── description.md
 │       ├── requirements.txt
 │       ├── task_information.yaml
@@ -313,6 +313,17 @@ See `discogen/domains/ModelUnlearning` for an example of how `models` can be use
         MinAtar/SpaceInvaders: 137.625
       objective: max
     ```
+
+    Every entry in `baseline_scores.yaml` should have:
+    ```yaml
+    metric_name:
+      backend:
+        dataset_name1: score
+        dataset_name2: score
+      objective: max/min
+    ```
+
+    There can be multiple different metrics. Every metric should support all backends, but need not support every dataset. Every dataset can have multiple metrics, and each dataset should be included in at least 1 metric.
 
 17. **Create install.sh**
     * To make task installation easier, for every domain we create `install.sh` which will run all installation commands.
