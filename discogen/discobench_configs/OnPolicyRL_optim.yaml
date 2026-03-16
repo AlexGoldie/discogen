@@ -6,3 +6,5 @@ change_optim: true
 change_loss: false
 change_networks: false
 change_train: false
+change_activation: false
+change_targets: false

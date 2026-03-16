@@ -121,6 +121,8 @@ The agent must train an on-policy RL agent in game and robotics environments.
 ### Datasets
 `Brax/Ant`, `Brax/HalfCheetah`, `Brax/Hopper`, `Brax/Humanoid`, `Brax/Pusher`, `Brax/Reacher`, `Brax/Walker2D`, `Craftax/Craftax`, `Craftax/Craftax-Classic`, `MinAtar/Asterix`, `MinAtar/Breakout`, `MinAtar/Freeway`, `MinAtar/SpaceInvaders`
 
+Please note: some datasets are currently omitted from the DiscoBench tasks due to excessive runtimes. This is likely to change in the future.
+
 ## TrajectoryPrediction
 The agent must develop algorithms to predict the trajectories of traffic participants, such as cars or pedestrians.
 
