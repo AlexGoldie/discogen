@@ -8,7 +8,6 @@ This repository contains code for the DiscoGen modular benchmark for automated a
 
 - **GitHub repository**: <https://github.com/AlexGoldie/discogen/>
 - **Documentation**: <https://AlexGoldie.github.io/discogen/>
-- **Blog**: <https://alexgoldie.github.io/discogen-blog/>
 
 ## Quick Start
 
