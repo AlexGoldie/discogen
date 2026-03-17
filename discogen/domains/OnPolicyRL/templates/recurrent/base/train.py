@@ -59,7 +59,7 @@ def make_train(config):
 
         # INIT NETWORK
         network = ActorCritic(
-            get_action_dim(env.action_space(env_params)), config=config, activation=activation(config)
+            get_action_dim(env.action_space(env_params)), config=config, activation=get_activation(config)
         )
         rng, _rng = jax.random.split(rng)
         init_x = (
