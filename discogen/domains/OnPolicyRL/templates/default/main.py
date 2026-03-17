@@ -9,7 +9,7 @@ import jax.numpy as jnp
 import numpy as np
 import optax
 from config import config
-from activation import activation
+from activation import get_activation
 from flax.linen.initializers import constant, orthogonal
 from flax.training.train_state import TrainState
 from gymnax.environments import environment, spaces
@@ -92,7 +92,7 @@ def make_eval(config, num_episodes):
                     )
 
             network = ActorCritic(
-                get_action_dim(env.action_space(env_params)), config=config, activation=activation
+                get_action_dim(env.action_space(env_params)), config=config, activation=get_activation(config)
             )
             rng, _rng = jax.random.split(rng)
             rng_reset = jax.random.split(_rng, num_episodes)

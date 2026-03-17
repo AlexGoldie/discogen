@@ -13,4 +13,5 @@ config = {
     "HSIZE": 64,
     "MAX_GRAD_NORM": 0.5,
     "ANNEAL_LR": True,
+    "CONTINUOUS": False,
 }

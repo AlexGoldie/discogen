@@ -15,7 +15,7 @@ from loss import loss_actor_and_critic
 from make_env import make_env
 from networks import ActorCritic
 from optim import scale_by_optimizer
-from activation import activation
+from activation import get_activation
 from targets import get_targets
 from gymnax.environments import environment, spaces
 
@@ -39,7 +39,7 @@ def make_train(config):
 
         # INIT NETWORK
         network = ActorCritic(
-            get_action_dim(env.action_space(env_params)), config=config, activation=activation
+            get_action_dim(env.action_space(env_params)), config=config, activation=activation(config)
         )
         rng, _rng = jax.random.split(rng)
         init_x = jnp.zeros(env.observation_space(env_params).shape)

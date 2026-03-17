@@ -1,4 +1,8 @@
 import flax.linen as nn
+from typing import Callable
 
-def activation(x):
-    return nn.tanh(x)
+def get_activation(config) -> Callable:
+    if config.get("CONTINUOUS"):
+        return nn.tanh
+    else:
+        return nn.relu
