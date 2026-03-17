@@ -12,6 +12,6 @@ config = {
     "VF_COEF": 0.5,
     "HSIZE": 64,
     "MAX_GRAD_NORM": 0.5,
-    "ACTIVATION": "relu",
     "ANNEAL_LR": True,
+    "CONTINUOUS": False,
 }

@@ -1,5 +1,5 @@
 import functools
-from typing import Dict, Sequence
+from typing import Dict, Sequence, Callable
 
 import distrax
 import flax.linen as nn
@@ -42,22 +42,17 @@ class RecurrentModule(nn.Module):
 class ActorCritic(nn.Module):
     action_dim: Sequence[int]
     config: Dict
+    activation: Callable
 
     @nn.compact
     def __call__(self, hidden, x):
-        activation = self.config["ACTIVATION"]
         hsize = self.config["HSIZE"]
-
-        if activation == "relu":
-            activation = nn.relu
-        else:
-            activation = nn.tanh
 
         obs, dones = x
         embedding = nn.Dense(
             hsize, kernel_init=orthogonal(np.sqrt(2)), bias_init=constant(0.0)
         )(obs)
-        embedding = nn.relu(embedding)
+        embedding = self.activation(embedding)
 
         rnn_in = (embedding, dones)
         hidden, embedding = RecurrentModule()(hidden, rnn_in)
@@ -65,7 +60,7 @@ class ActorCritic(nn.Module):
         actor_mean = nn.Dense(
             hsize, kernel_init=orthogonal(2), bias_init=constant(0.0)
         )(embedding)
-        actor_mean = nn.relu(actor_mean)
+        actor_mean = self.activation(actor_mean)
         actor_mean = nn.Dense(
             self.action_dim, kernel_init=orthogonal(0.01), bias_init=constant(0.0)
         )(actor_mean)
@@ -81,7 +76,7 @@ class ActorCritic(nn.Module):
         critic = nn.Dense(hsize, kernel_init=orthogonal(2), bias_init=constant(0.0))(
             embedding
         )
-        critic = nn.relu(critic)
+        critic = self.activation(critic)
         critic = nn.Dense(1, kernel_init=orthogonal(1.0), bias_init=constant(0.0))(
             critic
         )

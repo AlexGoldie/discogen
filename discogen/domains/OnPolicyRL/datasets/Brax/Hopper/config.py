@@ -11,7 +11,6 @@ config = {
     "ENT_COEF": 0.0,
     "VF_COEF": 0.5,
     "MAX_GRAD_NORM": 0.5,
-    "ACTIVATION": "tanh",
     "HSIZE": 64,
     "ANNEAL_LR": True,
     "CONTINUOUS": True,

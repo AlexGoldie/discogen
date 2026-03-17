@@ -8,3 +8,5 @@ change_optim: false
 change_loss: false
 change_networks: false
 change_train: false
+change_activation: false
+change_targets: false

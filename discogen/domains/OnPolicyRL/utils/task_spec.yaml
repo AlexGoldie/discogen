@@ -10,3 +10,5 @@ module_files:
   - networks.py
   - optim.py
   - train.py
+  - activation.py
+  - targets.py

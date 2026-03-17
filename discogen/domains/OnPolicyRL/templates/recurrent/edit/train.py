@@ -16,6 +16,8 @@ from make_env import make_env
 from networks import ActorCritic, RecurrentModule
 from optim import scale_by_optimizer
 from gymnax.environments import environment, spaces
+from activation import get_activation
+from targets import get_targets
 
 def make_train(config):
 
@@ -38,7 +40,7 @@ def make_train(config):
 
         # INIT NETWORK
         network = ActorCritic(
-            get_action_dim(env.action_space(env_params)), config=config
+            get_action_dim(env.action_space(env_params)), config=config, activation=get_activation(config)
         )
         rng, _rng = jax.random.split(rng)
         init_x = (
@@ -74,6 +76,9 @@ def make_train(config):
 
         # STEP ENV
         obsv, env_state, reward, done, info = env.step(rng_step, env_state, action, env_params)
+
+        # Calculate advantages and targets
+        advantages, targets = get_targets(traj_batch, last_val, config)
 
         # CALCULATE THE GRADIENTS
         grad_fn = jax.value_and_grad(loss_actor_and_critic, has_aux=True)

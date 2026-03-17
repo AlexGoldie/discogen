@@ -18,6 +18,7 @@ class TransformerBlock(nn.Module):
 class ActorCritic(nn.Module):
     action_dim: int
     config: dict
+    activation: Callable
 
     @nn.compact
     def __call__(self, x):

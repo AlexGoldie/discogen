@@ -16,6 +16,8 @@ from loss import loss_actor_and_critic
 from make_env import make_env
 from networks import ActorCritic, RecurrentModule
 from optim import scale_by_optimizer
+from activation import get_activation
+from targets import get_targets
 
 
 class Transition(NamedTuple):
@@ -57,7 +59,7 @@ def make_train(config):
 
         # INIT NETWORK
         network = ActorCritic(
-            get_action_dim(env.action_space(env_params)), config=config
+            get_action_dim(env.action_space(env_params)), config=config, activation=get_activation(config)
         )
         rng, _rng = jax.random.split(rng)
         init_x = (
@@ -140,33 +142,7 @@ def make_train(config):
             _, _, last_val = network.apply(train_state.params, hstate, ac_in)
             last_val = last_val.squeeze(0)
 
-            def _calculate_gae(traj_batch, last_val, last_done):
-                def _get_advantages(gae_and_next_value, transition):
-                    gae, next_value, next_done = gae_and_next_value
-                    done, value, reward = (
-                        transition.done,
-                        transition.value,
-                        transition.reward,
-                    )
-                    delta = (
-                        reward + config["GAMMA"] * next_value * (1 - next_done) - value
-                    )
-                    gae = (
-                        delta
-                        + config["GAMMA"] * config["GAE_LAMBDA"] * (1 - next_done) * gae
-                    )
-                    return (gae, value, done), gae
-
-                _, advantages = jax.lax.scan(
-                    _get_advantages,
-                    (jnp.zeros_like(last_val), last_val, last_done),
-                    traj_batch,
-                    reverse=True,
-                    unroll=16,
-                )
-                return advantages, advantages + traj_batch.value
-
-            advantages, targets = _calculate_gae(traj_batch, last_val, last_done)
+            advantages, targets = get_targets(traj_batch, last_val, config)
 
             # UPDATE NETWORK
             def _update_epoch(update_state, unused):

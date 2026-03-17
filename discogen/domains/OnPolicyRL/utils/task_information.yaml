@@ -9,3 +9,9 @@ networks_prompt: |-
 
 train_prompt: |-
   You should change the train file, which can be found in `train.py`. In modern reinforcement learning, the train loop is responsible for collecting data from the environment, processing it (possibly multiple times), and then using it to update the parameters of the model. You should not change the name or interface of the function `train`. You are allowed to make whatever changes you like, but you should ensure that your training loop is compatible with the rest of the codebase. You should never change the logic for computing the return during or after training. Some useful function calls have been provided, though possibly not in the optimal place.
+
+activation_prompt: |-
+  You should change the activation file, which can be found in `activation.py`. In deep learning, the activation function is used to introduce non-linearity into the model, allowing neural networks to model complex, non-linear relationships. It also strongly affects gradient flow during backpropagation, influencing how efficiently errors propagate through the network, how fast the model learns, and whether training remains stable or suffers from issues such as vanishing or exploding gradients. You should not change the name or interface of the function `activation`.
+
+targets_prompt: |-
+  You should change the targets file, which can be found in `targets.py`. In reinforcement learning, the targets are the values that the agent is trying to predict, and the advantages are capture how good an action is. You should not change the name or interface of the function `get_targets`.
