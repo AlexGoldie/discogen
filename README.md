@@ -12,7 +12,6 @@ This repository contains code for the DiscoGen modular benchmark for automated a
 ## Quick Start
 
 Install DiscoGen:
-
 ```bash
 pip install discogen
 ```
@@ -22,9 +21,14 @@ List available domains:
 discogen get-domains
 ```
 
-Create a task:
+Create a task (the following will include a full implementation, and no editable modules):
 ```bash
 discogen create-task --task-domain OnPolicyRL
+```
+
+Create an example task for running an agent (with an incomplete set of modules):
+```bash
+discogen create-task --task-domain OnPolicyRL --example
 ```
 
 See the [full documentation](https://AlexGoldie.github.io/discogen/) for detailed usage. Please note that each task_domain has its own set of requirements which may need to be installed, and these are often in conflict with the base DiscoGen requirements. This can be done using the `install.sh` script provided in each task folder.
