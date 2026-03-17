@@ -26,7 +26,7 @@ Create a task (the following will include a full implementation, and no editable
 discogen create-task --task-domain OnPolicyRL
 ```
 
-Create an example task for running an agent:
+Create an example task for running an agent (with an incomplete set of modules):
 ```bash
 discogen create-task --task-domain OnPolicyRL --example
 ```
