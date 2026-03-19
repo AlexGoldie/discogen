@@ -6,6 +6,7 @@
 
 This repository contains code for the DiscoGen modular benchmark for automated algorithm discovery.
 
+- **Paper**: <https://arxiv.org/pdf/2603.17863>
 - **GitHub repository**: <https://github.com/AlexGoldie/discogen/>
 - **Documentation**: <https://AlexGoldie.github.io/discogen/>
 
