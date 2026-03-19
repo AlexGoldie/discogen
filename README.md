@@ -81,10 +81,14 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed development guidelines.
 If you use DiscoGen in your research, please cite:
 
 ```bibtex
-@article{goldie2026discogen,
-  title={DiscoGen: Procedural Generation of Algorithm Discovery Tasks in Machine Learning},
+@misc{goldie2026proceduralgenerationalgorithmdiscovery,
+  title={Procedural Generation of Algorithm Discovery Tasks in Machine Learning},
   author={Alexander D. Goldie and Zilin Wang and Adrian Hayler and Deepak Nathani and Edan Toledo and Ken Thampiratwong and Aleksandra Kalisz and Michael Beukman and Alistair Letcher and Shashank Reddy and Clarisse Wibault and Theo Wolf and Charles O'Neill and Uljad Berdica and Nicholas Roberts and Saeed Rahmani and Hannah Erlebach and Roberta Raileanu and Shimon Whiteson and Jakob N. Foerster},
-  year={2026}
+  year={2026},
+  eprint={2603.17863},
+  archivePrefix={arXiv},
+  primaryClass={cs.LG},
+  url={https://arxiv.org/abs/2603.17863},
 }
 ```
 
