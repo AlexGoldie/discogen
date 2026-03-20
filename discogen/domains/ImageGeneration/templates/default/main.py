@@ -322,7 +322,6 @@ class Trainer:
 
         while self.steps < self.max_steps:
             if not self._run_epoch(epoch):
-
                 print(f"GPU {self.rank}: Early stopping at step {self.steps}")
                 break
             epoch += 1

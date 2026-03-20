@@ -1,5 +1,6 @@
 import datasets
 
+
 def download_dataset(dest_loc: str):
     ds_dict = datasets.load_dataset("tglcourse/lsun_church_train")
     ds_dict.save_to_disk(dest_loc)

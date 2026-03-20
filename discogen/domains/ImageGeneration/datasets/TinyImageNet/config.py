@@ -13,10 +13,7 @@ config = {
         "steps": 200_000,
         "per_device_batch_size": 256,
         "num_classes": num_classes,
-        "optimizer": {
-            "lr": 2e-5, 
-            "weight_decay": 1e-4,
-        },
+        "optimizer": {"lr": 2e-5, "weight_decay": 1e-4},
         "early_stopping": {"n_fake_samples": 10_000, "interval": 10_000, "patience": 5},
     },
     "eval": {
@@ -40,6 +37,6 @@ config = {
         "channels": num_channels,
         "timesteps": timesteps,
         "image_size": transformed_image_size,
-        "dropout": 0.,
+        "dropout": 0.0,
     },
 }
