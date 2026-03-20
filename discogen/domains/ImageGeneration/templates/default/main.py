@@ -88,8 +88,6 @@ def ddp_cleanup():
 
 
 def preprocess(example, config: dict):
-    image_key = config["image_key"]
-    label_key = config.get("label_key", None)
     image_size = config["transformed_image_size"]
     channels = config["channels"]
 
@@ -103,24 +101,36 @@ def preprocess(example, config: dict):
     ])
 
     processed_images = []
-    for image in example[image_key]:
+    for image in example["image"]:
         if channels == 3 and image.mode != "RGB":
             image = image.convert("RGB")
 
         img_tensor = transform(image)
         processed_images.append(img_tensor)
 
-    labels = [0] * len(processed_images) if label_key is None else example[label_key]
-
-    return {"label": labels, "image": processed_images}
+    example["image"] = processed_images
+    return example
 
 
 def load_and_preprocess_data(config: dict) -> tuple:
+    image_key = config["image_key"]
+    label_key = config.get("label_key")
+
     dataset = load_dataset()
 
-    preprocess_fn = partial(preprocess, config=config)
-
     train_dataset, eval_dataset = dataset["train"], dataset["test"]
+
+    if image_key != "image":
+        train_dataset = train_dataset.rename_column(image_key, "image")
+        eval_dataset = eval_dataset.rename_column(image_key, "image")
+
+    if label_key is not None:
+        if label_key != "label":
+            train_dataset = train_dataset.rename_column(label_key, "label")
+    else:
+        train_dataset = train_dataset.add_column("label", [0] * len(train_dataset))
+
+    preprocess_fn = partial(preprocess, config=config)
     train_dataset = train_dataset.with_transform(preprocess_fn)
     eval_dataset = eval_dataset.with_transform(preprocess_fn)
 
@@ -148,6 +158,7 @@ class Trainer:
         eval_sampler=None,
         eval_interval=1_000,
         patience=5,
+        checkpoint_dir=Path("model"),
     ) -> None:
         self.model = model.to(rank)
         self.model = DDP(model, device_ids=[rank])
@@ -168,10 +179,21 @@ class Trainer:
         self.best_score = float("inf")
         self.score_not_improved_count = 0
         self.patience = patience
+        self.checkpoint_dir = checkpoint_dir
 
         self.metrics = TrainMetrics(None, None, 0, 0)
 
         self.rank = rank
+
+    def save_checkpoint(self, suffix):
+        if self.rank != 0:
+            return
+
+        self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
+        filename = f"checkpoint-{suffix}.pth"
+        checkpoint_path = self.checkpoint_dir / filename
+        torch.save(self.model.module.state_dict(), checkpoint_path)
+        print(f"GPU {self.rank}: Saved checkpoint to {checkpoint_path}")
 
     def _get_image_and_label(self, batch):
         images = batch["image"]
@@ -219,6 +241,9 @@ class Trainer:
 
             self.metrics.steps += 1
             self.steps += 1
+
+            if self.steps % 50_000 == 0:
+                self.save_checkpoint(f"{self.steps // 50_000}")
 
             if self.evaluator is not None and self.steps % self.eval_interval == 0 and not self._eval():
                 early_stopping = True
@@ -297,6 +322,7 @@ class Trainer:
 
         while self.steps < self.max_steps:
             if not self._run_epoch(epoch):
+
                 print(f"GPU {self.rank}: Early stopping at step {self.steps}")
                 break
             epoch += 1
@@ -304,10 +330,24 @@ class Trainer:
         torch.cuda.synchronize()
         train_time = time.perf_counter() - start
 
+        if self.rank == 0:
+            self.save_checkpoint("final")
+
         self.metrics.runtime = float(train_time)
 
 
-def train_model(rank, model, train_dataset, eval_dataset, features_dir, train_config, eval_config, queue, world_size):
+def train_model(
+    rank,
+    model,
+    train_dataset,
+    eval_dataset,
+    features_dir,
+    checkpoints_dir,
+    train_config,
+    eval_config,
+    queue,
+    world_size,
+):
     validation_split = train_config["validation_split"]
     max_steps = train_config["steps"]
     batch_size = train_config["per_device_batch_size"]
@@ -389,6 +429,7 @@ def train_model(rank, model, train_dataset, eval_dataset, features_dir, train_co
         eval_sampler=eval_sampler,
         eval_interval=early_stopping_eval_interval,
         patience=early_stopping_patience,
+        checkpoint_dir=checkpoints_dir,
     )
     trainer.train()
     metrics = trainer.metrics.dict()
@@ -439,7 +480,8 @@ def eval_model(rank, model, dataset, features_dir, config, queue, world_size):
 
 
 def main():
-    features_dir = "_features"
+    features_dir = Path("_features")
+    checkpoints_dir = Path("_checkpoints")
 
     dataset_name = config["meta"]["name"]
     seed = config["meta"]["seed"]
@@ -447,8 +489,8 @@ def main():
     print("Starting training and evaluation routine...")
     set_seed_all(seed)
 
-    Path(features_dir).mkdir(parents=True, exist_ok=True)
-    features_dir = f"{features_dir}/{dataset_name}.pt"
+    features_dir.mkdir(parents=True, exist_ok=True)
+    features_dir = features_dir / f"{dataset_name}.pth"
     train_dataset, eval_dataset = load_and_preprocess_data(config["preprocess"])
     model = get_model(config["model"])
 
@@ -458,10 +500,19 @@ def main():
 
     mp.spawn(
         train_model,
-        args=(model, train_dataset, eval_dataset, features_dir, config["train"], config["eval"], queue, world_size),
+        args=(
+            model,
+            train_dataset,
+            eval_dataset,
+            features_dir,
+            checkpoints_dir,
+            config["train"],
+            config["eval"],
+            queue,
+            world_size,
+        ),
         nprocs=world_size,
     )
-
     train_metrics_all = [queue.get() for _ in range(world_size)]
     key_values = defaultdict(list)
     for metrics in train_metrics_all:
@@ -474,6 +525,10 @@ def main():
         runtime=np.max(key_values["runtime"]),
         steps=key_values["steps"][0],
     ).dict()
+
+    state_dict = torch.load(f"{checkpoints_dir}/checkpoint-final.pth", map_location="cpu")
+    model.load_state_dict(state_dict)
+
     mp.spawn(eval_model, args=(model, eval_dataset, features_dir, config["eval"], queue, world_size), nprocs=world_size)
     eval_metrics = queue.get()
 

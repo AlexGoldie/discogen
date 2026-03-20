@@ -1,26 +1,26 @@
-num_classes = 10
+num_classes = 196
 num_channels = 3
-transformed_image_size = 32
+transformed_image_size = 256
 timesteps = 1000
-image_key = "img"
+image_key = "image"
 label_key = "label"
-dataset = "CIFAR10"
+dataset = "StanfordCars"
 
 config = {
-    "meta": {"name": dataset, "seed": 1},
+    "meta": {"name": dataset, "seed": 6},
     "train": {
         "validation_split": 0.2,
         "steps": 200_000,
-        "per_device_batch_size": 512,
+        "per_device_batch_size": 64,
         "num_classes": num_classes,
         "optimizer": {
-            "lr": 2e-4, 
+            "lr": 2e-5, 
             "weight_decay": 1e-4,
         },
-        "early_stopping": {"n_fake_samples": 10_000, "interval": 5_000, "patience": 4},
+        "early_stopping": {"n_fake_samples": 10_000, "interval": 10_000, "patience": 5},
     },
     "eval": {
-        "per_device_batch_size": 1024,
+        "per_device_batch_size": 128,
         "num_classes": num_classes,
         "dataset_name": dataset,
         "channels": num_channels,

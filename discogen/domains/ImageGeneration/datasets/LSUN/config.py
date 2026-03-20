@@ -1,26 +1,26 @@
-num_classes = 1000
+num_classes = 16
 num_channels = 3
-transformed_image_size = 64
+transformed_image_size = 256
 timesteps = 1000
 image_key = "image"
 label_key = "label"
-dataset = "ImageNet-1k"
+dataset = "LSUN"
 
 config = {
-    "meta": {"name": dataset, "seed": 8},
+    "meta": {"name": dataset, "seed": 16},
     "train": {
         "validation_split": 0.2,
         "steps": 200_000,
-        "per_device_batch_size": 256,
+        "per_device_batch_size": 64,
         "num_classes": num_classes,
         "optimizer": {
-            "lr": 2e-4, 
+            "lr": 2e-5, 
             "weight_decay": 1e-4,
         },
-        "early_stopping": {"n_fake_samples": 10_000, "interval": 5_000, "patience": 4},
+        "early_stopping": {"n_fake_samples": 10_000, "interval": 10_000, "patience": 5},
     },
     "eval": {
-        "per_device_batch_size": 512,
+        "per_device_batch_size": 256,
         "num_classes": num_classes,
         "dataset_name": dataset,
         "channels": num_channels,

@@ -1,13 +1,13 @@
-num_classes = 16
+num_classes = 2
 num_channels = 3
 transformed_image_size = 256
 timesteps = 1000
 image_key = "image"
 label_key = "label"
-dataset = "LSUN"
+dataset = "CelebAHQ"
 
 config = {
-    "meta": {"name": dataset, "seed": 16},
+    "meta": {"name": dataset, "seed": 8},
     "train": {
         "validation_split": 0.2,
         "steps": 200_000,
@@ -17,7 +17,7 @@ config = {
             "lr": 2e-5, 
             "weight_decay": 1e-4,
         },
-        "early_stopping": {"n_fake_samples": 10_000, "interval": 5_000, "patience": 4},
+        "early_stopping": {"n_fake_samples": 10_000, "interval": 10_000, "patience": 5},
     },
     "eval": {
         "per_device_batch_size": 256,
@@ -40,6 +40,6 @@ config = {
         "channels": num_channels,
         "timesteps": timesteps,
         "image_size": transformed_image_size,
-        "dropout": 0.,
+        "dropout": 0.1,
     },
 }

@@ -61,6 +61,7 @@ class FIDEvaluator:
         fake_features = []
         batches = num_to_groups(self.n_samples, self.batch_size)
 
+        torch.cuda.synchronize()
         model.eval()
 
         for batch in batches:
