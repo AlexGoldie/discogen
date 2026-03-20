@@ -20,11 +20,4 @@ def load_dataset(src_loc: str = "./StanfordCars/data"):
     combined_train = datasets.concatenate_datasets([dataset_dict[k] for k in requested_train_splits])
     combined_test = datasets.concatenate_datasets([dataset_dict[k] for k in requested_test_splits])
 
-    print(
-        "Dataset split finished: number of train samples =",
-        len(combined_train),
-        ", number of test samples =",
-        len(combined_test),
-    )
-
     return {"train": combined_train, "test": combined_test}
