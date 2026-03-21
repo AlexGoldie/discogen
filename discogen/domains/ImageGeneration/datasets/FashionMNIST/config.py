@@ -11,13 +11,13 @@ config = {
     "train": {
         "validation_split": 0.2,
         "steps": 200_000,
-        "per_device_batch_size": 512,
+        "per_device_batch_size": 256,
         "num_classes": num_classes,
         "optimizer": {"lr": 2e-4, "weight_decay": 1e-4},
         "early_stopping": {"n_fake_samples": 10_000, "interval": 10_000, "patience": 5},
     },
     "eval": {
-        "per_device_batch_size": 1024,
+        "per_device_batch_size": 512,
         "num_classes": num_classes,
         "dataset_name": dataset,
         "channels": num_channels,
