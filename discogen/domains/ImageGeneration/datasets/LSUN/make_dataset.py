@@ -9,4 +9,4 @@ def download_dataset(dest_loc: str):
 def load_dataset(src_loc: str = "./LSUN/data"):
     dataset = datasets.load_from_disk(src_loc)
 
-    return {"train": train, "test": dataset["test"]}
+    return {"train": dataset["train"], "test": dataset["test"]}
