@@ -479,15 +479,16 @@ def eval_model(rank, model, dataset, features_dir, config, queue, world_size):
 
 
 def main():
-    features_dir = Path("_features")
-    checkpoints_dir = Path("_checkpoints")
-
     dataset_name = config["meta"]["name"]
     seed = config["meta"]["seed"]
+
+    features_dir = Path("_features") / dataset_name
+    checkpoints_dir = Path("_checkpoints")
 
     print("Starting training and evaluation routine...")
     set_seed_all(seed)
 
+    checkpoints_dir.mkdir(parents=True, exist_ok=True)
     features_dir.mkdir(parents=True, exist_ok=True)
     features_dir = features_dir / f"{dataset_name}.pth"
     train_dataset, eval_dataset = load_and_preprocess_data(config["preprocess"])
