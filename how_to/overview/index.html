@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
     
     
       
@@ -33,7 +33,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -608,50 +608,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#dataset-integration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🗂️ Dataset Integration
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#verifying-your-task" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🧪 Verifying Your Task
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#nice-to-know" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        💡 Nice to Know
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🧭 Summary
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -877,50 +833,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#dataset-integration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🗂️ Dataset Integration
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#verifying-your-task" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🧪 Verifying Your Task
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#nice-to-know" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        💡 Nice to Know
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🧭 Summary
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -977,7 +889,7 @@ Your contribution is <em>hugely appreciated</em> and will help unlock new resear
 │   │
 │   └── utils/
 │       ├── _reference.txt
-│       ├── baseline_score.yaml
+│       ├── baseline_scores.yaml
 │       ├── description.md
 │       ├── requirements.txt
 │       ├── task_information.yaml
@@ -1264,6 +1176,26 @@ return_mean:
     MinAtar/Freeway: 58.232498
     MinAtar/SpaceInvaders: 137.625
   objective: max</code></p>
+<p>Every entry in <code>baseline_scores.yaml</code> should have:
+<code>yaml
+metric_name:
+  backend:
+    dataset_name1: score
+    dataset_name2: score
+  objective: max/min</code></p>
+<p>There can be multiple different metrics. Every metric should support all backends, but need not support every dataset. Every dataset can have multiple metrics, and each dataset should be included in at least 1 metric.</p>
+</li>
+<li>
+<p><strong>Create install.sh</strong></p>
+<ul>
+<li>To make task installation easier, for every domain we create <code>install.sh</code> which will run all installation commands.</li>
+<li>Generally, this can follow a standard template. This only needs to change if your domain involves installing packages over multiple different commands, or setting certain environment variables.</li>
+</ul>
+<p>The standard template is:
+```bash</p>
+<h1 id="usrbinenv-bash">!/usr/bin/env bash<a class="headerlink" href="#usrbinenv-bash" title="Permanent link">&para;</a></h1>
+<p>pip install -r requirements.txt
+```</p>
 </li>
 </ol>
 <p>✅ Done! Your task is ready for integration.</p>
@@ -1418,10 +1350,10 @@ One easy way is to (i) change edit to <code>false</code> for all modules and (ii
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
       
     
   </body>
