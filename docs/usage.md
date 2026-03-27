@@ -183,16 +183,24 @@ discogen create-task --task-domain DOMAIN [OPTIONS]
 ```
 
 **Required Options:**
+
 - `--task-domain TEXT`: The task domain to create (e.g., OnPolicyRL, LanguageModelling).
 
 **Optional Flags:**
 - `--test`: Create test task instead of training task.
+
 - `--config-path PATH`: Path to custom task_config.yaml (defaults to built-in config).
+
 - `--example`: Create example task using prebuilt example configs.
+
 - `--use-base`: Initialises modules in codebase to baseline implementations, rather than using the less structured `edit` files. Using this may make exploration harder, but will start the task from a reasonably performant and working implementation.
+
 - `--no-data`: Creates codebase without downloading or copying any data. This will not run in a production setting, but can be useful for quickly understanding how a codebase looks before running experiments (without having to wait for data download).
+
 - `--eval-type EVAL_TYPE`: The type of evaluation to use. This defaults to `performance`, meaning the agent must maximise the performance of the algorithm. We also support `energy`, where the agent must minimise the energy used to train a model with the algorithm, and `time`, where the agent must minimise the time used to train a model with the algorithm. Defaults to `performance`.
+
 - `--baseline-scale BASELINE_SCALE`: If using `eval_type=energy` or `eval_type=time`, the agent's objective is to match a threshold score using minimum resources. Adjusting the baseline score can be used to make tasks easier (`scale<1`) or harder (`scale>1`). Defaults to `1`, meaning the agent must match the score of the baseline implementation.
+
 - `--cache-root CACHE_ROOT`: Where downloaded data should be cached to.
 
 
@@ -254,14 +262,23 @@ Randomly sample a new config and save it locally. This will uniformly sample fro
 NOTE: After sampling a config, you will then need to create a task using the sampled task domain. Here, you could also change the `baseline_scale` if desired. We implement these as two separate commands to enable independent creation of meta-train and meta-test parts of the task.
 
 **Optional Flags**
+
 - `--p-edit FLOAT`: The probability each module is marked as editable.
+
 - `--p-data LIST`: A list of probabilities or weights for how each dataset is allocated. Can be a list of 2 values (`[p_meta_train, p_meta_test]`, which must be a set of probabilities with total <= 1), or a list of 3 values (`[w_meta_train, w_meta_test, w_exclude]`), which will be normalised into probabilities before sampling.
+
 - `--p-use-base FLOAT`: The probability of starting each editable module off from a baseline implementation, rather than using the interface-only inputs.
+
 - `--eval-type`: Which type of evaluation to use. Can be one of `["random", "performance", "time", "energy]`. `"random"` will randomly sample an `eval_type` dueing the config sampling process.
+
 - `--no-backends`: If passed, will only sample tasks from the `default` backend.
+
 - `--source-path PATH`: After creating the task (using the `create-task` command), where the task should be created.
+
 - `--max-attempts INT`: How many attempts to take to try to sample a config, before raising an error. Due to rejection sampling, certain probabilities can sometimes be overly restrictive, such that tasks are hard to come by.
+
 - `--seed INT`: A random seed for deterministic sampling of tasks.
+
 - `--config-dest PATH`: Where to save the sampled config file. This will default to `task_config.yaml`.
 
 ### `create-config`
@@ -269,9 +286,11 @@ NOTE: After sampling a config, you will then need to create a task using the sam
 Create a config yaml file, to enable manual editing and testing of files.
 
 **Required Options**
+
 - `--task-domain`: The task domain to make the default config for.
 
 **Optional Flags**
+
 - `--save-dir`: Where to save the config to. Defaults to `./task_configs`.
 
 ## Creating Tasks
