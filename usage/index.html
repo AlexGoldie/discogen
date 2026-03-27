@@ -1286,17 +1286,37 @@ change_train: false
 <p><strong>Usage:</strong></p>
 <pre><code class="language-bash">discogen create-task --task-domain DOMAIN [OPTIONS]
 </code></pre>
-<p><strong>Required Options:</strong>
-- <code>--task-domain TEXT</code>: The task domain to create (e.g., OnPolicyRL, LanguageModelling).</p>
-<p><strong>Optional Flags:</strong>
-- <code>--test</code>: Create test task instead of training task.
-- <code>--config-path PATH</code>: Path to custom task_config.yaml (defaults to built-in config).
-- <code>--example</code>: Create example task using prebuilt example configs.
-- <code>--use-base</code>: Initialises modules in codebase to baseline implementations, rather than using the less structured <code>edit</code> files. Using this may make exploration harder, but will start the task from a reasonably performant and working implementation.
-- <code>--no-data</code>: Creates codebase without downloading or copying any data. This will not run in a production setting, but can be useful for quickly understanding how a codebase looks before running experiments (without having to wait for data download).
-- <code>--eval-type EVAL_TYPE</code>: The type of evaluation to use. This defaults to <code>performance</code>, meaning the agent must maximise the performance of the algorithm. We also support <code>energy</code>, where the agent must minimise the energy used to train a model with the algorithm, and <code>time</code>, where the agent must minimise the time used to train a model with the algorithm. Defaults to <code>performance</code>.
-- <code>--baseline-scale BASELINE_SCALE</code>: If using <code>eval_type=energy</code> or <code>eval_type=time</code>, the agent's objective is to match a threshold score using minimum resources. Adjusting the baseline score can be used to make tasks easier (<code>scale&lt;1</code>) or harder (<code>scale&gt;1</code>). Defaults to <code>1</code>, meaning the agent must match the score of the baseline implementation.
-- <code>--cache-root CACHE_ROOT</code>: Where downloaded data should be cached to.</p>
+<p><strong>Required Options:</strong></p>
+<ul>
+<li><code>--task-domain TEXT</code>: The task domain to create (e.g., OnPolicyRL, LanguageModelling).</li>
+</ul>
+<p><strong>Optional Flags:</strong></p>
+<ul>
+<li>
+<p><code>--test</code>: Create test task instead of training task.</p>
+</li>
+<li>
+<p><code>--config-path PATH</code>: Path to custom task_config.yaml (defaults to built-in config).</p>
+</li>
+<li>
+<p><code>--example</code>: Create example task using prebuilt example configs.</p>
+</li>
+<li>
+<p><code>--use-base</code>: Initialises modules in codebase to baseline implementations, rather than using the less structured <code>edit</code> files. Using this may make exploration harder, but will start the task from a reasonably performant and working implementation.</p>
+</li>
+<li>
+<p><code>--no-data</code>: Creates codebase without downloading or copying any data. This will not run in a production setting, but can be useful for quickly understanding how a codebase looks before running experiments (without having to wait for data download).</p>
+</li>
+<li>
+<p><code>--eval-type EVAL_TYPE</code>: The type of evaluation to use. This defaults to <code>performance</code>, meaning the agent must maximise the performance of the algorithm. We also support <code>energy</code>, where the agent must minimise the energy used to train a model with the algorithm, and <code>time</code>, where the agent must minimise the time used to train a model with the algorithm. Defaults to <code>performance</code>.</p>
+</li>
+<li>
+<p><code>--baseline-scale BASELINE_SCALE</code>: If using <code>eval_type=energy</code> or <code>eval_type=time</code>, the agent's objective is to match a threshold score using minimum resources. Adjusting the baseline score can be used to make tasks easier (<code>scale&lt;1</code>) or harder (<code>scale&gt;1</code>). Defaults to <code>1</code>, meaning the agent must match the score of the baseline implementation.</p>
+</li>
+<li>
+<p><code>--cache-root CACHE_ROOT</code>: Where downloaded data should be cached to.</p>
+</li>
+</ul>
 <p><strong>Examples:</strong></p>
 <p>Create a meta-training task for OnPolicyRL (note, this will use the baseline codebase which does <em>not</em> include editable modules):</p>
 <pre><code class="language-bash">discogen create-task --task-domain OnPolicyRL
@@ -1330,22 +1350,46 @@ Shows which modular components are available in each domain (e.g., loss, network
 <h3 id="sample-task-config"><code>sample-task-config</code><a class="headerlink" href="#sample-task-config" title="Permanent link">&para;</a></h3>
 <p>Randomly sample a new config and save it locally. This will uniformly sample from domains, and use weighted sampling according to command args to select editable modules, and meta-train and meta-test datasets.</p>
 <p>NOTE: After sampling a config, you will then need to create a task using the sampled task domain. Here, you could also change the <code>baseline_scale</code> if desired. We implement these as two separate commands to enable independent creation of meta-train and meta-test parts of the task.</p>
-<p><strong>Optional Flags</strong>
-- <code>--p-edit FLOAT</code>: The probability each module is marked as editable.
-- <code>--p-data LIST</code>: A list of probabilities or weights for how each dataset is allocated. Can be a list of 2 values (<code>[p_meta_train, p_meta_test]</code>, which must be a set of probabilities with total &lt;= 1), or a list of 3 values (<code>[w_meta_train, w_meta_test, w_exclude]</code>), which will be normalised into probabilities before sampling.
-- <code>--p-use-base FLOAT</code>: The probability of starting each editable module off from a baseline implementation, rather than using the interface-only inputs.
-- <code>--eval-type</code>: Which type of evaluation to use. Can be one of <code>["random", "performance", "time", "energy]</code>. <code>"random"</code> will randomly sample an <code>eval_type</code> dueing the config sampling process.
-- <code>--no-backends</code>: If passed, will only sample tasks from the <code>default</code> backend.
-- <code>--source-path PATH</code>: After creating the task (using the <code>create-task</code> command), where the task should be created.
-- <code>--max-attempts INT</code>: How many attempts to take to try to sample a config, before raising an error. Due to rejection sampling, certain probabilities can sometimes be overly restrictive, such that tasks are hard to come by.
-- <code>--seed INT</code>: A random seed for deterministic sampling of tasks.
-- <code>--config-dest PATH</code>: Where to save the sampled config file. This will default to <code>task_config.yaml</code>.</p>
+<p><strong>Optional Flags</strong></p>
+<ul>
+<li>
+<p><code>--p-edit FLOAT</code>: The probability each module is marked as editable.</p>
+</li>
+<li>
+<p><code>--p-data LIST</code>: A list of probabilities or weights for how each dataset is allocated. Can be a list of 2 values (<code>[p_meta_train, p_meta_test]</code>, which must be a set of probabilities with total &lt;= 1), or a list of 3 values (<code>[w_meta_train, w_meta_test, w_exclude]</code>), which will be normalised into probabilities before sampling.</p>
+</li>
+<li>
+<p><code>--p-use-base FLOAT</code>: The probability of starting each editable module off from a baseline implementation, rather than using the interface-only inputs.</p>
+</li>
+<li>
+<p><code>--eval-type</code>: Which type of evaluation to use. Can be one of <code>["random", "performance", "time", "energy]</code>. <code>"random"</code> will randomly sample an <code>eval_type</code> dueing the config sampling process.</p>
+</li>
+<li>
+<p><code>--no-backends</code>: If passed, will only sample tasks from the <code>default</code> backend.</p>
+</li>
+<li>
+<p><code>--source-path PATH</code>: After creating the task (using the <code>create-task</code> command), where the task should be created.</p>
+</li>
+<li>
+<p><code>--max-attempts INT</code>: How many attempts to take to try to sample a config, before raising an error. Due to rejection sampling, certain probabilities can sometimes be overly restrictive, such that tasks are hard to come by.</p>
+</li>
+<li>
+<p><code>--seed INT</code>: A random seed for deterministic sampling of tasks.</p>
+</li>
+<li>
+<p><code>--config-dest PATH</code>: Where to save the sampled config file. This will default to <code>task_config.yaml</code>.</p>
+</li>
+</ul>
 <h3 id="create-config"><code>create-config</code><a class="headerlink" href="#create-config" title="Permanent link">&para;</a></h3>
 <p>Create a config yaml file, to enable manual editing and testing of files.</p>
-<p><strong>Required Options</strong>
-- <code>--task-domain</code>: The task domain to make the default config for.</p>
-<p><strong>Optional Flags</strong>
-- <code>--save-dir</code>: Where to save the config to. Defaults to <code>./task_configs</code>.</p>
+<p><strong>Required Options</strong></p>
+<ul>
+<li><code>--task-domain</code>: The task domain to make the default config for.</li>
+</ul>
+<p><strong>Optional Flags</strong></p>
+<ul>
+<li><code>--save-dir</code>: Where to save the config to. Defaults to <code>./task_configs</code>.</li>
+</ul>
 <h2 id="creating-tasks_1">Creating Tasks<a class="headerlink" href="#creating-tasks_1" title="Permanent link">&para;</a></h2>
 <h3 id="workflow-1-using-an-example-config">Workflow 1: Using an example config<a class="headerlink" href="#workflow-1-using-an-example-config" title="Permanent link">&para;</a></h3>
 <pre><code class="language-bash"># 1. Create the task
