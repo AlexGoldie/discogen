@@ -187,6 +187,7 @@ discogen create-task --task-domain DOMAIN [OPTIONS]
 - `--task-domain TEXT`: The task domain to create (e.g., OnPolicyRL, LanguageModelling).
 
 **Optional Flags:**
+
 - `--test`: Create test task instead of training task.
 
 - `--config-path PATH`: Path to custom task_config.yaml (defaults to built-in config).
