@@ -27,7 +27,7 @@ if __name__ == "__main__":
     assert predictions.shape == train_data_p[:, -1].shape
 
     mse = np.mean((predictions - train_data_p[:, -1]) ** 2)
-    print(f"Train MSE: {train_mse}")
+    print(f"Train MSE: {mse}")
 
     test_data_file = script_dir / "data" / "test_data.npy"
 
@@ -42,4 +42,4 @@ if __name__ == "__main__":
     assert predictions.shape == test_data_p[:, -1].shape
 
     test_mse = np.mean((predictions - test_data_p[:, -1]) ** 2)
-    print(json.dumps({"Test MSE": test_mse, "Train MSE": train_mse}))
+    print(json.dumps({"Test MSE": test_mse, "Train MSE": mse}))
