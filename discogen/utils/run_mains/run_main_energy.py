@@ -4,7 +4,7 @@ import subprocess
 import sys
 from typing import Any
 
-from codecarbon import EmissionsTracker  # type: ignore[import-untyped]
+from codecarbon import EmissionsTracker
 
 
 def run_all_main_py(start_dir: str = ".") -> dict[str, Any]:

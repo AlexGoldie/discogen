@@ -13,7 +13,7 @@ def make_env() -> tuple[Callable[[dict[str, jnp.ndarray]], jnp.ndarray], dict[st
 
     def hartmann6d(params: dict[str, jnp.ndarray]) -> jnp.ndarray:
         x = jnp.array([params['x1'], params['x2'], params['x3'],
-                    params['x4'], params['x5'], params['x6']])
+                    params['x4'], params['x5'], params['x6']]).flatten()
         alpha = jnp.array([1.0, 1.2, 3.0, 3.2])
         A = jnp.array([
             [10, 3, 17, 3.5, 1.7, 8],
