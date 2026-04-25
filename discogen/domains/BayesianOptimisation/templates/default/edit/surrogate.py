@@ -14,14 +14,15 @@ class SurrogateBase(nn.Module):
     """
     config: dict[str, Any]
 
-    def neg_log_likelihood(self, X: jnp.ndarray, y: jnp.ndarray) -> jnp.ndarray:
+    def neg_log_likelihood(self, X: jnp.ndarray, y: jnp.ndarray, mask: jnp.ndarray) -> jnp.ndarray:
         raise NotImplementedError
 
     def predict(
         self,
         X_test: jnp.ndarray,
         X: Optional[jnp.ndarray | None] = None,
-        y: Optional[jnp.ndarray | None] = None
+        y: Optional[jnp.ndarray | None] = None,
+        mask: Optional[jnp.ndarray | None] = None
     ) -> Tuple[jnp.ndarray, jnp.ndarray]:
         raise NotImplementedError
 
@@ -44,28 +45,33 @@ class Surrogate(SurrogateBase):
         self.surrogate_params = surrogate_params # noqa
 
     @nn.compact
-    def __call__(self, X: jnp.ndarray, y:jnp.ndarray) -> Any:
+    def __call__(self, X: jnp.ndarray, y: jnp.ndarray, mask: Optional[jnp.ndarray] = None) -> GaussianProcess:
         assert X.ndim == 2, "Input must be a 2D array"
-        # --- Fill in the base surrogate model call here. ---
-        return surrogate_call(X, y) # noqa
+        # --- handle optional mask (1 for valid, 0 for padded) ---
+        if mask is None:
+            mask = jnp.ones((X.shape[0],))
 
-    def neg_log_likelihood(self, X: jnp.ndarray, y: jnp.ndarray) -> jnp.ndarray:
+        # --- Fill in the base surrogate model call here. ---
+        return surrogate_call(X, y, mask) # noqa
+
+    def neg_log_likelihood(self, X: jnp.ndarray, y: jnp.ndarray, mask: Optional[jnp.ndarray] = None) -> jnp.ndarray:
         """
         Function to compute the negative log-likelihood of the surrogate model.
         Used to fit the parameters of the surrogate model.
         Args:
             X: Training inputs.
             y: Training targets.
+            mask: Binary mask (1 for valid, 0 for padded).
         Returns:
             Negative log-likelihood of the data under the surrogate model.
         """
         # --- Fill in the negative log-likelihood calculation here. It should use the surrogate model call, and return a scalar value. ---
-        surrogate_call = self(X, y) # noqa
+        surrogate_call = self(X, y, mask) # noqa
         # --- Use the surrogate call to compute the negative log-likelihood. ---
         # The negative log-likelihood should be a scalar value.
         return neg_log_likelihood # noqa
 
-    def predict(self, X_test: jnp.ndarray, X: Optional[jnp.ndarray | None] = None, y: Optional[jnp.ndarray | None] = None) -> Tuple[jnp.ndarray, jnp.ndarray]:
+    def predict(self, X_test: jnp.ndarray, X: Optional[jnp.ndarray | None] = None, y: Optional[jnp.ndarray | None] = None, mask: Optional[jnp.ndarray] = None) -> Tuple[jnp.ndarray, jnp.ndarray]:
         """
         Outputs predicted mean and predicted variance at test points.
         If the surrogate model is parametric, X and y can just be ignored, but these are still passed into the predict method, to ensure consistency with the other modules.
@@ -73,6 +79,7 @@ class Surrogate(SurrogateBase):
             X_test: Test inputs.
             X: Training inputs (have as an input, but can be ignored if you choose to make the surrogate model parametric).
             y: Training targets (have as an input, but can be ignored if you choose to make the surrogate model parametric).
+            mask: Binary mask (1 for valid, 0 for padded).
         Returns:
             Jax Arrays of the predicted mean and variance of the surrogate model at the test points.
         """

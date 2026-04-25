@@ -4,10 +4,12 @@ from typing import Any
 
 from surrogate import Surrogate
 
+
 def acq_fn(
     X_test: jnp.ndarray,
     X: jnp.ndarray,
     y: jnp.ndarray,
+    mask: jnp.ndarray,
     surrogate: Surrogate,
     surrogate_params: dict[str, Any],
     config: dict[str, Any],
@@ -18,6 +20,7 @@ def acq_fn(
         X_test: Test points.
         X: Training points.
         y: Training values.
+        mask: Binary mask (1 for valid, 0 for padded).
         surrogate: Surrogate model.
         surrogate_params: Surrogate model parameters.
         config: Configuration dictionary. [Must contain 'acq_kappa']
@@ -25,9 +28,9 @@ def acq_fn(
         UCB Acquisition Function values.
     """
     mu, var = surrogate.apply(
-        surrogate_params, X_test=X_test, X=X, y=y, method=type(surrogate).predict
+        surrogate_params, X_test=X_test, X=X, y=y, mask=mask, method=type(surrogate).predict
     )
-    sigma = jnp.sqrt(jnp.clip(var, a_min=0.0)) + 1e-9
+    sigma = jnp.sqrt(jnp.clip(var, min=0.0)) + 1e-9
     kappa = float(config.get("acq_kappa", 2.0))
     return jnp.squeeze(mu + kappa * sigma)
 
@@ -36,6 +39,7 @@ def expected_improvement(
     X_test: jnp.ndarray,
     X: jnp.ndarray,
     y: jnp.ndarray,
+    mask: jnp.ndarray,
     surrogate: Surrogate,
     surrogate_params: dict[str, Any],
     config: dict[str, Any],
@@ -46,6 +50,7 @@ def expected_improvement(
         X_test: Test points.
         X: Training points.
         y: Training values.
+        mask: Binary mask (1 for valid, 0 for padded).
         surrogate: Surrogate model.
         surrogate_params: Surrogate model parameters.
         config: Configuration dictionary. [Must contain 'acq_xi']
@@ -60,11 +65,12 @@ def expected_improvement(
         # stable cdf via erf
         return 0.5 * (1.0 + jsp_special.erf(z / jnp.sqrt(2.0)))
 
-    ymax = jnp.max(y)
+    # --- compute max only over valid observations ---
+    ymax = jnp.max(jnp.where(mask > 0, y, -jnp.inf))
     mu, var = surrogate.apply(
-        surrogate_params, X_test=X_test, X=X, y=y, method=type(surrogate).predict
+        surrogate_params, X_test=X_test, X=X, y=y, mask=mask, method=type(surrogate).predict
     )
-    sigma = jnp.sqrt(jnp.clip(var, a_min=0.0)) + 1e-9
+    sigma = jnp.sqrt(jnp.clip(var, min=0.0)) + 1e-9
 
     a = mu - ymax - config['acq_xi']
     z = a / sigma

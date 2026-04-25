@@ -7,6 +7,7 @@ def acq_fn(
     X_test: jnp.ndarray,
     X: jnp.ndarray,
     y: jnp.ndarray,
+    mask: Optional[jnp.ndarray],
     surrogate: Surrogate,
     surrogate_params: dict[str, Any],
     config: dict[str, Any],
@@ -19,13 +20,14 @@ def acq_fn(
         X: Training inputs to condition the surrogate model on (in case the surrogate model is non-parametric).
         y: Training targets to condition the surrogate model on (in case the surrogate model is non-parametric).
         surrogate: Surrogate model.
+        mask: Binary mask (1 for valid, 0 for padded).
         surrogate_params: Tuned surrogate model parameters (already fitted to the training data).
         config: Configuration dictionary.
     Returns:
         Acquisition Function values at the candidate test points.
     """
     mu, var = surrogate.apply(
-        surrogate_params, X_test=X_test, X=X, y=y, method=type(surrogate).predict
+        surrogate_params, X_test=X_test, X=X, y=y, mask=mask, method=type(surrogate).predict
     )
     # --- Fill in your acquisition function here, using some combination of the surrogate model mean and variance predictions.
     # Ensure that the acquisition function is differentiable, so that it can be optimised further locally.
