@@ -17,13 +17,13 @@ def build_acq_fn_gradient_optimizer(config:dict[str, Any]) -> optax.GradientTran
         Gradient optimizer for the acquisition function.
     """
     # --- Fill in your construction of the gradient optimizer here. ---
-    return optimizer # noqa
+    return ... # noqa
 
 
 def gradient_acq_fn_optimizer(sample_point: jnp.ndarray,
-                  acq_fn: Callable[[jnp.ndarray, jnp.ndarray, jnp.ndarray, Surrogate, dict[str, Any], dict[str, Any]], jnp.ndarray],
-                  acq_gradient_optimizer: optax.GradientTransformation,
-                  config: dict[str, Any]) -> jnp.ndarray:
+                acq_fn: Callable[[jnp.ndarray], jnp.ndarray],
+                acq_gradient_optimizer: optax.GradientTransformation,
+                config: dict[str, Any]) -> jnp.ndarray:
     """
     Function to locally optimise the acquisition function at a single point.
     Args:
@@ -36,11 +36,12 @@ def gradient_acq_fn_optimizer(sample_point: jnp.ndarray,
     """
     # --- optimise the acquisition function i.e. minimise negative acquisition function ---
     value_and_grad_fun = optax.value_and_grad_from_state(lambda x: -acq_fn(x))
+    value_fn=lambda x: -acq_fn(x)
 
     def step(carry: tuple, _: None) -> tuple[tuple, None]:
         sample_point, state = carry
         value, grad = value_and_grad_fun(sample_point, state=state)
-        updates, state = acq_gradient_optimizer.update(grad, state, sample_point, value=value, grad=grad, value_fn=acq_fn)
+        updates, state = acq_gradient_optimizer.update(grad, state, sample_point, value=value, grad=grad, value_fn=value_fn)
         sample_point = optax.apply_updates(sample_point, updates)
         sample_point = jnp.clip(sample_point, -1e6, 1e6)
         return (sample_point, state), None
@@ -52,10 +53,11 @@ def gradient_acq_fn_optimizer(sample_point: jnp.ndarray,
 
 
 def acq_fn_optimizer(candidate_samples: jnp.ndarray,
-            acq_fn: Callable[[jnp.ndarray, jnp.ndarray, jnp.ndarray, Surrogate, dict[str, Any], dict[str, Any]], jnp.ndarray],
+            acq_fn: Callable[[jnp.ndarray, jnp.ndarray, jnp.ndarray, jnp.ndarray, Surrogate, dict[str, Any], dict[str, Any]], jnp.ndarray],
             acq_fn_gradient_optimizer: optax.GradientTransformation,
             X: jnp.ndarray,
             y: jnp.ndarray,
+            mask: jnp.ndarray,
             surrogate: Surrogate,
             surrogate_params: dict[str, Any],
             config: dict[str, Any]) -> dict[str, Any]:
@@ -68,6 +70,7 @@ def acq_fn_optimizer(candidate_samples: jnp.ndarray,
         acq_fn_gradient_optimizer: Optimizer to use for gradient optimization.
         X: Training points.
         y: Training values.
+        mask: Binary mask (1 for valid, 0 for padded).
         surrogate: Surrogate model.
         surrogate_params: Surrogate model parameters.
         config: Configuration dictionary.
@@ -76,14 +79,14 @@ def acq_fn_optimizer(candidate_samples: jnp.ndarray,
     """
 
     # --- compute acquisition function values for sampled points ---
-    acq_fn = partial(acq_fn, X=X, y=y, surrogate=surrogate, surrogate_params=surrogate_params, config=config)
-    acq_vals = acq_fn(candidate_samples)
+    partial_acq_fn = partial(acq_fn, X=X, y=y, mask=mask, surrogate=surrogate, surrogate_params=surrogate_params, config=config)
+    acq_vals = partial_acq_fn(candidate_samples)
 
     # --- find best N points and optimize acquisition function locally ---
     top_idxs = jnp.argsort(acq_vals)[-config['acq_top_n_samples']:]
     init_points = candidate_samples[top_idxs]
-    opt_candidate_samples = jax.vmap(lambda x: gradient_acq_fn_optimizer(x[None, :], acq_fn, acq_fn_gradient_optimizer, config=config).squeeze(0))(init_points)
-    opt_acq_vals = acq_fn(opt_candidate_samples)
+    opt_candidate_samples = jax.vmap(lambda x: gradient_acq_fn_optimizer(x[None, :], partial_acq_fn, acq_fn_gradient_optimizer, config=config).squeeze(0))(init_points)
+    opt_acq_vals = partial_acq_fn(opt_candidate_samples)
 
     # --- concatenate acquisition function values and sampled points ---
     acq_vals = jnp.concatenate([acq_vals, opt_acq_vals], axis=0)

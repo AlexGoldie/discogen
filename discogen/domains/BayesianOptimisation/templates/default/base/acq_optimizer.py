@@ -7,7 +7,7 @@ from functools import partial
 from surrogate import Surrogate
 
 
-def build_acq_fn_gradient_optimizer(config:dict[str, Any]) -> optax.GradientTransformation:
+def build_acq_fn_gradient_optimizer(config: dict[str, Any]) -> optax.GradientTransformation:
     """
     Builds the gradient optimizer for the acquisition function.
     Args:
@@ -19,14 +19,14 @@ def build_acq_fn_gradient_optimizer(config:dict[str, Any]) -> optax.GradientTran
 
 
 def gradient_acq_fn_optimizer(sample_point: jnp.ndarray,
-                  acq_fn: Callable[[jnp.ndarray, jnp.ndarray, jnp.ndarray, Surrogate, dict[str, Any], dict[str, Any]], jnp.ndarray],
-                  acq_gradient_optimizer: optax.GradientTransformation,
-                  config: dict[str, Any]) -> jnp.ndarray:
+                              acq_fn: Callable[[jnp.ndarray], jnp.ndarray],
+                              acq_gradient_optimizer: optax.GradientTransformation,
+                              config: dict[str, Any]) -> jnp.ndarray:
     """
     Function to locally optimise the acquisition function at a single point.
     Args:
         sample_point: Single point to optimize.
-        acq: Acquisition function to maximize. Must return a scalar value and support automatic differentiation.
+        acq_fn: Acquisition function to maximize (partial with X, y, mask, surrogate, etc. already bound). Must return a scalar value and support automatic differentiation.
         acq_gradient_optimizer: Optimizer to use for gradient optimization.
         config: Configuration dictionary.
     Returns:
@@ -35,10 +35,12 @@ def gradient_acq_fn_optimizer(sample_point: jnp.ndarray,
     # --- optimise the acquisition function i.e. minimise negative acquisition function ---
     value_and_grad_fun = optax.value_and_grad_from_state(lambda x: -acq_fn(x))
 
+    value_fn=lambda x: -acq_fn(x)
+
     def step(carry: tuple, _: None) -> tuple[tuple, None]:
         sample_point, state = carry
         value, grad = value_and_grad_fun(sample_point, state=state)
-        updates, state = acq_gradient_optimizer.update(grad, state, sample_point, value=value, grad=grad, value_fn=acq_fn)
+        updates, state = acq_gradient_optimizer.update(grad, state, sample_point, value=value, grad=grad, value_fn=value_fn)
         sample_point = optax.apply_updates(sample_point, updates)
         sample_point = jnp.clip(sample_point, -1e6, 1e6)
         return (sample_point, state), None
@@ -50,13 +52,14 @@ def gradient_acq_fn_optimizer(sample_point: jnp.ndarray,
 
 
 def acq_fn_optimizer(candidate_samples: jnp.ndarray,
-            acq_fn: Callable[[jnp.ndarray, jnp.ndarray, jnp.ndarray, Surrogate, dict[str, Any], dict[str, Any]], jnp.ndarray],
-            acq_fn_gradient_optimizer: optax.GradientTransformation,
-            X: jnp.ndarray,
-            y: jnp.ndarray,
-            surrogate: Surrogate,
-            surrogate_params: dict[str, Any],
-            config: dict[str, Any]) -> dict[str, Any]:
+                     acq_fn: Callable[[jnp.ndarray, jnp.ndarray, jnp.ndarray, jnp.ndarray, Surrogate, dict[str, Any], dict[str, Any]], jnp.ndarray],
+                     acq_fn_gradient_optimizer: optax.GradientTransformation,
+                     X: jnp.ndarray,
+                     y: jnp.ndarray,
+                     mask: jnp.ndarray,
+                     surrogate: Surrogate,
+                     surrogate_params: dict[str, Any],
+                     config: dict[str, Any]) -> dict[str, Any]:
     """
     Function to globally optimise the acquisition function over a set of candidate points.
     Further optimises the query by implementing local, gradient-based optimisation of the acquisition function at the top N points.
@@ -66,6 +69,7 @@ def acq_fn_optimizer(candidate_samples: jnp.ndarray,
         acq_fn_gradient_optimizer: Optimizer to use for gradient optimization.
         X: Training points.
         y: Training values.
+        mask: Binary mask (1 for valid, 0 for padded).
         surrogate: Surrogate model.
         surrogate_params: Surrogate model parameters.
         config: Configuration dictionary.
@@ -74,7 +78,7 @@ def acq_fn_optimizer(candidate_samples: jnp.ndarray,
     """
 
     # --- compute acquisition function values for sampled points ---
-    partial_acq_fn = partial(acq_fn, X=X, y=y, surrogate=surrogate, surrogate_params=surrogate_params, config=config)
+    partial_acq_fn = partial(acq_fn, X=X, y=y, mask=mask, surrogate=surrogate, surrogate_params=surrogate_params, config=config)
     acq_vals = partial_acq_fn(candidate_samples)
 
     # --- find best N points and optimize acquisition function locally ---

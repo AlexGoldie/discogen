@@ -15,4 +15,3 @@ These are the datasets supported by this task and their reference links:
 # Codebase References
 - The code templates for this task are adapted from the following repositories:
   - HuggingFace Transformers Trainer: https://huggingface.co/docs/transformers/en/main_classes/trainer
-  - MLGym: https://github.com/facebookresearch/MLGym
