@@ -1,11 +1,16 @@
+import os
+
+os.environ["TF_CUDNN_DETERMINISTIC"] = "1"
+os.environ["XLA_FLAGS"] = (
+    "--xla_gpu_deterministic_ops=true "
+    "--xla_gpu_triton_gemm_any=true"
+)
+os.environ.pop("LD_LIBRARY_PATH", None)
+os.environ.pop("CUDA_VISIBLE_DEVICES", None)
+
 import jax
 import json
 import jax.numpy as jnp
-import os
-
-os.environ["XLA_FLAGS"] = "--xla_gpu_triton_gemm_any=True"
-os.environ.pop("LD_LIBRARY_PATH", None)
-os.environ.pop("CUDA_VISIBLE_DEVICES", None)
 
 from surrogate import Surrogate, fit_posterior
 from next_queries import next_queries

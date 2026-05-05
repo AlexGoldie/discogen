@@ -1,5 +1,7 @@
 import json
 import os
+os.environ["XLA_FLAGS"] = "--xla_gpu_deterministic_ops=true"
+os.environ["TF_CUDNN_DETERMINISTIC"] = "1"  # affects cuDNN-backed ops
 
 import jax
 import jax.numpy as jnp
