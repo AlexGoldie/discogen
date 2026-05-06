@@ -1,7 +1,10 @@
+import os
+os.environ["XLA_FLAGS"] = "--xla_gpu_deterministic_ops=true"
+os.environ["TF_CUDNN_DETERMINISTIC"] = "1"
+
 import jax
 from config import config
 from train import make_train
-import os
 from config import config
 from make_env import make_env
 from networks import QNetwork
