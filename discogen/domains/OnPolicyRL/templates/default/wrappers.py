@@ -6,6 +6,7 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 from brax import envs as brax_envs
+from brax.envs.base import Wrapper as BraxWrapper
 from flax import struct
 from gymnax.environments import environment, spaces
 
@@ -68,7 +69,7 @@ class LogWrapper(GymnaxWrapper):
             + new_episode_length * done,
             timestep=state.timestep + 1,
         )
-        info = dict()
+        info = dict(info)
         info["returned_episode_returns"] = state.returned_episode_returns
         info["returned_episode_lengths"] = state.returned_episode_lengths
         info["timestep"] = state.timestep
@@ -114,6 +115,52 @@ class FlattenObservationWrapper(GymnaxWrapper):
         return obs, state, reward, done, info
 
 
+class GymnaxNoAutoResetWrapper(GymnaxWrapper):
+    """Expose Gymnax transitions before its built-in auto-reset."""
+
+    @partial(jax.jit, static_argnums=(0, 4))
+    def step(self, key, state, action, params=None):
+        obs, state, reward, step_done, info = self._env.step_env(
+            key, state, action, params
+        )
+
+        if hasattr(self._env, "is_terminated") and hasattr(
+            self._env, "is_truncated"
+        ):
+            terminated = self._env.is_terminated(state, params)
+            truncated = self._env.is_truncated(state, params)
+        else:
+            truncated = state.time >= params.max_steps_in_episode
+            # Older Gymnax versions include the time limit in step_done.
+            terminated = jnp.asarray(step_done) & ~jnp.asarray(truncated)
+
+        done = jnp.asarray(terminated) | jnp.asarray(truncated)
+        info = dict(info)
+        info["terminated"] = terminated
+        info["truncated"] = truncated
+        return obs, state, reward, done, info
+
+
+class CraftaxTerminationWrapper(GymnaxWrapper):
+    """Separate Craftax's natural terminals from its configured time limit."""
+
+    @partial(jax.jit, static_argnums=(0, 4))
+    def step(self, key, state, action, params=None):
+        obs, state, reward, _, info = self._env.step(key, state, action, params)
+
+        truncated = state.timestep >= params.max_timesteps
+        state_without_timeout = state.replace(
+            timestep=jnp.minimum(state.timestep, params.max_timesteps - 1)
+        )
+        terminated = self._env.is_terminal(state_without_timeout, params)
+        done = jnp.asarray(terminated) | jnp.asarray(truncated)
+
+        info = dict(info)
+        info["terminated"] = terminated
+        info["truncated"] = truncated
+        return obs, state, reward, done, info
+
+
 class AutoResetEnvWrapper(GymnaxWrapper):
     """Provides standard auto-reset functionality, providing the same behaviour as Gymnax-default."""
 
@@ -146,7 +193,25 @@ class AutoResetEnvWrapper(GymnaxWrapper):
 
         obs, state = auto_reset(done, state_re, state_st, obs_re, obs_st)
 
+        info = dict(info)
+        info["final_observation"] = obs_st
+
         return obs, state, reward, done, info
+
+
+class CaptureFinalObservation(BraxWrapper):
+    """Record Brax observations before its cached auto-reset replaces them."""
+
+    def reset(self, rng):
+        state = self.env.reset(rng)
+        # Keep the state info pytree identical between reset and step.
+        state.info["final_observation"] = state.obs
+        return state
+
+    def step(self, state, action):
+        state = self.env.step(state, action)
+        state.info["final_observation"] = state.obs
+        return state
 
 
 class BraxGymnaxWrapper:
@@ -156,6 +221,7 @@ class BraxGymnaxWrapper:
         env = brax_envs.wrappers.training.EpisodeWrapper(
             env, episode_length=1000, action_repeat=1
         )
+        env = CaptureFinalObservation(env)
         env = brax_envs.wrappers.training.AutoResetWrapper(env)
         self._env = env
         self.action_size = env.action_size
@@ -169,7 +235,15 @@ class BraxGymnaxWrapper:
 
     def step(self, key, state, action, params):
         next_state = self._env.step(state, action)
-        return next_state.obs, next_state, next_state.reward, next_state.done > 0.5, {}
+        done = next_state.done > 0.5
+        truncated = next_state.info["truncation"] > 0.5
+        terminated = done & ~truncated
+        info = {
+            "terminated": terminated,
+            "truncated": truncated,
+            "final_observation": next_state.info["final_observation"],
+        }
+        return next_state.obs, next_state, next_state.reward, done, info
 
     def observation_space(self, params):
         return spaces.Box(
@@ -254,8 +328,12 @@ class NormalizeObservation(GymnaxWrapper):
             count=new_count,
             env_state=env_state,
         )
+        scale = jnp.sqrt(state.var + 1e-8)
+        info = dict(info)
+        final_observation = info.get("final_observation", obs)
+        info["final_observation"] = (final_observation - state.mean) / scale
         return (
-            (obs - state.mean) / jnp.sqrt(state.var + 1e-8),
+            (obs - state.mean) / scale,
             state,
             reward,
             done,

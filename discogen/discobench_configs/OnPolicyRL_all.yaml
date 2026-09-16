@@ -8,3 +8,4 @@ change_networks: true
 change_train: true
 change_activation: true
 change_targets: true
+change_schedule: true

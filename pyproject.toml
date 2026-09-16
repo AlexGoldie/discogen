@@ -1,6 +1,6 @@
 [project]
 name = "discogen"
-version = "1.2.2"
+version = "1.3.0"
 description = "This repository contains code for the DiscoGen procedural generator for algorithm discovery tasks."
 authors = [{ name = "Alex Goldie", email = "goldie@robots.ox.ac.uk" }]
 readme = "README.md"

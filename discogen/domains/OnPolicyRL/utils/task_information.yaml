@@ -1,5 +1,5 @@
 optim_prompt: |-
-  You should change the optimizer file, which can be found in `optim.py`. In deep learning, optimization is used to descend the gradient of a loss function with respect to the parameters of a neural network. The correct functional form should implement a class, 'scale_by_optimizer', with functions 'init_fn' and 'update_fn'. Besides this, you are allowed to make make whatever changes you like. You will be using a fixed learning rate which is tuned to your algorithm.
+  You should change the optimizer file, which can be found in `optim.py`. In deep learning, optimization is used to descend the gradient of a loss function with respect to the parameters of a neural network, and can use different techniques for improving training stability and performance at convergence. The correct functional form should implement a class, 'scale_by_optimizer', inside `make_optimizer`, with functions 'init_fn' and 'update_fn'. `update_fn` applies to untransformed, raw gradients. Besides this, you are allowed to make make whatever changes you like. You will be using a learning rate which is tuned to your algorithm in `main.py`.
 
 loss_prompt: |-
   You should change the loss file, which can be found in `loss.py`. In deep learning, the loss provides an objective to minimize; in reinforcement learning, minimizing this objective corresponds to maximising the return of an agent. You should not change the name of the function, `loss_actor_and_critic`, or its inputs.
@@ -15,3 +15,6 @@ activation_prompt: |-
 
 targets_prompt: |-
   You should change the targets file, which can be found in `targets.py`. In reinforcement learning, the targets are the values that the agent is trying to predict, and the advantages are capture how good an action is. You should not change the name or interface of the function `get_targets`.
+
+schedule_prompt: |-
+  You should change the schedule file, which can be found in `schedule.py`. In deep learning, the learning rate scheduler is used to change the learning rate over the course of training to improve training stability and convergence performance. You make make whatever changes you like, so long as you do not change the name or interface of the function `make_schedule_fn` or `schedule_fn`. Note: `lr` is negative as it enters the function, to ensure gradient *descent* under the optax syntax.

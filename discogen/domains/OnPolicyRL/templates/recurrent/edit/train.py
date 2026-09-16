@@ -14,10 +14,11 @@ from flax.training.train_state import TrainState
 from loss import loss_actor_and_critic
 from make_env import make_env
 from networks import ActorCritic, RecurrentModule
-from optim import scale_by_optimizer
+from optim import make_optimizer
 from gymnax.environments import environment, spaces
 from activation import get_activation
 from targets import get_targets
+from schedule import make_schedule_fn
 
 def make_train(config):
 
@@ -52,15 +53,12 @@ def make_train(config):
         init_hstate = RecurrentModule.initialize_carry(config["NUM_ENVS"], config["HSIZE"])
         network_params = network.init(_rng, init_hstate, init_x)
 
-        opt = scale_by_optimizer()
-        def schedule(lr):
-            return schedule_logic * lr
-
-        # opt provides the scale_by_optimizer logic, but use full_opt in train state to combine opt, learning rate and other transformations
+        schedule_fn = make_schedule_fn(config, lr)
+        scale_by_optimizer = make_optimizer(config)
         full_opt = optax.chain(
             ...,
             scale_by_optimizer(),
-            optax.scale_by_schedule(schedule)
+            optax.scale_by_schedule(schedule_fn)
         )
 
         train_state = TrainState.create(

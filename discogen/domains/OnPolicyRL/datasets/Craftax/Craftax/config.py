@@ -1,6 +1,6 @@
 config = {
     "LR": 1e-4,
-    "ANNEAL_LR": True,
+    "SCHEDULE_LR": True,
     "NUM_ENVS": 256,
     "NUM_STEPS": 16,
     "TOTAL_TIMESTEPS": 1e8,

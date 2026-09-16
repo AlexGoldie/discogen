@@ -17,7 +17,6 @@ from gymnax.environments import environment, spaces
 from loss import loss_actor_and_critic
 from make_env import make_env
 from networks import ActorCritic, RecurrentModule
-from optim import scale_by_optimizer
 from train import make_train
 
 

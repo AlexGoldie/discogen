@@ -15,10 +15,10 @@ from gymnax.environments import environment, spaces
 from loss import loss_actor_and_critic
 from make_env import make_env
 from networks import ActorCritic, RecurrentModule
-from optim import scale_by_optimizer
+from optim import make_optimizer
 from activation import get_activation
 from targets import get_targets
-
+from schedule import make_schedule_fn
 
 class Transition(NamedTuple):
     done: jnp.ndarray
@@ -28,6 +28,7 @@ class Transition(NamedTuple):
     log_prob: jnp.ndarray
     obs: jnp.ndarray
     info: jnp.ndarray
+    next_done: jnp.ndarray
 
 
 def make_train(config):
@@ -40,14 +41,8 @@ def make_train(config):
     env, env_params = make_env()
 
     def train(rng, lr):
-
-        def linear_anneal(count):
-            frac = (
-                1.0
-                - (count // (config["NUM_MINIBATCHES"] * config["UPDATE_EPOCHS"]))
-                / config["NUM_UPDATES"]
-            )
-            return -lr * frac
+        # multiply lr by -1, since we focus on gradient *descent* and scale_by_optimizer is implemented for gradient *ascent*
+        lr = -1 * lr
 
         def get_action_dim(action_space):
             if isinstance(action_space, spaces.Discrete):
@@ -72,20 +67,22 @@ def make_train(config):
             config["NUM_ENVS"], config["HSIZE"]
         )
         network_params = network.init(_rng, init_hstate, init_x)
-        schedule_fn = optax.linear_schedule(
-            init_value=-lr, end_value=-lr, transition_steps=0
-        )
-        if config.get("ANNEAL_LR", True):
+
+        if config.get("SCHEDULE_LR", True):
+            scale_by_optimizer = make_optimizer(config)
+            schedule_fn = make_schedule_fn(config, lr)
             tx = optax.chain(
-                optax.clip_by_global_norm(config["MAX_GRAD_NORM"]),
-                scale_by_optimizer(),
-                optax.scale_by_schedule(linear_anneal),
-            )
-        else:
-            tx = optax.chain(
-                optax.clip_by_global_norm(config["MAX_GRAD_NORM"]),
                 scale_by_optimizer(),
                 optax.scale_by_schedule(schedule_fn),
+            )
+        else:
+            scale_by_optimizer = make_optimizer(config)
+            constant_schedule = optax.linear_schedule(
+                init_value=lr, end_value=lr, transition_steps=0
+            )
+            tx = optax.chain(
+                scale_by_optimizer(),
+                optax.scale_by_schedule(constant_schedule),
             )
         train_state = TrainState.create(
             apply_fn=network.apply,
@@ -125,8 +122,38 @@ def make_train(config):
                 obsv, env_state, reward, done, info = env.step(
                     rng_step, env_state, action, env_params
                 )
+
+                # Evaluate the genuine post-transition observation with the
+                # recurrent state produced from the current observation. Do
+                # not reset the recurrent state: the final observation still
+                # belongs to the episode that just truncated.
+                bootstrap_truncation = jnp.asarray(info["truncated"]) & ~jnp.asarray(
+                    info["terminated"]
+                )
+
+                def get_final_value(_):
+                    final_input = (
+                        info["final_observation"][np.newaxis, :],
+                        jnp.zeros_like(done)[np.newaxis, :],
+                    )
+                    _, _, final_value = network.apply(
+                        train_state.params, hstate, final_input
+                    )
+                    return final_value.squeeze(0)
+
+                final_value = jax.lax.cond(
+                    jnp.any(bootstrap_truncation),
+                    get_final_value,
+                    lambda _: jnp.zeros_like(value),
+                    operand=None,
+                )
+                reward = jnp.where(
+                    bootstrap_truncation,
+                    reward + config["GAMMA"] * jax.lax.stop_gradient(final_value),
+                    reward,
+                )
                 transition = Transition(
-                    last_done, action, value, reward, log_prob, last_obs, info
+                    last_done, action, value, reward, log_prob, last_obs, info, done
                 )
                 runner_state = (train_state, env_state, obsv, done, hstate, rng)
                 return runner_state, transition

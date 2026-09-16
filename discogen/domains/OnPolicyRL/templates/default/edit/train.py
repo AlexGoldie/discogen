@@ -11,13 +11,14 @@ import optax
 from config import config
 from flax.linen.initializers import constant, orthogonal
 from flax.training.train_state import TrainState
+from gymnax.environments import environment, spaces
 from loss import loss_actor_and_critic
 from make_env import make_env
 from networks import ActorCritic
-from optim import scale_by_optimizer
+from optim import make_optimizer
 from activation import get_activation
 from targets import get_targets
-from gymnax.environments import environment, spaces
+from schedule import make_schedule_fn
 
 def make_train(config):
 
@@ -45,15 +46,12 @@ def make_train(config):
         init_x = jnp.zeros(env.observation_space(env_params).shape)
         network_params = network.init(_rng, init_x)
 
-        opt = scale_by_optimizer()
-        def schedule(lr):
-            return schedule_logic * lr
-
-        # opt provides the scale_by_optimizer logic, but use full_opt in train state to combine opt, learning rate and other transformations
+        schedule_fn = make_schedule_fn(config, lr)
+        scale_by_optimizer = make_optimizer(config)
         full_opt = optax.chain(
             ...,
             scale_by_optimizer(),
-            optax.scale_by_schedule(schedule)
+            optax.scale_by_schedule(schedule_fn)
         )
 
         train_state = TrainState.create(

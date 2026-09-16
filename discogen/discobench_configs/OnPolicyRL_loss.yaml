@@ -8,3 +8,4 @@ change_networks: false
 change_train: false
 change_activation: false
 change_targets: false
+change_schedule: false

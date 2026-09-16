@@ -10,3 +10,4 @@ change_networks: false
 change_train: false
 change_activation: true
 change_targets: true
+change_schedule: false

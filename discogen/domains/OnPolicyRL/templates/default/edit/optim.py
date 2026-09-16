@@ -15,30 +15,33 @@ class OptState(NamedTuple):
     """State for the optimisation algorithm"""
     pass
 
+def make_optimizer(config):
 
-def scale_by_optimizer(
-    # Fill in any hyperparameters here
-):
-    """Optimisation function, following the structure of Optax"""
-    def init_fn(params):
-        """Function to initialize all variables in OptState"""
-        # Input = parameters, to help with shape calculations. This is a PyTree
+    def scale_by_optimizer(
+        # Fill in any hyperparameters here
+    ):
+        """Optimisation function, following the structure of Optax"""
+        def init_fn(params):
+            """Function to initialize all variables in OptState"""
+            # Input = parameters, to help with shape calculations. This is a PyTree
 
-        """Fill in the optimiser initialisation here."""
+            """Fill in the optimiser initialisation here."""
 
-        # Your function must return an object of class OptState, with all values initialised here.
-        return OptState()
+            # Your function must return an object of class OptState, with all values initialised here.
+            return OptState()
 
-    def update_fn(gradients, state, params=None):
-        """Function to calculate the actual update"""
-        # Inputs:
-        # gradients: all calculated gradients, with the same shape as params.
-        # state: Instance of OptState. This tracks variables between inputs. You should index using dots.
-        # params: the parameters being optimised.
+        def update_fn(gradients, state, params=None):
+            """Function to calculate the actual update"""
+            # Inputs:
+            # gradients: all calculated gradients, with the same shape as params.
+            # state: Instance of OptState. This tracks variables between inputs. You should index using dots.
+            # params: the parameters being optimised.
 
-        """Fill in your update logic here. The updates will be applied to each parameter outside of this function as parameter update * (-1) * learning_rate."""
+            """Fill in your update logic here. The updates will be applied to each parameter outside of this function as parameter update * (-1) * learning_rate."""
 
-        # Your fuction must return the updates (with the same structure as gradients) and the updated OptState.
-        return updates, OptState()
+            # Your fuction must return the updates (with the same structure as gradients) and the updated OptState.
+            return updates, OptState()
 
-    return GradientTransformation(init_fn, update_fn)
+        return GradientTransformation(init_fn, update_fn)
+
+    return scale_by_optimizer

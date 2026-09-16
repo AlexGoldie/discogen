@@ -12,3 +12,4 @@ module_files:
   - train.py
   - activation.py
   - targets.py
+  - schedule.py
