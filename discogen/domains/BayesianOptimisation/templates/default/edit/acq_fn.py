@@ -1,5 +1,5 @@
 import jax.numpy as jnp
-from typing import Any
+from typing import Any, Optional
 
 from surrogate import Surrogate
 
