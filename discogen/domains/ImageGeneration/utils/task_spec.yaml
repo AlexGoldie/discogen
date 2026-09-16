@@ -1,0 +1,15 @@
+fixed_files:
+  - make_dataset.py
+  - main.py
+  - eval.py
+  - config.py
+
+module_files:
+  - diffusion.py
+  - embedding.py
+  - helpers.py
+  - loss.py
+  - networks.py
+  - norm.py
+  - optim.py
+  - schedule.py

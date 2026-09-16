@@ -1,0 +1,15 @@
+train_task_id: [FashionMNIST, StanfordCars, CIFAR10, CelebAHQ, LSUN, TinyImageNet]
+test_task_id: [FashionMNIST, StanfordCars, CIFAR10, CelebAHQ, LSUN, TinyImageNet]
+# ImageNet1k is not included since it takes a significant time (days) to train
+
+source_path: task_src/ImageGeneration
+template_backend: default
+
+change_diffusion: false
+change_embedding: false
+change_helpers: false
+change_loss: false
+change_networks: false
+change_norm: false
+change_optim: false
+change_schedule: false

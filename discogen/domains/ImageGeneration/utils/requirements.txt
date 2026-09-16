@@ -1,0 +1,6 @@
+numpy
+datasets
+einops
+torch
+torchvision
+pytorch-fid

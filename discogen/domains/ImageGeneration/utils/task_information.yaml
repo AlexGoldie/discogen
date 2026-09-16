@@ -1,0 +1,23 @@
+diffusion_prompt: |-
+  You should implement the diffusion process, which can be found in `diffusion.py`. This module defines the core diffusion model, including the forward noising process, the training loss, and the reverse sampling procedure. You should not change the name or interface of the class `Diffusion`, its constructor signature, or the signatures of the `sample` and `forward` methods. Besides this, you are allowed to make whatever changes you like.
+
+embedding_prompt: |-
+  You should implement the positional embedding, which can be found in `embedding.py`. In deep learning, positional embeddings encode position information (such as time steps or token indices) into vectors that can be added to or combined with model inputs. You should not change the name or interface of the class `PositionEmbedding`, or the signature of its `forward` method. Besides this, you are allowed to make whatever changes you like.
+
+helper_prompt: |-
+  You should implement the helper utilities, which can be found in `helper.py`. This file contains general-purpose helper functions that are used throughout the codebase. You should not change the names or interfaces of any existing functions or classes. Besides this, you are allowed to make whatever changes you like.
+
+norm_prompt: |-
+  You should implement the normalization utilities, which can be found in `norm.py`. In deep learning, normalization is commonly used to rescale data into ranges that are more suitable for model training and inference. You should not change the names or interfaces of the functions `normalize_to_neg_one_to_one` and `unnormalize_to_zero_to_one`. Besides this, you are allowed to make whatever changes you like.
+
+schedule_prompt: |-
+  You should implement the diffusion schedule, which can be found in `schedule.py`. In diffusion models, the beta schedule controls how much noise is added at each timestep and strongly affects training stability and sample quality. You should not change the name or interface of the function `beta_schedule`. This function should return a 1D tensor of length `timesteps` containing beta values (noise variances) computed according to a cosine-based schedule and clipped to a valid range. Besides this, you are allowed to make whatever changes you like.
+
+optim_prompt: |-
+  You should implement the optimizer, which can be found in `optim.py`. In deep learning, optimization is used to descend the gradient of a loss function with respect to the parameters of a neural network. The name of the function should be `create_optimizer`, and this function should return an `Optimizer` with functions including `zero_grad` and `step`. Besides this, you are allowed to make whatever changes you like.
+
+loss_prompt: |-
+  You should implement the loss, which can be found in `loss.py`. In deep learning, the loss provides an objective to minimize; You should not change the name of the function, `compute_loss`, or its inputs. This function should return a scalar loss value.
+
+networks_prompts: |-
+  You should implement the network, which can be found in `networks.py`. In deep learning, the network provides the architecture of the model, and specifies the number of parameters, width of layers, and type of connections that those layers should have. You should not change the name or interface of the class `backbone`. Besides this, you are allowed to make whatever changes you like internally.
