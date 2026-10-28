@@ -13,6 +13,7 @@ from pynvml import c_nvmlDevice_t  # type: ignore[import-untyped]
 
 from discogen import create_config
 from discogen.utils import get_domains
+from discogen.utils import make_files as mf_module
 from discogen.utils.make_files import MakeFiles
 
 ALL_DOMAINS = get_domains()
@@ -402,6 +403,26 @@ class TestLoadRunMain:
                     assert not metrics["Exceeded Threshold For dummy_metric"]
                 else:
                     assert metrics["Exceeded Threshold For dummy_metric"]
+
+    @pytest.mark.parametrize("eval_type", ["time", "energy", "memory", "golf"])
+    def test_threshold_tolerates_rounded_baseline(self, eval_type: str) -> None:
+        """A run that reproduces a rounded-up baseline exactly must pass the threshold."""
+        run_main = Path(mf_module.__file__).parent / "run_mains" / f"run_main_{eval_type}.py"
+        code_globals: dict[str, Any] = {}
+        exec(compile(run_main.read_text(), run_main.name, "exec"), code_globals)  # noqa: S102
+        extract = code_globals["_extract_scores"]
+        measured = {"memory": (1.0, 2.0), "time": (0.0, 1.0), "energy": (1.0,), "golf": ()}[eval_type]
+
+        exact = 504 / 1020  # OxfordFlowers reference accuracy
+        recorded = round(exact, 6)  # 0.494118, above the exact value
+        for objective, metric, expected in [
+            ("max", exact, True),
+            ("max", exact - 1e-3, False),
+            ("min", exact - 1e-7, True),
+        ]:
+            results: dict[str, Any] = {}
+            extract({"m": (recorded, objective)}, {"m": metric}, "task", "task/main.py", *measured, results, {})
+            assert results["task"]["Exceeded Threshold For m"] is expected, (eval_type, objective, metric)
 
     @pytest.mark.parametrize("eval_type", ["memory"])
     @pytest.mark.parametrize("baseline_score", [0.5, 1.0, 1.5])

@@ -1,9 +1,13 @@
 import json
+import math
 import os
 import subprocess
 import sys
 from dataclasses import dataclass, field
 from typing import Any
+
+# Baselines are hand-recorded to 5-6 decimal places; tolerate that rounding error.
+BASELINE_TOLERANCE = 1e-5
 
 
 @dataclass
@@ -98,6 +102,8 @@ def _extract_scores(
             baseline_objective = baseline_score[1]
 
             def comp_baseline(x: float, y: float) -> bool:
+                if math.isclose(x, y, rel_tol=0.0, abs_tol=BASELINE_TOLERANCE):
+                    return False
                 return x < y if baseline_objective == "max" else x > y
 
             if comp_baseline(metric_value, baseline):
