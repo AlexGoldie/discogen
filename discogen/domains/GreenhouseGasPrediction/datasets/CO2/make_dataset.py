@@ -32,7 +32,7 @@ def load_train_dataset(src_loc: str = "./data") -> np.ndarray:
                  When called from task_src/MaunaLoaCo2-2010/, this resolves to task_src/MaunaLoaCo2-2010/data
 
     Returns:
-        numpy array with shape (N, 5) containing CO2 data from 1970-2010
+        numpy array with shape (N, 5) containing CO2 data from 1974-2019
     """
     data_file = Path(src_loc) / "co2_daily_mlo_train.npy"
     return np.load(data_file)
@@ -46,7 +46,7 @@ def load_test_dataset(src_loc: str = "./data") -> np.ndarray:
                  When called from task_src/MaunaLoaCo2-2025/, this resolves to task_src/MaunaLoaCo2-2025/data
 
     Returns:
-        numpy array with shape (N, 5) containing CO2 data from 2010-2025
+        numpy array with shape (N, 5) containing CO2 data from 2020-2025
     """
     data_file = Path(src_loc) / "co2_daily_mlo_test.npy"
     return np.load(data_file)
